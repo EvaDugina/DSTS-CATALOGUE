@@ -1,0 +1,114 @@
+#wrapper {
+    overflow:auto;
+    height:100px;
+}
+.rdtmain
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+
+.rdtmain__item
+{
+  background: white;
+  padding: 10px;
+  margin-right: 5px;
+}
+.tab {
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tasks__list {
+}
+
+.tasks__item {
+}
+
+.tasks__item:last-child {
+  margin-bottom: 0;
+}
+
+.selected {
+  opacity: 0.6;
+}
+
+.active_file {
+    background-color: #ccc;
+}
+
+
+.countdown {
+  font-family: sans-serif;
+  /*color: #fff;*/
+  display: inline-block;
+  font-weight: 100;
+  text-align: center;
+  font-size: 30px;
+}
+
+.countdown-number {
+  padding: 5px;
+  border-radius: 3px;
+  /*background: #fd7e14;*/
+  display: inline-block;
+}
+
+.countdown-time {
+  padding: 8px;
+  border-radius: 3px;
+  /*background: #ffc107;*/
+  display: inline-block;
+}
+
+.countdown-text {
+  display: block;
+  padding-top: 5px;
+  font-size: 16px;
+}
+
+.deadline-message{
+  display: none;
+  font-size: 24px;
+  font-style: italic;
+}
+
+.visible{
+  display: block;
+}
+
+.hidden{
+  display: none;
+}
