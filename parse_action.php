@@ -6,13 +6,16 @@ $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-if(isset($_POST['analogs_json']))
-    $analogs_js_json = $_POST['analogs_json'];
+if(isset($_POST['catalog_packages_json']))
+    $catalog_packages_json = $_POST['catalog_packages_json'];
 else 
     exit;
 
-$analogs = json_decode($analogs_js_json);
-// print_r($analogs);
+$catalog_packages = json_decode($catalog_packages_json);
+// print_r($catalog_packages);
+
+$catalogue_name = $catalog_packages[0]->selected_catalogue;
+array_shift($catalog_packages);
 
 // Кросс-референс DONALDSON (P550777; P 550777;): 
 // AC DELCO (PF2161; PF940; 06940; 6940; P940;), 
@@ -22,38 +25,71 @@ $analogs = json_decode($analogs_js_json);
 // ALCO (SP1011;), 
 // ALLIS-CHALMERS (73124135;)
 
-$article = $analogs[0];
+// print_r($catalog_packages);
 
-$result_parse = "Кросс-референс " . $article->producer_name;
-$result_parse .= " (" . articleNameVariations($article->article_name) . "): ";
-
-array_shift($analogs);
-
-$last_producer_name = "";
-foreach ($analogs as $key => $analog) {
-    if($key == 0) {
-        $last_producer_name = $analog->producer_name;
-        $result_parse .= $analog->producer_name;
-        $result_parse .= " (";
-    } 
-    
-    if($analog->producer_name == $last_producer_name) {
-        $result_parse .= " ";
-    } else {
-        $last_producer_name = $analog->producer_name;
-        $result_parse .= "), " . $analog->producer_name . " (";
+if ($catalogue_name == "ВСЕ") {
+    $result_parse = "";
+    foreach($ARRAY_CATALOGUES as $catalogue) {
+        if($catalogue[1]) {
+            $result_parse .= getCrossRefByCatalogue($catalog_packages, $catalogue[0]);
+            $result_parse .= "\t\t\t\t\t";
+        }
     }
-    $result_parse .= articleNameVariations($analog->article_name);
-    
-    if($key == count($analogs)-1) {
-        $result_parse .= ")";
-    }
+} else {
+    $result_parse = getCrossRefByCatalogue($catalog_packages, $catalogue_name);
 }
 
 
 echo $result_parse;
 exit;
 
+
+function getCrossRefByCatalogue($catalog_packages, $catalogue_name) {
+
+    $cross_ref = "";
+
+    $last_producer_name = "";
+
+    $cross_ref .= "Кросс-референс " . $catalogue_name;
+    foreach ($catalog_packages[0] as $analog) {
+        $cross_ref .= " (" . articleNameVariations($analog->article_name) . "): ";
+    }
+
+    foreach ($catalog_packages as $key => $catalogue) {
+
+        if($key == 0)
+            continue;
+
+        foreach ($catalogue as $analog) {
+
+            // echo $catalogue_name;
+            // print_r($analog);
+            // echo "\n\n\n";
+    
+            if($analog->catalogue_name != $catalogue_name) 
+                continue;
+    
+            if($key == 1) {
+                $last_producer_name = $analog->producer_name_dsts;
+                $cross_ref .= $analog->producer_name_dsts;
+                $cross_ref .= " (";
+            } else if($analog->producer_name_dsts == $last_producer_name) {
+                $cross_ref .= " ";
+            } else {
+                $last_producer_name = $analog->producer_name_dsts;
+                $cross_ref .= "), " . $analog->producer_name_dsts . " (";
+            }
+            $cross_ref .= articleNameVariations($analog->article_name);
+            
+            if($key == count($catalog_packages)-1) {
+                $cross_ref .= ")";
+            }
+    
+        }
+    }
+
+    return $cross_ref;
+}
 
 
 function articleNameVariations($article_name) {
@@ -70,15 +106,17 @@ function articleNameVariations($article_name) {
     if (!$article_name_splitted) {    
         return $article_name . ";";
     } else {
-        $articleNameVariations = "";
-        array_push($arrayChars, '');
-        foreach ($arrayChars as $key => $char) {
-            $articleNameVariations .= concatArrayByChar($article_name_splitted, $char) . ";";
-            if($key < count($arrayChars)-1)
-                $articleNameVariations .= " ";
-        }
-        return $articleNameVariations;
+        $articleNameVariations = $article_name . "; ";
+        $articleNameVariations .= concatArrayByChar($article_name_splitted, '') . ";";
     }
+
+        // array_push($arrayChars, '');
+        // foreach ($arrayChars as $key => $char) {
+        //     $articleNameVariations .= concatArrayByChar($article_name_splitted, $char) . ";";
+        //     if($key < count($arrayChars)-1)
+        //         $articleNameVariations .= " ";
+        // }
+    return $articleNameVariations;
 
 
 }
