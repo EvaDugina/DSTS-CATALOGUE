@@ -7,7 +7,6 @@ $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-
 show_head("СТРАНИЦА ПОИСКА АНАЛОГОВ");
 
 if ($au->isAdmin())
@@ -36,7 +35,7 @@ else
                                 <div class="form-notch-trailing"></div>
                             </div>
                         </div>
-                        <button id="btn-search" class="btn btn-primary me-2" onclick="searchAnalogs()">ПОИСК</button>
+                        <button id="btn-search" class="btn btn-primary me-2" onclick="search()">ПОИСК</button>
                     </div>
                 </div>
                 <?php if ($au->isAdmin()) { ?>
@@ -241,35 +240,40 @@ else
 
     var article_for_edit = null;
     var search_type = "soft";
+    var last_search_type = "soft";
 
     var flagValidation = false;
     var COUNT_LOADING_ELEMENTS = 20;
+
+    $('#input-article').focus();
 
     $(document).ready(function() {
         $("#select-catalogue option").each(function() {
             if (this.text != "ВСЕ")
                 addSelectedProducer(this.text)
         });
+
+        console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
+        if (sessionStorage.getItem('search_request') && sessionStorage.getItem('search_type')) {
+            flagValidation = true;
+            $('#input-article').val(sessionStorage.getItem('search_request'));
+            search_type = sessionStorage.getItem('search_type');
+            searchAnalogs(sessionStorage.getItem('search_request'));
+        }
     });
 
     //-------------------------------------------------------------------------------------------------------------
     // ОБРАБОТЧИКИ СОБЫТИЙ
     //-------------------------------------------------------------------------------------------------------------
 
-    $('#input-article').on("change", function(e) {
-        validateSearchField();
-    });
-
     $('#input-article').on("keydown", function(e) {
         if (e.key == "Enter" || e.keyCode == 13) {
-            validateSearchField();
-            if (flagValidation)
-                searchAnalogs();
-            else
-                cleanSearchResult();
+            search();
         } else {
             if (checkPressCharInSearchField(e.key) == false) {
                 e.preventDefault();
+            } else {
+                flagValidation = true;
             }
         }
     });
@@ -334,11 +338,16 @@ else
     // ОСНОВНЫЕ ФУНКЦИИ
     //-------------------------------------------------------------------------------------------------------------
 
+    function search() {
+        validateSearchField();
+        cleanSearchResult();
+        if (flagValidation)
+            searchAnalogs();
+
+    }
 
     function searchAnalogs(article_name = "") {
         console.log("searchAnalogs()");
-
-        cleanSearchResult();
 
         if (!flagValidation)
             return;
@@ -422,6 +431,7 @@ else
             complete: function() {}
         });
 
+        last_search_type = search_type;
         setSearchType("soft");
     }
 
@@ -546,13 +556,15 @@ else
 
         let td_artcle_name = document.createElement("td");
         td_artcle_name.classList.add("middleInTable");
-        let a = document.createElement("a");
+        let button = document.createElement("button");
         if (article.hasInfo) {
-            a.style.color = "green";
+            button.style.color = "green";
         }
-        a.setAttribute('href', 'article_details.php?article_id=' + article.article_id);
-        a.textContent = article.article_name;
-        td_artcle_name.appendChild(a);
+        button.setAttribute('onclick', 'goToArticleDetails(' + article.article_id + ")");
+        button.classList.add("btn", "btn-link");
+        button.textContent = article.article_name;
+        button.style.fontSize = "inherit";
+        td_artcle_name.appendChild(button);
 
         let td_producer_dsts_name = document.createElement("td");
         td_producer_dsts_name.classList.add("middleInTable");
@@ -627,6 +639,13 @@ else
         }
 
         return tr;
+    }
+
+
+    function goToArticleDetails(article_id) {
+        sessionStorage.setItem('search_request', $('#input-article').val());
+        sessionStorage.setItem('search_type', last_search_type);
+        document.location.href = 'article_details.php?article_id=' + article_id;
     }
 
 
@@ -715,12 +734,12 @@ else
     function validateSearchField() {
         if (checkSearchField() == false) {
             flagValidation = false;
-            $('#btn-search').addClass("disabled");
+            // $('#btn-search').addClass("disabled");
             $('#p-errorSearchField').removeClass("d-none");
             $('#input-article').addClass("is-invalid");
         } else {
             flagValidation = true;
-            $('#btn-search').removeClass("disabled");
+            // $('#btn-search').removeClass("disabled");
             $('#p-errorSearchField').addClass("d-none");
             $('#input-article').removeClass("is-invalid");
         }

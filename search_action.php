@@ -63,11 +63,12 @@ $result = pg_query($dbconnect, $query);
 
 while ($row = pg_fetch_assoc($result)) {
     $analogArticle = new Article($row['article_id']);
-
-    $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo());
-    $arrays_articles = array_merge($arrays_articles, $article_array);
-    if (count($article_array) > 0)
-        $return_values = array_merge($return_values, $article_array);
+    if ($analogArticle->id != $Article->id) {
+        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo());
+        $arrays_articles = array_merge($arrays_articles, $article_array);
+        if (count($article_array) > 0)
+            $return_values = array_merge($return_values, $article_array);
+    }
 }
 
 
@@ -91,7 +92,7 @@ function getArticleArray($article_name, $producer_id, $article_id, $hasInfo)
 
         $catalogue_name = $catalogue[0];
 
-        $main_producer_name = getProducerName($producer_id);
+        $main_producer_name = getMainProducerName($producer_id);
 
         $producer_name_by_catalogue = getProducerNameByCatalogue($producer_id, $catalogue_name);
         if ($producer_name_by_catalogue == false) {

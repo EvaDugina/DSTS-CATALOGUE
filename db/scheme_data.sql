@@ -45,8 +45,8 @@ CREATE TABLE producers_dsts_names	(
 
 CREATE TABLE producers_comparison	(
 	id serial,
-	group_id integer, -- --> идентификатор группы производителей
-	producer_id integer UNIQUE, -- --> идентификатор артукула
+	main_producer_id integer, -- --> идентификатор группы производителей
+	secondary_producer_id integer UNIQUE, -- --> идентификатор артукула
 	CONSTRAINT producers_comparison_pkey PRIMARY KEY (id)
 );
 

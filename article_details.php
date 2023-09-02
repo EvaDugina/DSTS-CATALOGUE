@@ -12,6 +12,7 @@ if (isset($_GET['article_id']))
 else
     exit;
 
+
 $Article = new Article($article_id);
 $imageUrl = $Article->getImageUrl();
 

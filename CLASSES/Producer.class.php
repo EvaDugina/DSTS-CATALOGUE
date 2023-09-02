@@ -48,21 +48,21 @@ class Producer
         return $names_by_catalogues;
     }
 
-    public function setSimmilarProducer($new_producer_id)
+    public function setSimmilarProducer($main_producer_id)
     {
         global $dbconnect;
 
-        $query = queryUpdateProducerFromNameVariations($this->id, $new_producer_id);
+        $query = queryInsertProducerComparison($main_producer_id, $this->id);
         pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
 
-        // $query = queryDeleteProducer($this->id);
-        // pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
+        // // $query = queryDeleteProducer($this->id);
+        // // pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
 
-        $newProducer = new Producer($new_producer_id);
+        // $newProducer = new Producer($new_producer_id);
 
-        $this->id = $newProducer->id;
-        $this->name = $newProducer->name;
-        $this->dsts_name = $newProducer->dsts_name;
+        // $this->id = $newProducer->id;
+        // $this->name = $newProducer->name;
+        // $this->dsts_name = $newProducer->dsts_name;
     }
 
     public function setProducerDSTSName($new_producer_name_dsts)
@@ -125,10 +125,18 @@ function getProducerNameByCatalogue($producer_id, $catalogue_name)
 }
 
 
-function getProducerName($producer_id)
+function getMainProducerName($producer_id)
 {
     global $dbconnect;
-    $query = querySelectProducerById($producer_id);
+    $query = querySelectProducerComparison($producer_id);
+    $result = pg_query($dbconnect, $query);
+    if (pg_num_rows($result) < 1) {
+        $main_producer_id = $producer_id;
+    } else {
+        $main_producer_id = pg_fetch_assoc($result)['main_producer_id'];
+    }
+
+    $query = querySelectProducerById($main_producer_id);
     $result = pg_query($dbconnect, $query);
     $producer = pg_fetch_assoc($result);
     if ($producer)
@@ -206,6 +214,12 @@ function queryGetAllProducersNames()
     return "SELECT producer_name FROM producers;";
 }
 
+function querySelectProducerComparison($producer_id)
+{
+    return "SELECT main_producer_id FROM producers_comparison
+            WHERE secondary_producer_id = $producer_id;";
+}
+
 
 
 
@@ -235,6 +249,14 @@ function queryInsertProducerNameVariation($producer_id, $producer_name, $catalog
 {
     return "INSERT INTO public.producers_name_variations(producer_id, producer_name, catalogue_name) VALUES ($producer_id, '$producer_name', '$catalogue_name') 
         RETURNING id;";
+}
+
+function queryInsertProducerComparison($main_producer_id, $secondary_producer_id)
+{
+    return "INSERT INTO producers_comparison (main_producer_id, secondary_producer_id)
+            VALUES ($main_producer_id, $secondary_producer_id)
+            ON CONFLICT (secondary_producer_id) DO 
+            UPDATE SET main_producer_id = $main_producer_id;";
 }
 
 

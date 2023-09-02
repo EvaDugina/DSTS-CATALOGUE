@@ -12,8 +12,9 @@ if (array_key_exists('action', $_POST)) {
       if(!$loggedIn) {
         header('Location:login.php?error=true'); 
         exit;
-      } else 
+      } else {
         header('Location:search.php');
+      }
       break;
     case 'logout':
       $au->logout();
@@ -30,4 +31,3 @@ else {
 	http_response_code(401);
 	exit;
 }
-?>
