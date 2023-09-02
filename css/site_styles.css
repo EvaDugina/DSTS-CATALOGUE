@@ -6,3 +6,8 @@
 .text-color {
     color: #1d3d91 !important;
 }
+
+.middleInTable {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
