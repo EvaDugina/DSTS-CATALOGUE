@@ -54,9 +54,17 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                             </form>
                         <?php } ?>
 
+                        <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
+                            if ($catalogue[1] && $Article->hasInfo()) { ?>
+                                <button class="btn btn-primary mb-2 w-100" onclick="goToCataloguePage('<?= $Article->getLinkToCataloguePage() ?>', '<?= $catalogue[0] ?>')">
+                                    ПЕРЕЙТИ НА САЙТ <?= $catalogue[0] ?>
+                                </button>
+                        <?php }
+                        } ?>
+
                     </div>
 
-                    <div clacc="col-md-4" style="width:inherit;">
+                    <div clacc="col-4" style="width:inherit;">
                         <?php
                         if ($Article->hasInfo()) {
                             foreach ($Article->getInfo() as $info_by_catalogue) { ?>
@@ -75,10 +83,17 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                         } else { ?>
                             <h6>Информация о характеристиках отсутствует</h6>
                         <?php } ?>
-
                     </div>
+
                 </div>
             </div>
         </div>
     </main>
 </body>
+
+
+<script type="text/javascript">
+    function goToCataloguePage(link, catalogue_name) {
+        window.open(link, '_blank');
+    }
+</script>

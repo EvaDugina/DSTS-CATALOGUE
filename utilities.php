@@ -30,7 +30,7 @@ $ARRAY_CATALOGUES = [
   array(0 => "FLEETGUARD", 1 => FALSE),
   array(0 => "SF-FILTER", 1 => FALSE),
   array(0 => "BALDWIN", 1 => FALSE),
-  array(0 => "FIL-FILTER", 1 => TRUE),
+  array(0 => "FIL-FILTER", 1 => FALSE),
   array(0 => "LEFONG", 1 => FALSE)
 ];
 

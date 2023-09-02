@@ -65,6 +65,11 @@ class Article
         return $this->info;
     }
 
+    public function getLinkToCataloguePage()
+    {
+        return "https://shop.donaldson.com/store/ru-ru/product/" . $this->name . "/" . $this->info[0]['json']->productId;
+    }
+
     public function hasInfo()
     {
         return count($this->info) > 0;

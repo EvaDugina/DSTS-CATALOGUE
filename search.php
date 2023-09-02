@@ -581,7 +581,8 @@ else
 
         let td_producer_name = document.createElement("td");
         td_producer_name.classList.add("middleInTable");
-        td_producer_name.innerText = article.producer_name_by_catalogue + " (" + article.producer_name + ")";
+        td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
+            " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
 
         tr.appendChild(td_artcle_name);
         tr.appendChild(td_producer_dsts_name);
