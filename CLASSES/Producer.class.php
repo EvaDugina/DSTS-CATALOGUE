@@ -137,6 +137,22 @@ function getProducersNames()
 }
 
 
+function getProducersNamesDSTS()
+{
+    global $dbconnect;
+
+    $query = queryGetAllProducersNamesDSTS();
+    $result = pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
+
+    $producer_names = array();
+    while ($row = pg_fetch_assoc($result)) {
+        array_push($producer_names, $row['producer_name']);
+    }
+
+    return $producer_names;
+}
+
+
 function getProducerNameByCatalogue($producer_id, $catalogue_name)
 {
     global $dbconnect;
@@ -246,6 +262,11 @@ function queryGetProducerNameByDSTSCatalogue($producer_id)
 function queryGetAllProducersNames()
 {
     return "SELECT producer_name FROM producers;";
+}
+
+function queryGetAllProducersNamesDSTS()
+{
+    return "SELECT producer_name FROM producers_dsts_names;";
 }
 
 function querySelectProducerComparison($producer_id)

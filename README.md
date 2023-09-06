@@ -25,8 +25,11 @@ pip install playwright
 pip install webdriver_manager
 
 
-3. ВЫПОЛЬНИТЬ BAT-СКРИПТЫ ИЗ ПАПКИ db/
+3. ВЫПОЛНИТЬ BAT-СКРИПТЫ ИЗ ПАПКИ db/
 
+4. max_execution_time = 500 
+[COM_DOT_NET]
+extension=php_com_dotnet.dll
 
 
 

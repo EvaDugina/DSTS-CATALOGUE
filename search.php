@@ -13,6 +13,7 @@ if ($au->isAdmin())
     echo "<script>var is_admin=1;</script>";
 else
     echo "<script>var is_admin=0;</script>";
+
 ?>
 
 <body style="overflow-x: hidden;">
@@ -37,11 +38,12 @@ else
                         </div>
                         <button id="btn-search" class="btn btn-primary me-2 align-items-center" onclick="search()">
                             ПОИСК
-                            <div id="spinner-waiting-search" class="spinner-border spinner-border-sm text-white ms-1 float-end d-none" role="status">
+                            <div id="spinner-waiting-search" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </button>
                     </div>
+                    <div id="div-autocomplete" class="list-group z-3 w-25 ps-0 border-0 rounded-0 d-none" style="position: absolute; font-size: x-small;"></div>
                 </div>
                 <?php if ($au->isAdmin()) { ?>
                     <div class="col-2 px-0">
@@ -55,7 +57,7 @@ else
                 <?php } ?>
             </div>
             <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>В строке поиска присутсвуют недопустимые символы!</small></p>
-            <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
+            <p class="text-muted"><small>ПРИМЕР ВВОДА: DONALDSON P550777 | P550777</small></p>
 
             <div class="row">
                 <div class="d-flex-column col-10">
@@ -227,10 +229,10 @@ else
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Закрыть</button>
+                <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">ОТМЕНА</button>
                 <button id="modalAddArticle-button-apply" type="button" class="btn btn-primary align-items-center">
                     ДОБАВИТЬ АРТИКУЛ
-                    <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-1 float-end d-none" role="status">
+                    <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </button>
@@ -294,17 +296,26 @@ else
 <script type="text/javascript">
     var analogs = [];
     var selected_catalogues = [];
+    var producers_names = [];
+
+    var SEARCH_REQUEST = "";
+    var SEARCH_REQUEST_PRODUCER_NAME = "";
+    var SEARCH_REQUEST_ARTICLE_NAME = "";
 
     var article_for_edit = null;
     var search_type = "soft";
     var last_search_type = "soft";
 
     var flagValidation = false;
+    var addingArticle = false;
+
     var COUNT_LOADING_ELEMENTS = 20;
 
     $('#input-article').focus();
 
     $(document).ready(function() {
+        ajaxGetProducerNames();
+
         $("#select-catalogue option").each(function() {
             if (this.text != "ВСЕ")
                 addSelectedProducer(this.text)
@@ -331,9 +342,72 @@ else
                 e.preventDefault();
             } else {
                 flagValidation = true;
+                // SEARCH_REQUEST += e.key;
+                $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
+                SEARCH_REQUEST = $('#input-article').val();
+                // let search_request_splitted = SEARCH_REQUEST.split(" ");
+                if (!hasNumber(SEARCH_REQUEST)) {
+                    let offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
+                    refreshAutocomplete(offeringProducerNames);
+                }
             }
         }
     });
+
+    function refreshAutocomplete(offeringProducerNames) {
+        var div = document.getElementById('div-autocomplete');
+        div.classList.add("d-none");
+        div.innerHTML = '';
+
+        offeringProducerNames.forEach((producer_name) => {
+            let button = document.createElement("button");
+            button.classList.add("list-group-item", "list-group-item-action", "text-primary", "bg-opacity-75");
+            button.innerText = producer_name;
+            button.setAttribute("onclick", "chooseArticleProducer('" + producer_name + "')");
+            div.appendChild(button);
+        });
+
+        div.classList.remove("d-none");
+    }
+
+    function chooseArticleProducer(producer_name) {
+        SEARCH_REQUEST = producer_name;
+        $('#input-article').val(SEARCH_REQUEST + " ");
+        var div = document.getElementById('div-autocomplete');
+        div.classList.add("d-none");
+        div.innerHTML = '';
+        $('#input-article').focus();
+    }
+
+    function findProducerByFragment(fragment_str) {
+        let LIMIT_COUNT_OFFERING_PRODUCERS = 5;
+        simmilar_producer_names = [];
+        if (fragment_str != "") {
+            let count = 0;
+            producers_names.forEach((producer_name) => {
+                if (count >= LIMIT_COUNT_OFFERING_PRODUCERS)
+                    return true;
+                if (producer_name.includes(fragment_str)) {
+                    simmilar_producer_names.push(producer_name);
+                    count += 1;
+                }
+            });
+        }
+        return simmilar_producer_names;
+    }
+
+    function checkPressCharInSearchField(symbol) {
+        let regex = RegExp('[0-9a-zA-Zа-яА-Я]');
+        if (!regex.test(symbol) || symbol.length > 1) {
+            return false;
+        }
+        return true;
+    }
+
+    function hasNumber(myString) {
+        return /\d/.test(myString);
+    }
+
 
     $('#btn-add-article').on("click", function() {
         setValuesToDialogModalAddArticleFields();
@@ -400,15 +474,25 @@ else
     })
 
     $('#modalAddArticle-button-apply').on("click", function(event) {
+        addingArticle = true;
         let article_name = $('#modalAddArticle-input-articleName').val();
         let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
         ajaxAddArticle(article_name, catalogue_name);
-        // $('#dialogModalAddArticle').modal('hide');
     });
 
-    $('#dialogModalAddArticle').on('hidden.bs.modal', function(e) {
+    $('#dialogModalAddArticle').on('hidden.bs.modal', function(event) {
+        if (addingArticle) {
+            event.preventDefault();
+            var confirm = window.confirm("Идёт добавление артикула, вы уверены, что хотите закрыть окно?");
+            if (confirm)
+                ajaxStopAddArticle();
+            else
+                return;
+        }
         $('#modalAddArticle-textarea-result').text("");
         $('#modalAddArticle-div-result').addClass("d-none");
+        $('#dialogModalAddArticle').modal('hide');
+
     })
 
 
@@ -641,9 +725,56 @@ else
                 $('#modalAddArticle-spinner-waiting').addClass("d-none");
                 $('#modalAddArticle-textarea-result').text(response);
                 $('#modalAddArticle-div-result').removeClass("d-none");
+                addingArticle = false;
             },
             complete: function() {}
         });
+    }
+
+    function ajaxGetProducerNames() {
+        var formData = new FormData();
+
+        formData.append('getProducersNameDsts', true);
+
+        $.ajax({
+            type: "POST",
+            url: 'search_action.php#content',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: 'html',
+            success: function(response) {
+                producers_names = JSON.parse(response);
+                // console.log(producers_names);
+            },
+            complete: function() {}
+        });
+    }
+
+    function ajaxStopAddArticle() {
+
+        window.close();
+
+        // var formData = new FormData();
+
+        // formData.append('code_stop', 1);
+
+        // $.ajax({
+        //     type: "POST",
+        //     url: 'addArticle_action.php#content',
+        //     cache: false,
+        //     contentType: false,
+        //     processData: false,
+        //     data: formData,
+        //     dataType: 'html',
+        //     success: function(response) {
+        //         // response = JSON.parse(response);
+        //         $('#modalAddArticle-spinner-waiting').removeClass("d-none");
+        //         addingArticle = false;
+        //     },
+        //     complete: function() {}
+        // });
     }
 
 
@@ -917,16 +1048,6 @@ else
             return article.producer_name;
         else
             return article.producer_name_dsts;
-    }
-
-
-
-    function checkPressCharInSearchField(symbol) {
-        let regex = RegExp('[0-9a-zA-Zа-яА-Я. -]');
-        if (!regex.test(symbol)) {
-            return false;
-        }
-        return true;
     }
 
     function setSearchType(new_search_type) {

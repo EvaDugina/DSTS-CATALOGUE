@@ -5,15 +5,19 @@ require_once("utilities.php");
 $au = new auth_ssh();
 checkAuLoggedIN($au);
 
-if (isset($_POST['article_name']))
+
+if (isset($_POST['getProducersNameDsts'])) {
+    $array_producer_names = getProducersNames();
+    echo json_encode($array_producer_names);
+    exit;
+}
+
+if (isset($_POST['article_name']) && isset($_POST['search_type'])) {
     $article_name = $_POST['article_name'];
-else
+    $search_type = $_POST['search_type'];
+} else
     exit;
 
-if (isset($_POST['search_type']))
-    $search_type = $_POST['search_type'];
-else
-    exit;
 
 $return_values = array();
 $arrays_articles = array();
