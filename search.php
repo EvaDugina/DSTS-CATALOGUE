@@ -384,14 +384,19 @@ else
 
 
     $('#modalEdit-button-apply').on("click", function(event) {
+        real_producer_name_dsts = $('#modalEdit-input-realProducerNameInDSTSCatalogue').val();
         new_producer_name_dsts = $('#modalEdit-input-newProducerNameInDSTSCatalogue').val();
+        real_producer_name = $('#modalEdit-input-realProducerName').val();
         new_producer_name = $('#modalEdit-select-newProducerName').val();
-        ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name);
-        $('#dialogModalEdit').modal('hide');
+        ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name);
+        // updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
+        // updateSessionParams();
+        // location.reload();
     });
 
     $('#dialogModalEdit').on('hidden.bs.modal', function(e) {
-        article_for_edit = null;
+        $('#modalEdit-input-newProducerNameInDSTSCatalogue').val("");
+        $('#modalEdit-select-newProducerName').val("");
     })
 
     $('#modalAddArticle-button-apply').on("click", function(event) {
@@ -584,7 +589,7 @@ else
     }
 
 
-    function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name) {
+    function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name) {
         var formData = new FormData();
 
         formData.append('producer_id', producer_id);
@@ -603,7 +608,12 @@ else
                 response = JSON.parse(response);
                 console.log(response);
                 if (response.setProducerDSTSName || response.setSimmilarProducer) {
-                    searchAnalogs($('#input-article').val());
+                    // searchAnalogs($('#input-article').val());
+                    if (response.setProducerDSTSName)
+                        updateTablesAfterEditProducerNameDSTS(real_producer_name_dsts, new_producer_name_dsts);
+                    if (response.setSimmilarProducer)
+                        updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
+                    $('#dialogModalEdit').modal('hide');
                 }
             },
             complete: function() {}
@@ -640,6 +650,56 @@ else
     //-------------------------------------------------------------------------------------------------------------
     // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
     //-------------------------------------------------------------------------------------------------------------
+
+
+    function updateTablesAfterEditProducerNameDSTS(last_producer_name_dsts, new_producer_name_dsts) {
+        analogs.forEach((article) => {
+            if (article.producer_name_dsts == last_producer_name_dsts)
+                article.producer_name_dsts = new_producer_name_dsts;
+        });
+
+        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-article", last_producer_name_dsts, new_producer_name_dsts);
+        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-main-analogs", last_producer_name_dsts, new_producer_name_dsts);
+        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-analogs", last_producer_name_dsts, new_producer_name_dsts);
+    }
+
+    function updateTablesAfterEditProducerName(last_producer_name, new_producer_name) {
+        analogs.forEach((article) => {
+            if (article.producer_name == last_producer_name)
+                article.producer_name = new_producer_name;
+        });
+
+        dynamicUpdateTablesAfterChangeProducerName("tbody-article", last_producer_name, new_producer_name);
+        dynamicUpdateTablesAfterChangeProducerName("tbody-main-analogs", last_producer_name, new_producer_name);
+        dynamicUpdateTablesAfterChangeProducerName("tbody-analogs", last_producer_name, new_producer_name);
+
+
+    }
+
+    function dynamicUpdateTablesAfterChangeProducerNameDSTS(id, last_producer_name_dsts, new_producer_name_dsts) {
+        $("#" + id).children().each((index, tr) => {
+            // console.log(tr);
+            let td_producer_name_dsts = tr.children[1];
+            if (td_producer_name_dsts.innerText == last_producer_name_dsts) {
+                tr.children[1].innerText = new_producer_name_dsts;
+                tr.children[1].classList.remove("text-danger");
+            }
+        });
+    }
+
+    function dynamicUpdateTablesAfterChangeProducerName(id, last_producer_name, new_producer_name) {
+        $("#" + id).children().each((index, tr) => {
+            // console.log(tr);
+            let strong = tr.children[3].getElementsByTagName("strong")[0];
+            let producer_name = strong.innerText;
+            if (producer_name == last_producer_name) {
+                let new_value = tr.children[3].innerText.split("(")[0] +
+                    "(<strong style='font-weight: bold;'>" + new_producer_name + "</strong>)";
+                tr.children[3].innerHTML = new_value;
+            }
+        });
+    }
+
 
 
     function copyParseResult() {

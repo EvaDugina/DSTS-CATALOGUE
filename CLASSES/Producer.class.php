@@ -174,7 +174,7 @@ function getMainProducerName($producer_id)
     $result = pg_query($dbconnect, $query);
     $producer = pg_fetch_assoc($result);
     if ($producer)
-        return $producer['producer_name'];
+        return array("id" => $producer['id'], "producer_name" => $producer['producer_name']);
     else {
         return false;
     }

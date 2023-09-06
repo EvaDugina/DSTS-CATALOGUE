@@ -102,16 +102,22 @@ function getArticleArray($article_name, $producer_id, $article_id, $hasInfo)
 
         $catalogue_name = $catalogue[0];
 
-        $main_producer_name = getMainProducerName($producer_id);
+        $main_producer = getMainProducerName($producer_id);
+        $main_producer_name = $main_producer['producer_name'];
+        $main_producer_id = $main_producer['id'];
 
         $producer_name_by_catalogue = getProducerNameByCatalogue($producer_id, $catalogue_name);
         if ($producer_name_by_catalogue == false) {
             continue;
         }
 
-        $producer_dsts_name = getProducerNameByDSTSCatalogue($producer_id);
-        if ($producer_name_by_catalogue == false) {
-            $producer_dsts_name = "";
+        if ($main_producer_id == false) {
+            $producer_dsts_name = getProducerNameByDSTSCatalogue($producer_id);
+            if ($producer_dsts_name == false) {
+                $producer_dsts_name = "";
+            }
+        } else {
+            $producer_dsts_name = getProducerNameByDSTSCatalogue($main_producer_id);
         }
 
         $article_array_by_catalogue = array(
