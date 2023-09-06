@@ -1,0 +1,344 @@
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 11 ЯЕЙ.
+
+
+T0 START!
+он яюирс-опнхгбндхрекч: DONALDSON
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_info_json -> мюидем!
+	_article_cross_ref_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 18 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 38 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+T0 START!
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_cross_ref_json -> мюидем!
+	_article_info_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 14 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 36 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+T0 START!
+он яюирс-опнхгбндхрекч: DONALDSON
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_info_json -> мюидем!
+	_article_cross_ref_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 13 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 34 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+T0 START!
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_cross_ref_json -> мюидем!
+	_article_info_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 15 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 37 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+T0 START!
+он яюирс-опнхгбндхрекч: DONALDSON
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_info_json -> мюидем!
+	_article_cross_ref_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 15 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 36 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+T0 START!
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_info_json -> мюидем!
+	_article_cross_ref_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 12 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 33 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 11 ЯЕЙ.
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+T0 START!
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_cross_ref_json -> мюидем!
+	_article_info_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 15 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 37 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+
+~~~~~~~~
+SEARCH REQUEST: P550777 -> START!
+
+
+он яюирс-опнхгбндхрекч: DONALDSON
+----> pullCrossRefToDB() 
+
+
+T0 START!
+
+
+T0: search() -> completed
+T0: parseSearchResult() -> completed
+T0: appendLINKtoFile() -> completed
+PAGE ╧0 -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 11 ЯЕЙ.
+
+
+T0 START!
+он яюирс-опнхгбндхрекч: DONALDSON
+
+
+P550777
+loadArticlePage() -> completed
+saveJSON():
+	_article_cross_ref_json -> мюидем!
+	_article_info_json -> мюидем!
+	appendToFile() -> completed
+saveJSON() -> completed
+
+
+getArticleLinksByThreads() -> completed! бпелъ: 14 ЯЕЙ.
+
+
+<---- END pullCrossRefToDB(): 33 ЯЕЙ.
+
+
+SEARCH REQUEST: P550777 -> END!
+~~~~~~~~
+
+

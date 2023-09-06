@@ -23,16 +23,22 @@ function checkAuIsAdmin($au)
   }
 }
 
+// $ARRAY_CATALOGUES = [
+//   array(0 => "DONALDSON", 1 => TRUE),
+//   array(0 => "HIFI-FILTER", 1 => FALSE),
+//   array(0 => "MANN&HUMMEL", 1 => FALSE),
+//   array(0 => "FLEETGUARD", 1 => FALSE),
+//   array(0 => "SF-FILTER", 1 => FALSE),
+//   array(0 => "BALDWIN", 1 => FALSE),
+//   array(0 => "FIL-FILTER", 1 => FALSE),
+//   array(0 => "LEFONG", 1 => FALSE)
+// ];
+
 $ARRAY_CATALOGUES = [
-  array(0 => "DONALDSON", 1 => TRUE),
-  array(0 => "HIFI-FILTER", 1 => FALSE),
-  array(0 => "MANN&HUMMEL", 1 => FALSE),
-  array(0 => "FLEETGUARD", 1 => FALSE),
-  array(0 => "SF-FILTER", 1 => FALSE),
-  array(0 => "BALDWIN", 1 => FALSE),
-  array(0 => "FIL-FILTER", 1 => FALSE),
-  array(0 => "LEFONG", 1 => FALSE)
+  array(0 => "DONALDSON", 1 => TRUE)
 ];
+
+$ARRAY_NAME_CATALOGUES = ["DONALDSON"];
 
 $ARRAY_SPLIT_CHARS = ['.', '-', ' '];
 

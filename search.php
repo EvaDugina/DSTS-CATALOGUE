@@ -22,7 +22,7 @@ else
         <div class="container">
 
             <div class="row mt-5">
-                <div class="col-8">
+                <div class="col-8 px-0">
                     <div class="d-flex w-100">
                         <div class="flex-grow-1 form-outline me-2">
                             <i class="fas fa-search trailing" aria-hidden="true"></i>
@@ -35,12 +35,21 @@ else
                                 <div class="form-notch-trailing"></div>
                             </div>
                         </div>
-                        <button id="btn-search" class="btn btn-primary me-2" onclick="search()">ПОИСК</button>
+                        <button id="btn-search" class="btn btn-primary me-2 align-items-center" onclick="search()">
+                            ПОИСК
+                            <div id="spinner-waiting-search" class="spinner-border spinner-border-sm text-white ms-1 float-end d-none" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
                     </div>
                 </div>
                 <?php if ($au->isAdmin()) { ?>
-                    <div class="col-4">
-                        <button id="btn-parse-result" class="btn btn-warning text-black w-100 disabled" onclick="parseResult()">
+                    <div class="col-2 px-0">
+                        <button id="btn-add-article" class="btn btn-info text-white w-100">
+                            ДОБАВИТЬ АРТИКУЛ</button>
+                    </div>
+                    <div class="col-2">
+                        <button id="btn-parse-result" class="btn btn-warning text-white w-100 disabled" onclick="parseResult()">
                             ОБРАБОТАТЬ РЕЗУЛЬТАТ</button>
                     </div>
                 <?php } ?>
@@ -49,77 +58,73 @@ else
             <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
 
             <div class="row">
-                <div class="col-10">
+                <div class="d-flex-column col-10">
                     <div id="div-miidle-row" class="row d-none">
-                        <table id="table-article" class="table border rounded">
+                        <table class="table border rounded">
                             <thead>
-                                <tr>
-                                    <th scope="col" class="middleInTable"><strong>АРТИКУЛ</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                    <th scope="col" class="middleInTable"></th>
+                                <tr class="bg-primary text-white">
+                                    <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                                    <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                                    <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                    <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                    <th class="middleInTable col-1"></th>
+                                    <th id="th-choose" class="middleInTable d-none"></th>
                                 </tr>
                             </thead>
                             <tbody id="tbody-article" role="button" style="cursor:auto;">
-                                <!-- <tr>
-                            <th scope="row">PF2161</th>
-                            <td>DELCO</td>
-                            <td>DONALDSON</td>
-                            <td>AC DELCO</td>
-                            <td>
-                                <a class="badge badge-primary badge-pill" style="cursor: pointer;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
-                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr> -->
-
                             </tbody>
                         </table>
                     </div>
 
                     </br>
 
-                    <div id="div-search-results" class="row d-none mb-5">
-                        <h5>РЕЗУЛЬТАТЫ ПОИСКА <!--по артикулу <strong id="p-strong-articleName"></strong>:--></h5>
+                    <div id="div-analogResults" class="d-none mb-5">
+                        <h5>СПИСОК АНАЛОГОВ</h5>
                         <h6 id="h6-error-search" class="text-danger d-none"></h6>
 
-                        <table id="table-analogs" class="table border rounded d-none">
-                            <thead>
-                                <tr>
-                                    <th scope="col" class="middleInTable"><strong>АРТИКУЛ</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                    <th scope="col" class="middleInTable"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                    <th scope="col" class="middleInTable"></th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbody-analogs" role="button">
-                                <!-- <tr>
-                            <th scope="row">PF2161</th>
-                            <td>DELCO</td>
-                            <td>DONALDSON</td>
-                            <td>AC DELCO</td>
-                            <td>
-                                <a class="badge badge-primary badge-pill" style="cursor: pointer;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
-                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z"/>
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr> -->
+                        <div id="div-main-analogs" class="row mb-2">
+                            <table id="table-main-analogs" class="table border rounded d-none">
+                                <thead>
+                                    <tr class="bg-info text-white">
+                                        <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                                        <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                        <th class="middleInTable col-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-main-analogs" role="button">
 
-                            </tbody>
-                        </table>
-
-                        <div id="div-showMore" class="d-flex justify-content-center d-none">
-                            <button class="btn btn-outline-primary mt-1 mb-5" onclick="showMoreArticles()">
-                                ПОКАЗАТЬ БОЛЬШЕ
-                            </button>
+                                </tbody>
+                            </table>
+                            </br>
                         </div>
 
+
+                        <div id="div-all-analogs" class="row">
+
+                            <table id="table-analogs" class="table border rounded d-none">
+                                <thead>
+                                    <tr class="table-active">
+                                        <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                                        <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                        <th class="middleInTable col-1"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-analogs" role="button">
+
+                                </tbody>
+                            </table>
+
+                            <div id="div-analogs-showMore" class="d-flex justify-content-center d-none">
+                                <button class="btn btn-outline-primary mt-1 mb-5" onclick="showMoreArticles()">
+                                    ПОКАЗАТЬ БОЛЬШЕ
+                                </button>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
 
@@ -127,8 +132,10 @@ else
                     <div class="row">
                         <div class="col-12">
                             <select id="select-catalogue" class="form-select" aria-label="Default select example">
-                                <option selected>ВСЕ</option>
-                                <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
+                                <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
+                                    <option selected>ВСЕ</option>
+                                    <?php }
+                                foreach ($ARRAY_CATALOGUES as $catalogue) {
                                     if ($catalogue[1]) { ?>
                                         <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
                                 <?php }
@@ -181,6 +188,56 @@ else
 
     </main>
 </body>
+
+
+<div class="modal fade" id="dialogModalAddArticle" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalAddArticle-h5-title" class="modal-title">ДОБАВЛЕНИЕ АРТИКУЛА</h5>
+                <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <h6>Добавление артикула по каталогу:</h6>
+                    <div class="d-inline-flex align-items-center w-75">
+                        <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100" placeholder="Введите название артикула">
+                        <div class="mx-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                            </svg>
+                        </div>
+                        <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
+                            <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
+                                <option selected>ВСЕ</option>
+                                <?php }
+                            foreach ($ARRAY_CATALOGUES as $catalogue) {
+                                if ($catalogue[1]) { ?>
+                                    <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
+                            <?php }
+                            } ?>
+                        </select>
+                    </div>
+                    <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
+                </div>
+                <br />
+                <div id="modalAddArticle-div-result" class="w-100 d-none">
+                    <h6>Результат добавления:</h6>
+                    <textarea id="modalAddArticle-textarea-result" class="form-control w-100" rows="10" readonly></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Закрыть</button>
+                <button id="modalAddArticle-button-apply" type="button" class="btn btn-primary align-items-center">
+                    ДОБАВИТЬ АРТИКУЛ
+                    <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-1 float-end d-none" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <div class="modal fade" id="dialogModalEdit" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
@@ -278,6 +335,11 @@ else
         }
     });
 
+    $('#btn-add-article').on("click", function() {
+        setValuesToDialogModalAddArticleFields();
+        showPopoverAddArticle();
+    });
+
 
     $('#btn-copy-parse-result').hover(
         function() {
@@ -322,7 +384,6 @@ else
 
 
     $('#modalEdit-button-apply').on("click", function(event) {
-        event.preventDefault();
         new_producer_name_dsts = $('#modalEdit-input-newProducerNameInDSTSCatalogue').val();
         new_producer_name = $('#modalEdit-select-newProducerName').val();
         ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name);
@@ -331,6 +392,18 @@ else
 
     $('#dialogModalEdit').on('hidden.bs.modal', function(e) {
         article_for_edit = null;
+    })
+
+    $('#modalAddArticle-button-apply').on("click", function(event) {
+        let article_name = $('#modalAddArticle-input-articleName').val();
+        let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
+        ajaxAddArticle(article_name, catalogue_name);
+        // $('#dialogModalAddArticle').modal('hide');
+    });
+
+    $('#dialogModalAddArticle').on('hidden.bs.modal', function(e) {
+        $('#modalAddArticle-textarea-result').text("");
+        $('#modalAddArticle-div-result').addClass("d-none");
     })
 
 
@@ -367,6 +440,8 @@ else
         formData.append('article_name', article_name);
         formData.append('search_type', search_type);
 
+        $('#spinner-waiting-search').removeClass("d-none");
+
         $.ajax({
             type: "POST",
             url: 'search_action.php#content',
@@ -378,6 +453,8 @@ else
             success: function(response) {
                 // console.log(response);
                 response = JSON.parse(response);
+
+                all_analogs = [];
 
                 // Обработка и вывод ошибок поиска
                 if (response.error) {
@@ -401,24 +478,42 @@ else
                 } else {
                     $('#h6-error-search').addClass("d-none");
 
-                    let flag = false;
                     // Вывод на страницу результатов поиска
+                    let count_0 = 0;
+                    let count_1 = 0;
+                    let count_2 = 0;
                     response.forEach((article, index) => {
-                        if (index >= COUNT_LOADING_ELEMENTS) {
-                            flag = true;
-                            return true;
-                        }
-                        let tr = createArticleElement(article);
-                        if (index == 0)
+
+                        if (article.status == 0) {
+                            count_0 += 1;
+                            let tr = createArticleElement(article);
                             $('#tbody-article').append(tr);
-                        else
-                            $('#tbody-analogs').append(tr);
+                        } else if (article.status == 1) {
+                            count_1 += 1;
+                            let tr = createArticleElement(article);
+                            $('#tbody-main-analogs').append(tr);
+                        } else {
+                            all_analogs.push(article);
+                            count_2 += 1;
+                            if (count_2 < COUNT_LOADING_ELEMENTS) {
+                                let tr = createArticleElement(article);
+                                $('#tbody-analogs').append(tr);
+                            }
+                        }
+
                     });
 
-                    if (flag)
-                        $('#div-showMore').removeClass("d-none");
+                    if (count_1 < 1) {
+                        $('#div-main-analogs').addClass("d-none");
+                    } else {
+                        $('#div-main-analogs').removeClass("d-none");
+                    }
 
-                    analogs = response;
+
+                    if (count_2 >= COUNT_LOADING_ELEMENTS)
+                        $('#div-analogs-showMore').removeClass("d-none");
+
+                    analogs = all_analogs;
 
                     $('#btn-parse-result').removeClass("disabled");
                     $('#div-miidle-row').removeClass("d-none");
@@ -426,7 +521,9 @@ else
                     showDivsWhenSearchSuccess();
                 }
 
-                $('#div-search-results').removeClass("d-none");
+                $('#div-analogResults').removeClass("d-none");
+
+                $('#spinner-waiting-search').addClass("d-none");
             },
             complete: function() {}
         });
@@ -441,7 +538,7 @@ else
             let tr = createArticleElement(analogs[i]);
             $('#tbody-analogs').append(tr);
         }
-        $('#div-showMore').addClass("d-none");
+        $('#div-analogs-showMore').addClass("d-none");
     }
 
 
@@ -482,6 +579,10 @@ else
         $('#dialogModalEdit').modal('show');
     }
 
+    function showPopoverAddArticle() {
+        $('#dialogModalAddArticle').modal('show');
+    }
+
 
     function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name) {
         var formData = new FormData();
@@ -504,6 +605,32 @@ else
                 if (response.setProducerDSTSName || response.setSimmilarProducer) {
                     searchAnalogs($('#input-article').val());
                 }
+            },
+            complete: function() {}
+        });
+    }
+
+    function ajaxAddArticle(article_name, catalogue_name) {
+        var formData = new FormData();
+
+        formData.append('article_name', article_name);
+        formData.append('catalogue_name', catalogue_name);
+
+        $('#modalAddArticle-spinner-waiting').removeClass("d-none");
+
+        $.ajax({
+            type: "POST",
+            url: 'addArticle_action.php#content',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: 'html',
+            success: function(response) {
+                // response = JSON.parse(response);
+                $('#modalAddArticle-spinner-waiting').addClass("d-none");
+                $('#modalAddArticle-textarea-result').text(response);
+                $('#modalAddArticle-div-result').removeClass("d-none");
             },
             complete: function() {}
         });
@@ -597,7 +724,7 @@ else
             button.classList.add("badge", "badge-primary", "badge-pill");
             button.addEventListener("click", function() {
                 article_for_edit = article;
-                setValuesToDialogModalFields(article);
+                setValuesToDialogModalEditFields(article);
                 showPopoverEdit();
             });
             button.style.border = "unset";
@@ -620,7 +747,10 @@ else
             tr.appendChild(td_edit);
         }
 
+
         if (needToChoose) {
+            // $('#th-choose').removeClass("d-none");
+
             let td_choose = document.createElement("td");
             td_choose.classList.add("middleInTable");
 
@@ -637,6 +767,10 @@ else
             td_choose.appendChild(button);
 
             tr.appendChild(td_choose);
+
+            $('#th-choose').removeClass("d-none");
+        } else {
+            $('#th-choose').addClass("d-none");
         }
 
         return tr;
@@ -644,9 +778,13 @@ else
 
 
     function goToArticleDetails(article_id) {
+        updateSessionParams();
+        document.location.href = 'article_details.php?article_id=' + article_id;
+    }
+
+    function updateSessionParams() {
         sessionStorage.setItem('search_request', $('#input-article').val());
         sessionStorage.setItem('search_type', last_search_type);
-        document.location.href = 'article_details.php?article_id=' + article_id;
     }
 
 
@@ -703,10 +841,14 @@ else
     }
 
 
-    function setValuesToDialogModalFields(article) {
+    function setValuesToDialogModalEditFields(article) {
         $('#modalEdit-h5-title').text($('#modalEdit-h5-title').text() + article.article_name);
         $('#modalEdit-input-realProducerNameInDSTSCatalogue').val(getProducerNameDSTS(article));
         $('#modalEdit-input-realProducerName').val(article.producer_name);
+    }
+
+    function setValuesToDialogModalAddArticleFields(article) {
+        $('#modalAddArticle-input-articleName').val($('#input-article').val());
     }
 
 
@@ -759,9 +901,8 @@ else
     }
 
     function cleanSearchResult() {
-        $('#div-search-results').addClass("d-none");
-        $('#tbody-analogs').empty();
-        $('#tbody-article').empty();
+        $('#div-analogResults').addClass("d-none");
+        cleanTables();
         $('#h6-error-search').addClass("d-none");
 
         $('#div-miidle-row').addClass("d-none");
@@ -773,14 +914,30 @@ else
         $('#svg-copy').removeClass('d-none');
         $('#svg-copied').addClass('d-none');
 
-        $('#table-analogs').addClass("d-none");
+        hideAnalogTables();
 
-        $('#div-showMore').addClass("d-none");
+        $('#div-analogs-showMore').addClass("d-none");
     }
 
     function showDivsWhenSearchSuccess() {
         $('#div-select-producers').removeClass("d-none");
         $('#table-analogs').removeClass("d-none");
-        $('#div-showMore').removeClass("d-none");
+        $('#table-main-analogs').removeClass("d-none");
+        $('#div-analogs-showMore').removeClass("d-none");
+    }
+
+    function showChooseArticle() {
+
+    }
+
+    function cleanTables() {
+        $('#tbody-article').empty();
+        $('#tbody-main-analogs').empty();
+        $('#tbody-analogs').empty();
+    }
+
+    function hideAnalogTables() {
+        $('#table-analogs').addClass("d-none");
+        $('#table-main-analogs').addClass("d-none");
     }
 </script>

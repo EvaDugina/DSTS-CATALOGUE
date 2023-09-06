@@ -35,6 +35,8 @@ if (count($found_articles) == 0) {
         $Article = new Article($article['article_id']);
 
         $article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+        $article_array[0]["status"] = 0;
+
         $arrays_articles = array_merge($arrays_articles, $article_array);
     }
     $return_values = array_merge($return_value, $arrays_articles);
@@ -44,12 +46,6 @@ if (count($found_articles) == 0) {
 
 $found_article = $found_articles[0];
 $Article = new Article($found_article['article_id']);
-
-$article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
-$arrays_articles = array_merge($arrays_articles, $article_array);
-if (count($article_array) > 0)
-    $return_values = array_merge($return_values, $article_array);
-
 
 
 // ПОИСК АНАЛОГОВ В БД:
@@ -63,13 +59,27 @@ $result = pg_query($dbconnect, $query);
 
 while ($row = pg_fetch_assoc($result)) {
     $analogArticle = new Article($row['article_id']);
+    $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo());
+    if (in_array($analogArticle->getProducer()->getMainProducerName(), $ARRAY_NAME_CATALOGUES)) {
+        $article_array[0]["status"] = 1;
+        if (count($article_array) > 0)
+            $return_values = array_merge($article_array, $return_values);
+    }
     if ($analogArticle->id != $Article->id) {
-        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo());
-        $arrays_articles = array_merge($arrays_articles, $article_array);
+        $article_array[0]["status"] = 2;
         if (count($article_array) > 0)
             $return_values = array_merge($return_values, $article_array);
+
+        // $arrays_articles = array_merge($article_array, $arrays_articles);
+
     }
 }
+
+
+$main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+$main_article_array[0]["status"] = 0;
+if (count($main_article_array) > 0)
+    $return_values = array_merge($main_article_array, $return_values);
 
 
 echo json_encode($return_values);

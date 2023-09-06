@@ -72,6 +72,40 @@ class Producer
         $query = queryUpdateProducerNameDSTS($this->id, $new_producer_name_dsts);
         pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
     }
+
+    function getProducerNameByDSTSCatalogue()
+    {
+        global $dbconnect;
+        $query = queryGetProducerNameByDSTSCatalogue($this->id);
+        $result = pg_query($dbconnect, $query);
+        $row = pg_fetch_assoc($result);
+        if ($row)
+            return $row['producer_name'];
+        else {
+            return false;
+        }
+    }
+
+    function getMainProducerName()
+    {
+        global $dbconnect;
+        $query = querySelectProducerComparison($this->id);
+        $result = pg_query($dbconnect, $query);
+        if (pg_num_rows($result) < 1) {
+            $main_producer_id = $this->id;
+        } else {
+            $main_producer_id = pg_fetch_assoc($result)['main_producer_id'];
+        }
+
+        $query = querySelectProducerById($main_producer_id);
+        $result = pg_query($dbconnect, $query);
+        $producer = pg_fetch_assoc($result);
+        if ($producer)
+            return $producer['producer_name'];
+        else {
+            return false;
+        }
+    }
 }
 
 
