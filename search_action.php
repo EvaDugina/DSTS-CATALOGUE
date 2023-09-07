@@ -18,11 +18,29 @@ if (isset($_POST['article_name']) && isset($_POST['search_type'])) {
 } else
     exit;
 
+$producer_id = null;
+if (isset($_POST['producer_name'])) {
+    $producer_name = $_POST['producer_name'];
+    $producer_name_splitted = explode("+", $producer_name);
+    if (count($producer_name_splitted) > 1) {
+        $producer_name = "";
+        foreach ($producer_name_splitted as $key => $name_part) {
+            if ($key != 0)
+                $producer_name .= " ";
+            $producer_name .= $name_part;
+        }
+    }
+    $producer_id = getProducerIdByName($producer_name);
+}
+
 
 $return_values = array();
 $arrays_articles = array();
 
-$found_articles = getArticle($article_name, $search_type);
+// if ($producer_name == "")
+//     $found_articles = getArticle($article_name, $search_type);
+// else
+$found_articles = getArticleWithProducerId($article_name, $search_type, $producer_id);
 
 if (count($found_articles) == 0) {
     $return_value = array(
@@ -55,7 +73,21 @@ $Article = new Article($found_article['article_id']);
 // ПОИСК АНАЛОГОВ В БД:
 $query = queryGetGroupComparison($Article->id);
 $result = pg_query($dbconnect, $query);
-$group_id = pg_fetch_assoc($result)['group_id'];
+$group = pg_fetch_assoc($result);
+if ($group) {
+    $group_id = $group['group_id'];
+} else {
+    $return_value = array(
+        "error" => "group_id"
+    );
+    $return_values = array_merge($return_values, $return_value);
+    $main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+    $main_article_array[0]["status"] = 0;
+    if (count($main_article_array) > 0)
+        $return_values = array_merge($return_values, $main_article_array);
+    echo json_encode($return_values);
+    exit;
+}
 
 $query = queryGetAnalogArticlesId($group_id);
 $result = pg_query($dbconnect, $query);

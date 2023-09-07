@@ -56,8 +56,8 @@ else
                     </div>
                 <?php } ?>
             </div>
-            <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>В строке поиска присутсвуют недопустимые символы!</small></p>
-            <p class="text-muted"><small>ПРИМЕР ВВОДА: DONALDSON P550777 | P550777</small></p>
+            <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>Некорректный поисковой запрос. См. пример!</small></p>
+            <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 или DONALDSON P550777 или MANN W94035</small></p>
 
             <div class="row">
                 <div class="d-flex-column col-10">
@@ -301,6 +301,7 @@ else
     var SEARCH_REQUEST = "";
     var SEARCH_REQUEST_PRODUCER_NAME = "";
     var SEARCH_REQUEST_ARTICLE_NAME = "";
+    var offeringProducerNames = [];
 
     var article_for_edit = null;
     var search_type = "soft";
@@ -336,32 +337,109 @@ else
 
     $('#input-article').on("keydown", function(e) {
         if (e.key == "Enter" || e.keyCode == 13) {
-            search();
+            if (!$('#div-autocomplete').hasClass("d-none")) {
+                $('#div-autocomplete').children().each((index, button) => {
+                    if (button.classList.contains("btn-autocomplete-hover")) {
+                        chooseArticleProducer(button.innerText);
+                        return true;
+                    }
+                });
+            } else
+                search();
+        } else if (e.ctrlKey) {
+            if (e.key == "Backspace")
+                SEARCH_REQUEST_PRODUCER_NAME = "";
+            return;
         } else {
             if (checkPressCharInSearchField(e.key) == false) {
-                e.preventDefault();
+                if (checkPressKeyUpOrDown(e.key) == false || offeringProducerNames.length < 1) {
+                    e.preventDefault();
+                } else {
+                    if (e.key == "ArrowUp")
+                        navigateByArrows(1);
+                    else
+                        navigateByArrows(-1);
+                }
             } else {
                 flagValidation = true;
+                e.preventDefault();
                 // SEARCH_REQUEST += e.key;
-                $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
+                if (e.key == "Backspace") {
+                    $('#input-article').val($('#input-article').val().slice(0, -1));
+                    if ($('#input-article').val().split(" ").length < 2)
+                        SEARCH_REQUEST_PRODUCER_NAME = "";
+                } else
+                    $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
+
                 SEARCH_REQUEST = $('#input-article').val();
                 // let search_request_splitted = SEARCH_REQUEST.split(" ");
-                if (!hasNumber(SEARCH_REQUEST)) {
-                    let offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
+                if (!hasNumber(SEARCH_REQUEST) && SEARCH_REQUEST_PRODUCER_NAME == "") {
+                    offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
                     refreshAutocomplete(offeringProducerNames);
+                } else {
+                    var div = document.getElementById('div-autocomplete');
+                    div.classList.add("d-none");
+                    div.innerHTML = '';
                 }
+                $('#input-article').focus();
             }
         }
     });
+
+    function navigateByArrows(step) {
+        let now_index_selected = -1;
+        $('#div-autocomplete').children().each((index, button) => {
+            if (button.classList.contains("btn-autocomplete-hover")) {
+                now_index_selected = index;
+                button.classList.remove("btn-autocomplete-hover");
+                button.classList.add("btn-autocomplete-unhover");
+                return true;
+            }
+        });
+
+        let new_index_selected = now_index_selected - step;
+        if ((step == 1 && now_index_selected > 0) || (step == -1 && now_index_selected < $('#div-autocomplete').children().length - 1)) {
+            // $('#div-autocomplete').children()[now_index_selected].classList.remove("bg-primary", "text-white");
+            // $('#div-autocomplete').children()[now_index_selected].classList.add("bg-white", "text-primary");
+            // $('#div-autocomplete').children()[new_index_selected].classList.remove("bg-white", "text-primary");
+            // $('#div-autocomplete').children()[new_index_selected].classList.add("bg-primary", "text-white");
+            $('#div-autocomplete').children()[new_index_selected].classList.remove("btn-autocomplete-unhover");
+            $('#div-autocomplete').children()[new_index_selected].classList.add("btn-autocomplete-hover");
+        }
+    }
+
+
 
     function refreshAutocomplete(offeringProducerNames) {
         var div = document.getElementById('div-autocomplete');
         div.classList.add("d-none");
         div.innerHTML = '';
 
-        offeringProducerNames.forEach((producer_name) => {
+        offeringProducerNames.forEach((producer_name, index) => {
             let button = document.createElement("button");
-            button.classList.add("list-group-item", "list-group-item-action", "text-primary", "bg-opacity-75");
+            button.id = "btn-autocomplete-" + index;
+            button.classList.add("list-group-item", "list-group-item-action", "border", "border-primary");
+            if (index == 0)
+                button.classList.add("btn-autocomplete-hover");
+            else
+                button.classList.add("btn-autocomplete-unhover");
+
+            button.addEventListener("mouseover", function() {
+                $('#div-autocomplete').children().each((index, button) => {
+                    if (button.classList.contains("btn-autocomplete-hover")) {
+                        button.classList.remove("btn-autocomplete-hover");
+                        button.classList.add("btn-autocomplete-unhover");
+                        return true;
+                    }
+                });
+                button.classList.remove("btn-autocomplete-unhover");
+                button.classList.add("btn-autocomplete-hover");
+            });
+            // button.hover();
+            //     button.classList.add("bg-primary", "text-white");
+            // else
+            // button.classList.add("bg-white", "text-primary");
+
             button.innerText = producer_name;
             button.setAttribute("onclick", "chooseArticleProducer('" + producer_name + "')");
             div.appendChild(button);
@@ -370,9 +448,32 @@ else
         div.classList.remove("d-none");
     }
 
+    // function handler(e) {
+    //     console.log(e.which);
+    //     active.classList.remove("hover");
+    //     if (e.which == 40) {
+    //         active = active.nextElementSibling || active;
+    //     } else if (e.which == 38) {
+    //         active = active.previousElementSibling || active;
+    //     } else {
+    //         active = e.target;
+    //     }
+    //     active.classList.add("hover");
+    // }
+
     function chooseArticleProducer(producer_name) {
-        SEARCH_REQUEST = producer_name;
-        $('#input-article').val(SEARCH_REQUEST + " ");
+        let producer_name_splitted = producer_name.split(" ");
+        if (producer_name_splitted.length > 1) {
+            producer_name = "";
+            producer_name_splitted.forEach((name_part, index) => {
+                if (index != 0)
+                    producer_name += "+";
+                producer_name += name_part;
+            });
+        }
+
+        SEARCH_REQUEST_PRODUCER_NAME = producer_name;
+        $('#input-article').val(SEARCH_REQUEST_PRODUCER_NAME + " ");
         var div = document.getElementById('div-autocomplete');
         div.classList.add("d-none");
         div.innerHTML = '';
@@ -398,10 +499,19 @@ else
 
     function checkPressCharInSearchField(symbol) {
         let regex = RegExp('[0-9a-zA-Zа-яА-Я]');
+        if (symbol == "Backspace")
+            return true;
         if (!regex.test(symbol) || symbol.length > 1) {
             return false;
         }
         return true;
+    }
+
+    function checkPressKeyUpOrDown(key) {
+        if (key != "ArrowUp" && key != "ArrowDown")
+            return false;
+        else
+            return true;
     }
 
     function hasNumber(myString) {
@@ -503,12 +613,19 @@ else
     function search() {
         validateSearchField();
         cleanSearchResult();
-        if (flagValidation)
-            searchAnalogs();
+        if (flagValidation) {
+            let search_request = $('#input-article').val();
+            let search_request_array = search_request.split(" ");
+            if (search_request_array.length > 1)
+                searchAnalogs(search_request_array[1], search_request_array[0]);
+            if (search_request_array.length == 1)
+                searchAnalogs(search_request_array[0]);
+
+        }
 
     }
 
-    function searchAnalogs(article_name = "") {
+    function searchAnalogs(article_name = "", producer_name = "") {
         console.log("searchAnalogs()");
 
         if (!flagValidation)
@@ -518,7 +635,6 @@ else
 
         if (article_name == "")
             article_name = $('#input-article').val();
-
         article_name.toUpperCase();
         // $('#p-strong-articleName').text(article_name);
 
@@ -528,6 +644,9 @@ else
 
         formData.append('article_name', article_name);
         formData.append('search_type', search_type);
+        if (producer_name != "") {
+            formData.append('producer_name', producer_name);
+        }
 
         $('#spinner-waiting-search').removeClass("d-none");
 
@@ -550,6 +669,14 @@ else
                     console.log("ERROR!");
                     if (response.error == "article_id") {
                         $('#h6-error-search').text("Не удалось найти товар по запросу: " + article_name);
+                    } else if (response.error == "group_id") {
+                        $('#h6-error-search').text("Aналогие не найдены!");
+                        delete response.error;
+                        Object.entries(response).forEach((article, index) => {
+                            let tr = createArticleElement(article[1], true);
+                            $('#tbody-article').append(tr);
+                            $('#div-miidle-row').removeClass("d-none");
+                        });
                     } else if (response.error == "articles") {
                         $('#h6-error-search').html("Нашлось несколько товаров по запросу: <strong>" + article_name + "</strong><br>" +
                             "Выберите один артикул по которому хотите получить список аналогов.");
@@ -1074,8 +1201,11 @@ else
         if (fieldText == "")
             return false;
 
-        let regex = /^[a-zA-Zа-яА-Я0-9. -]+$/;
-        if (!regex.test(fieldText)) {
+        let regex = /^[a-zA-Zа-яА-Я0-9. -+]+$/;
+        let array_search_request = fieldText.split(" ");
+        if (!regex.test(fieldText) || array_search_request.length > 2 ||
+            (array_search_request.length == 1 && SEARCH_REQUEST_PRODUCER_NAME != "") ||
+            (array_search_request.length == 2 && array_search_request[1] == "")) {
             return false;
         }
         return true;

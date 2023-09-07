@@ -126,6 +126,37 @@ function getArticle($article_name, $search_type)
     return $found_articles;
 }
 
+function getArticleWithProducerId($article_name, $search_type, $producer_id = null)
+{
+    global $dbconnect;
+    global $ARRAY_SPLIT_CHARS;
+
+    $arrayChars = $ARRAY_SPLIT_CHARS;
+
+    $article_name_splitted = getSplitArticleName($article_name, $arrayChars);
+
+    $found_articles = array();
+
+    if ($article_name_splitted) {
+        $article_name = concatArrayByChar($article_name_splitted, '');
+    }
+
+    if ($producer_id != null) {
+        $query = queryGetArticleWithProducerIdSoft($article_name, $producer_id);
+    } else {
+        if ($search_type == "soft") {
+            $query = queryGetArticleSoft($article_name);
+        } else {
+            $query = queryGetArticleStrict($article_name);
+        }
+    }
+    $result = pg_query($dbconnect, $query);
+    while ($row = pg_fetch_assoc($result))
+        array_push($found_articles, $row);
+
+    return $found_articles;
+}
+
 
 
 // ФУНКЦИИ ЗАПРОСОВ К БД
@@ -138,12 +169,21 @@ function queryGetArticleSoft($article_name)
     return "SELECT articles.id AS article_id FROM articles
             WHERE article_name LIKE '%' || '$article_name' || '%';";
 }
-
 function queryGetArticleStrict($article_name)
 {
     return "SELECT articles.id AS article_id FROM articles
             WHERE article_name = '$article_name';";
 }
+
+
+function queryGetArticleWithProducerIdSoft($article_name, $producer_id)
+{
+    return "SELECT articles.id AS article_id FROM articles
+            WHERE article_name LIKE '%' || '$article_name' || '%' AND producer_id = $producer_id;";
+}
+
+
+
 
 function queryGetAnalogArticlesId($group_id)
 {

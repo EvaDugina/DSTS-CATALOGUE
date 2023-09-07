@@ -11,3 +11,19 @@
     text-align: center !important;
     vertical-align: middle !important;
 }
+
+.btn-autocomplete-hover {
+    background-color: var(--mdb-primary) !important;
+    color: var(--mdb-white) !important;
+}
+
+.btn-autocomplete:hover, .btn-autocomplete:focus {
+    background-color: var(--mdb-primary) !important;
+    color: var(--mdb-white) !important;
+}
+
+
+.btn-autocomplete-unhover {
+    background-color: var(--mdb-white) !important;
+    color: var(--mdb-primary) !important;
+}
