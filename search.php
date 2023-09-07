@@ -327,7 +327,7 @@ else
             flagValidation = true;
             $('#input-article').val(sessionStorage.getItem('search_request'));
             search_type = sessionStorage.getItem('search_type');
-            searchAnalogs(sessionStorage.getItem('search_request'));
+            search();
         }
     });
 
@@ -508,7 +508,7 @@ else
     }
 
     function checkPressKeyUpOrDown(key) {
-        if (key != "ArrowUp" && key != "ArrowDown")
+        if (key != "ArrowUp" && key != "ArrowDown" && key != "ArrowLeft" && key != "ArrowRight")
             return false;
         else
             return true;
