@@ -5,7 +5,7 @@ require_once("common.php");
 $au = new auth_ssh();
 
 checkAuLoggedIN($au);
-checkAuIsAdmin($au);
+// checkAuIsAdmin($au);
 
 show_head("СТРАНИЦА ПОИСКА АНАЛОГОВ");
 
@@ -54,16 +54,21 @@ else
                         <button id="btn-parse-result" class="btn btn-warning text-white w-100 disabled" onclick="parseResult()">
                             ОБРАБОТАТЬ РЕЗУЛЬТАТ</button>
                     </div>
+                <?php } else { ?>
+                    <button class="btn btn-primary col-2" onclick="openCatologueSites()">
+                        ОТКРЫТЬ ВСЕ КАТАЛОГИ
+                    </button>
                 <?php } ?>
             </div>
             <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>Некорректный поисковой запрос. См. пример!</small></p>
             <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 или DONALDSON P550777 или MANN W94035</small></p>
 
             <div class="row">
-                <div class="d-flex-column col-10">
-                    <div id="div-miidle-row" class="row d-none">
-                        <table class="table border rounded">
-                            <thead>
+                <div class="col-10 px-0">
+
+                    <div id="div-miidle-row" class="d-none">
+                        <table class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                            <thead class="px-0">
                                 <tr class="bg-primary text-white">
                                     <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                     <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
@@ -73,7 +78,7 @@ else
                                     <th id="th-choose" class="middleInTable d-none"></th>
                                 </tr>
                             </thead>
-                            <tbody id="tbody-article" role="button" style="cursor:auto;">
+                            <tbody id="tbody-article" role="button" class="px-0" style="cursor:auto; border: transparent;">
                             </tbody>
                         </table>
                     </div>
@@ -81,12 +86,21 @@ else
                     </br>
 
                     <div id="div-analogResults" class="d-none mb-5">
-                        <h5>СПИСОК АНАЛОГОВ</h5>
+                        <div class="d-inline-flex justify-content-between align-items-center w-100 mb-1">
+                            <div class="w-100">
+                                <h5 class="my-0"><strong>СПИСОК АНАЛОГОВ</strong></h5>
+                            </div>
+                            <?php if ($au->isAdmin()) { ?>
+                                <button class="btn btn-primary w-25" onclick="openCatologueSites()">
+                                    ОТКРЫТЬ ВСЕ КАТАЛОГИ
+                                </button>
+                            <?php } ?>
+                        </div>
                         <h6 id="h6-error-search" class="text-danger d-none"></h6>
 
-                        <div id="div-main-analogs" class="row mb-2">
-                            <table id="table-main-analogs" class="table border rounded d-none">
-                                <thead>
+                        <div id="div-main-analogs" class="mb-2">
+                            <table id="table-main-analogs" class="table border rounded d-none mx-0" style="border-spacing: 0; border-collapse: separate;">
+                                <thead class="px-0">
                                     <tr class="bg-info text-white">
                                         <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                         <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
@@ -95,7 +109,7 @@ else
                                         <th class="middleInTable col-1"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-main-analogs" role="button">
+                                <tbody id="tbody-main-analogs" role="button" class="px-0" style="border: transparent;">
 
                                 </tbody>
                             </table>
@@ -103,10 +117,9 @@ else
                         </div>
 
 
-                        <div id="div-all-analogs" class="row">
-
-                            <table id="table-analogs" class="table border rounded d-none">
-                                <thead>
+                        <div id="div-all-analogs" class="">
+                            <table id="table-analogs" class="table border rounded d-none mx-0" style="border-spacing: 0; border-collapse: separate;">
+                                <thead class="px-0">
                                     <tr class="table-active">
                                         <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                         <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
@@ -115,7 +128,7 @@ else
                                         <th class="middleInTable col-1"></th>
                                     </tr>
                                 </thead>
-                                <tbody id="tbody-analogs" role="button">
+                                <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
 
                                 </tbody>
                             </table>
@@ -130,57 +143,69 @@ else
                     </div>
                 </div>
 
-                <div id="div-select-producers" class="col-2 d-none">
-                    <div class="row">
-                        <div class="col-12">
-                            <select id="select-catalogue" class="form-select" aria-label="Default select example">
-                                <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
-                                    <option selected>ВСЕ</option>
-                                    <?php }
-                                foreach ($ARRAY_CATALOGUES as $catalogue) {
-                                    if ($catalogue[1]) { ?>
-                                        <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
-                                <?php }
-                                } ?>
-                            </select>
-                        </div>
-                        <div class="col-12 my-2">
-                            <div id="div-selected-producers" class="">
-
-                            </div>
-                            <!-- <div class="badge badge-primary badge-pill px-3 py-2 me-2 d-inline-flex align-items-center">
-                                <p class="p-0 m-0 me-2">DONALDSON</p>
-                                <button class="btn btn-link p-1" data-producer="DONALDSON" onclick="removeSelectedProducer()" style="cursor: pointer;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z" />
-                                    </svg>
-                                </button>
-                            </div> -->
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary w-100" onclick="openCatologueSites()">
-                                ОТКРЫТЬ КАТАЛОГИ
-                            </button>
-                        </div>
-                    </div>
-
+                <div class="col-2">
                     <?php if ($au->isAdmin()) { ?>
-                        <div id="div-parse-result" class="d-none mt-5">
-                            <div class="d-inline-flex w-100 align-items-center justify-content-between mb-1">
-                                <h5 class="mb-0">РЕЗУЛЬТАТ ОБРАБОТКИ:</h5>
-                                <button id="btn-copy-parse-result" class="btn btn-outline text-white bg-primary" data-toggle="tooltip" title="Копировать!" onclick="copyParseResult()">
-                                    <svg id="svg-copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
-                                        <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
-                                        <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
-                                    </svg>
-                                    <svg id="svg-copied" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg d-none" viewBox="0 0 16 16">
-                                        <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
-                                    </svg>
-                                </button>
+                        <div id="div-select-producers" class="d-none">
+                            <div class="row">
+                                <div class="col-12">
+                                    <select id="select-catalogue" class="form-select" aria-label="Default select example">
+                                        <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
+                                            <option selected>ВСЕ</option>
+                                            <?php }
+                                        foreach ($ARRAY_CATALOGUES as $catalogue) {
+                                            if ($catalogue[1]) { ?>
+                                                <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <div id="div-selected-producers" class="">
+
+                                    </div>
+                                </div>
                             </div>
-                            <div class="w-auto" style="position: relative;">
-                                <textarea id="textarea-parseResult" class="form-control" rows="30" readonly="true"></textarea>
+
+                            <div id="div-parse-result" class="d-none mt-5">
+                                <div class="d-inline-flex w-100 align-items-center justify-content-between mb-1">
+                                    <h5 class="mb-0">РЕЗУЛЬТАТ ОБРАБОТКИ:</h5>
+                                    <button id="btn-copy-parse-result" class="btn btn-outline text-white bg-primary" data-toggle="tooltip" title="Копировать!" onclick="copyParseResult()">
+                                        <svg id="svg-copy" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+                                            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+                                            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+                                        </svg>
+                                        <svg id="svg-copied" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg d-none" viewBox="0 0 16 16">
+                                            <path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="w-auto" style="position: relative;">
+                                    <textarea id="textarea-parseResult" class="form-control" rows="30" readonly="true"></textarea>
+                                </div>
                             </div>
+                        </div>
+                    <?php } else { ?>
+                        <div id="div-goto-producers" class="d-none">
+                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('DONALDSON')">
+                                <img src="src/img/icon_donaldson.ico" class="img-fluid">
+                                <!-- <strong>DONALDSON</strong> -->
+                            </button>
+                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FIL-FILTER')">
+                                <img src="src/img/icon_filfilter.png" class="img-fluid">
+                                <!-- <strong>FIL-FILTER</strong> -->
+                            </button>
+                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FLEETGUARD')">
+                                <img src="src/img/icon_fleetguard.png" class="img-fluid">
+                                <!-- <strong>FLEETGUARD</strong> -->
+                            </button>
+                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('HIFI-FILTER')">
+                                <img src="src/img/icon_hifi.png" class="img-fluid">
+                                <!-- <strong>HIFI-FILTER</strong> -->
+                            </button>
+                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('MANN')">
+                                <img src="src/img/icon_mann.jpg" class="img-fluid">
+                                <!-- <strong>MANN</strong> -->
+                            </button>
                         </div>
                     <?php } ?>
                 </div>
@@ -294,229 +319,24 @@ else
 
 
 <script type="text/javascript">
-    // var analogs = [];
     var selected_catalogues = [];
-    // var producers_names = [];
-
-    // var SEARCH_REQUEST = "";
-    // var SEARCH_REQUEST_PRODUCER_NAME = "";
-    // var SEARCH_REQUEST_ARTICLE_NAME = "";
-    // var offeringProducerNames = [];
 
     var article_for_edit = null;
-    // var search_type = "soft";
-    // var last_search_type = "soft";
-
-    // var flagValidation = false;
     var addingArticle = false;
-
-    // var COUNT_LOADING_ELEMENTS = 20;
 
     $('#input-article').focus();
 
     $(document).ready(function() {
-        // ajaxGetProducerNames();
 
         $("#select-catalogue option").each(function() {
             if (this.text != "ВСЕ")
                 addSelectedProducer(this.text)
         });
-
-        // console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
-        // if (sessionStorage.getItem('search_request') && sessionStorage.getItem('search_type')) {
-        //     flagValidation = true;
-        //     $('#input-article').val(sessionStorage.getItem('search_request'));
-        //     search_type = sessionStorage.getItem('search_type');
-        //     search();
-        // }
     });
 
     //-------------------------------------------------------------------------------------------------------------
     // ОБРАБОТЧИКИ СОБЫТИЙ
     //-------------------------------------------------------------------------------------------------------------
-
-    // $('#input-article').on("keydown", function(e) {
-    //     if (e.key == "Enter" || e.keyCode == 13) {
-    //         if (!$('#div-autocomplete').hasClass("d-none")) {
-    //             $('#div-autocomplete').children().each((index, button) => {
-    //                 if (button.classList.contains("btn-autocomplete-hover")) {
-    //                     chooseArticleProducer(button.innerText);
-    //                     return true;
-    //                 }
-    //             });
-    //         } else
-    //             search();
-    //     } else if (e.ctrlKey) {
-    //         if (e.key == "Backspace")
-    //             SEARCH_REQUEST_PRODUCER_NAME = "";
-    //         return;
-    //     } else {
-    //         if (checkPressCharInSearchField(e.key) == false) {
-    //             if (checkPressKeyUpOrDown(e.key) == false) {
-    //                 e.preventDefault();
-    //             } else {
-    //                 if (e.key == "ArrowUp")
-    //                     navigateByArrows(1);
-    //                 else if (e.key == "ArrowDown")
-    //                     navigateByArrows(-1);
-    //             }
-    //         } else {
-    //             flagValidation = true;
-    //             e.preventDefault();
-    //             // SEARCH_REQUEST += e.key;
-    //             if (e.key == "Backspace") {
-    //                 $('#input-article').val($('#input-article').val().slice(0, -1));
-    //                 if ($('#input-article').val().split(" ").length < 2)
-    //                     SEARCH_REQUEST_PRODUCER_NAME = "";
-    //             } else
-    //                 $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
-
-    //             SEARCH_REQUEST = $('#input-article').val();
-    //             // let search_request_splitted = SEARCH_REQUEST.split(" ");
-    //             if (!hasNumber(SEARCH_REQUEST) && SEARCH_REQUEST_PRODUCER_NAME == "") {
-    //                 offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
-    //                 refreshAutocomplete(offeringProducerNames);
-    //             } else {
-    //                 var div = document.getElementById('div-autocomplete');
-    //                 div.classList.add("d-none");
-    //                 div.innerHTML = '';
-    //             }
-    //             $('#input-article').focus();
-    //         }
-    //     }
-    // });
-
-    // function navigateByArrows(step) {
-    //     let now_index_selected = -1;
-    //     $('#div-autocomplete').children().each((index, button) => {
-    //         if (button.classList.contains("btn-autocomplete-hover")) {
-    //             now_index_selected = index;
-    //             button.classList.remove("btn-autocomplete-hover");
-    //             button.classList.add("btn-autocomplete-unhover");
-    //             return true;
-    //         }
-    //     });
-
-    //     let new_index_selected = now_index_selected - step;
-    //     if ((step == 1 && now_index_selected > 0) || (step == -1 && now_index_selected < $('#div-autocomplete').children().length - 1)) {
-    //         // $('#div-autocomplete').children()[now_index_selected].classList.remove("bg-primary", "text-white");
-    //         // $('#div-autocomplete').children()[now_index_selected].classList.add("bg-white", "text-primary");
-    //         // $('#div-autocomplete').children()[new_index_selected].classList.remove("bg-white", "text-primary");
-    //         // $('#div-autocomplete').children()[new_index_selected].classList.add("bg-primary", "text-white");
-    //         $('#div-autocomplete').children()[new_index_selected].classList.remove("btn-autocomplete-unhover");
-    //         $('#div-autocomplete').children()[new_index_selected].classList.add("btn-autocomplete-hover");
-    //     }
-    // }
-
-
-
-    // function refreshAutocomplete(offeringProducerNames) {
-    //     var div = document.getElementById('div-autocomplete');
-    //     div.classList.add("d-none");
-    //     div.innerHTML = '';
-
-    //     offeringProducerNames.forEach((producer_name, index) => {
-    //         let button = document.createElement("button");
-    //         button.id = "btn-autocomplete-" + index;
-    //         button.classList.add("list-group-item", "list-group-item-action", "border", "border-primary");
-    //         if (index == 0)
-    //             button.classList.add("btn-autocomplete-hover");
-    //         else
-    //             button.classList.add("btn-autocomplete-unhover");
-
-    //         button.addEventListener("mouseover", function() {
-    //             $('#div-autocomplete').children().each((index, button) => {
-    //                 if (button.classList.contains("btn-autocomplete-hover")) {
-    //                     button.classList.remove("btn-autocomplete-hover");
-    //                     button.classList.add("btn-autocomplete-unhover");
-    //                     return true;
-    //                 }
-    //             });
-    //             button.classList.remove("btn-autocomplete-unhover");
-    //             button.classList.add("btn-autocomplete-hover");
-    //         });
-    //         // button.hover();
-    //         //     button.classList.add("bg-primary", "text-white");
-    //         // else
-    //         // button.classList.add("bg-white", "text-primary");
-
-    //         button.innerText = producer_name;
-    //         button.setAttribute("onclick", "chooseArticleProducer('" + producer_name + "')");
-    //         div.appendChild(button);
-    //     });
-
-    //     div.classList.remove("d-none");
-    // }
-
-    // // function handler(e) {
-    // //     console.log(e.which);
-    // //     active.classList.remove("hover");
-    // //     if (e.which == 40) {
-    // //         active = active.nextElementSibling || active;
-    // //     } else if (e.which == 38) {
-    // //         active = active.previousElementSibling || active;
-    // //     } else {
-    // //         active = e.target;
-    // //     }
-    // //     active.classList.add("hover");
-    // // }
-
-    // function chooseArticleProducer(producer_name) {
-    //     let producer_name_splitted = producer_name.split(" ");
-    //     if (producer_name_splitted.length > 1) {
-    //         producer_name = "";
-    //         producer_name_splitted.forEach((name_part, index) => {
-    //             if (index != 0)
-    //                 producer_name += "+";
-    //             producer_name += name_part;
-    //         });
-    //     }
-
-    //     SEARCH_REQUEST_PRODUCER_NAME = producer_name;
-    //     $('#input-article').val(SEARCH_REQUEST_PRODUCER_NAME + " ");
-    //     var div = document.getElementById('div-autocomplete');
-    //     div.classList.add("d-none");
-    //     div.innerHTML = '';
-    //     $('#input-article').focus();
-    // }
-
-    // function findProducerByFragment(fragment_str) {
-    //     let LIMIT_COUNT_OFFERING_PRODUCERS = 5;
-    //     simmilar_producer_names = [];
-    //     if (fragment_str != "") {
-    //         let count = 0;
-    //         producers_names.forEach((producer_name) => {
-    //             if (count >= LIMIT_COUNT_OFFERING_PRODUCERS)
-    //                 return true;
-    //             if (producer_name.includes(fragment_str)) {
-    //                 simmilar_producer_names.push(producer_name);
-    //                 count += 1;
-    //             }
-    //         });
-    //     }
-    //     return simmilar_producer_names;
-    // }
-
-    // function checkPressCharInSearchField(symbol) {
-    //     let regex = RegExp('[0-9a-zA-Zа-яА-Я]');
-    //     if (symbol == "Backspace")
-    //         return true;
-    //     if (!regex.test(symbol) || symbol.length > 1) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // function checkPressKeyUpOrDown(key) {
-    //     if (key != "ArrowUp" && key != "ArrowDown" && key != "ArrowLeft" && key != "ArrowRight")
-    //         return false;
-    //     else
-    //         return true;
-    // }
-
-    // function hasNumber(myString) {
-    //     return /\d/.test(myString);
-    // }
 
 
     $('#btn-add-article').on("click", function() {
@@ -610,156 +430,15 @@ else
     // ОСНОВНЫЕ ФУНКЦИИ
     //-------------------------------------------------------------------------------------------------------------
 
-    // function search() {
-    //     validateSearchField();
-    //     cleanSearchResult();
-    //     if (flagValidation) {
-    //         let search_request = $('#input-article').val();
-    //         let search_request_array = search_request.split(" ");
-    //         if (search_request_array.length > 1)
-    //             searchAnalogs(search_request_array[1], search_request_array[0]);
-    //         if (search_request_array.length == 1)
-    //             searchAnalogs(search_request_array[0]);
-    //     }
-    // }
-
-    // function searchAnalogs(article_name = "", producer_name = "") {
-    //     console.log("searchAnalogs()");
-
-    //     if (!flagValidation)
-    //         return;
-
-    //     var formData = new FormData();
-
-    //     if (article_name == "")
-    //         article_name = $('#input-article').val();
-    //     article_name.toUpperCase();
-    //     // $('#p-strong-articleName').text(article_name);
-
-    //     if (article_name == "") {
-    //         return;
-    //     }
-
-    //     formData.append('article_name', article_name);
-    //     formData.append('search_type', search_type);
-    //     if (producer_name != "") {
-    //         formData.append('producer_name', producer_name);
-    //     }
-
-    //     $('#spinner-waiting-search').removeClass("d-none");
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: 'search_action.php#content',
-    //         cache: false,
-    //         contentType: false,
-    //         processData: false,
-    //         data: formData,
-    //         dataType: 'html',
-    //         success: function(response) {
-    //             // console.log(response);
-    //             response = JSON.parse(response);
-
-    //             all_analogs = [];
-
-    //             // Обработка и вывод ошибок поиска
-    //             if (response.error) {
-    //                 console.log("ERROR!");
-    //                 if (response.error == "article_id") {
-    //                     $('#h6-error-search').text("Не удалось найти товар по запросу: " + article_name);
-    //                 } else if (response.error == "group_id") {
-    //                     $('#h6-error-search').text("Aналогие не найдены!");
-    //                     delete response.error;
-    //                     Object.entries(response).forEach((article, index) => {
-    //                         let tr = createArticleElement(article[1], true);
-    //                         $('#tbody-article').append(tr);
-    //                         $('#div-miidle-row').removeClass("d-none");
-    //                     });
-    //                 } else if (response.error == "articles") {
-    //                     $('#h6-error-search').html("Нашлось несколько товаров по запросу: <strong>" + article_name + "</strong><br>" +
-    //                         "Выберите один артикул по которому хотите получить список аналогов.");
-    //                     delete response.error;
-    //                     Object.entries(response).forEach((article, index) => {
-    //                         let tr = createArticleElement(article[1], true);
-    //                         $('#tbody-article').append(tr);
-    //                         $('#div-miidle-row').removeClass("d-none");
-    //                     });
-    //                 } else {
-    //                     $('#h6-error-search').text("Неизвестная ошибка!");
-    //                 }
-    //                 $('#h6-error-search').removeClass("d-none");
-
-    //             } else {
-    //                 $('#h6-error-search').addClass("d-none");
-
-    //                 // Вывод на страницу результатов поиска
-    //                 let count_0 = 0;
-    //                 let count_1 = 0;
-    //                 let count_2 = 0;
-    //                 response.forEach((article, index) => {
-
-    //                     if (article.status == 0) {
-    //                         count_0 += 1;
-    //                         let tr = createArticleElement(article);
-    //                         $('#tbody-article').append(tr);
-    //                     } else if (article.status == 1) {
-    //                         count_1 += 1;
-    //                         let tr = createArticleElement(article);
-    //                         $('#tbody-main-analogs').append(tr);
-    //                     } else {
-    //                         all_analogs.push(article);
-    //                         count_2 += 1;
-    //                         if (count_2 < COUNT_LOADING_ELEMENTS) {
-    //                             let tr = createArticleElement(article);
-    //                             $('#tbody-analogs').append(tr);
-    //                         }
-    //                     }
-
-    //                 });
-
-    //                 if (count_1 < 1) {
-    //                     $('#div-main-analogs').addClass("d-none");
-    //                 } else {
-    //                     $('#div-main-analogs').removeClass("d-none");
-    //                 }
-
-
-    //                 if (count_2 >= COUNT_LOADING_ELEMENTS)
-    //                     $('#div-analogs-showMore').removeClass("d-none");
-
-    //                 analogs = all_analogs;
-
-    //                 $('#btn-parse-result').removeClass("disabled");
-    //                 $('#div-miidle-row').removeClass("d-none");
-
-    //                 showDivsWhenSearchSuccess();
-    //             }
-
-    //             $('#div-analogResults').removeClass("d-none");
-
-    //             $('#spinner-waiting-search').addClass("d-none");
-    //         },
-    //         complete: function() {}
-    //     });
-
-    //     last_search_type = search_type;
-    //     setSearchType("soft");
-    // }
-
-
-    // function showMoreArticles() {
-    //     for (let i = COUNT_LOADING_ELEMENTS; i < analogs.length; i++) {
-    //         let tr = createArticleElement(analogs[i]);
-    //         $('#tbody-analogs').append(tr);
-    //     }
-    //     $('#div-analogs-showMore').addClass("d-none");
-    // }
-
 
     function parseResult() {
         $('#div-parse-result').removeClass("d-none");
 
         var formData = new FormData();
+
+        formData.append('article', JSON.stringify(analogs[0]));
+        analogs.shift();
+
         formData.append('analogs', JSON.stringify(analogs));
         formData.append('selected_catalogues', JSON.stringify(selected_catalogues));
 
@@ -780,13 +459,25 @@ else
     }
 
 
-    function openCatologueSites() {
-        window.open("https://shop.donaldson.com/store/ru-ru/search?Ntt=" + $('#input-article').val().toUpperCase(), '_blank');
-        window.open("https://catalog.filfilter.com.tr/ru/search/" + $('#input-article').val().toUpperCase(), '_blank');
-        window.open("https://www.fleetguard.com/s/searchResults?language=en_US&propertyVal=" + $('#input-article').val().toUpperCase(), '_blank');
-        window.open("https://catalog.hifi-filter.com/en-GB/search/global/cross-reference?p=1&q=" + $('#input-article').val().toUpperCase(), '_blank');
-        window.open("https://catalog.mann-filter.com/EU/rus/", '_blank');
-
+    function openCatologueSites(site_name = "") {
+        let input = $('#input-article').val();
+        if (site_name == "") {
+            window.open("https://shop.donaldson.com/store/ru-ru/search?Ntt=" + input, '_blank');
+            window.open("https://catalog.filfilter.com.tr/ru/search/" + input, '_blank');
+            window.open("https://www.fleetguard.com/s/searchResults?language=en_US&propertyVal=" + input, '_blank');
+            window.open("https://catalog.hifi-filter.com/en-GB/search/global/cross-reference?p=1&q=" + input, '_blank');
+            window.open("https://catalog.mann-filter.com/EU/rus/", '_blank');
+        } else if (site_name == "DONALDSON") {
+            window.open("https://shop.donaldson.com/store/ru-ru/search?Ntt=" + input, '_blank');
+        } else if (site_name == "FIL-FILTER") {
+            window.open("https://catalog.filfilter.com.tr/ru/search/" + input, '_blank');
+        } else if (site_name == "FLEETGUARD") {
+            window.open("https://www.fleetguard.com/s/searchResults?language=en_US&propertyVal=" + input, '_blank');
+        } else if (site_name == "HIFI-FILTER") {
+            window.open("https://catalog.hifi-filter.com/en-GB/search/global/cross-reference?p=1&q=" + input, '_blank');
+        } else if (site_name == "MANN") {
+            window.open("https://catalog.mann-filter.com/EU/rus/", '_blank');
+        }
     }
 
     function showPopoverEdit(student_id) {
@@ -856,27 +547,6 @@ else
             complete: function() {}
         });
     }
-
-    // function ajaxGetProducerNames() {
-    //     var formData = new FormData();
-
-    //     formData.append('getProducersNameDsts', true);
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: 'search_action.php#content',
-    //         cache: false,
-    //         contentType: false,
-    //         processData: false,
-    //         data: formData,
-    //         dataType: 'html',
-    //         success: function(response) {
-    //             producers_names = JSON.parse(response);
-    //             // console.log(producers_names);
-    //         },
-    //         complete: function() {}
-    //     });
-    // }
 
     function ajaxStopAddArticle() {
 
@@ -992,113 +662,6 @@ else
 
     }
 
-
-    // function createArticleElement(article, needToChoose = false) {
-    //     // console.log(article);
-
-    //     let tr = document.createElement("tr");
-
-    //     let td_artcle_name = document.createElement("td");
-    //     td_artcle_name.classList.add("middleInTable");
-    //     let button = document.createElement("button");
-    //     if (article.hasInfo) {
-    //         button.style.color = "green";
-    //     }
-    //     button.setAttribute('onclick', 'goToArticleDetails(' + article.article_id + ")");
-    //     button.classList.add("btn", "btn-link");
-    //     button.textContent = article.article_name;
-    //     button.style.fontSize = "inherit";
-    //     td_artcle_name.appendChild(button);
-
-    //     let td_producer_dsts_name = document.createElement("td");
-    //     td_producer_dsts_name.classList.add("middleInTable");
-    //     if (article.producer_name_dsts == "") {
-    //         td_producer_dsts_name.innerText = article.producer_name;
-    //         td_producer_dsts_name.classList.add("text-danger");
-    //     } else
-    //         td_producer_dsts_name.innerText = article.producer_name_dsts;
-
-
-    //     let td_catalogue_name = document.createElement("td");
-    //     td_catalogue_name.classList.add("middleInTable");
-    //     td_catalogue_name.innerText = article.catalogue_name;
-
-    //     let td_producer_name = document.createElement("td");
-    //     td_producer_name.classList.add("middleInTable");
-    //     td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
-    //         " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
-
-    //     tr.appendChild(td_artcle_name);
-    //     tr.appendChild(td_producer_dsts_name);
-    //     tr.appendChild(td_catalogue_name);
-    //     tr.appendChild(td_producer_name);
-
-    //     if (is_admin) {
-    //         let td_edit = document.createElement("td");
-    //         td_edit.classList.add("middleInTable");
-
-    //         let button = document.createElement("button");
-    //         button.classList.add("badge", "badge-primary", "badge-pill");
-    //         button.addEventListener("click", function() {
-    //             article_for_edit = article;
-    //             setValuesToDialogModalEditFields(article);
-    //             showPopoverEdit();
-    //         });
-    //         button.style.border = "unset";
-
-    //         let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    //         svg.classList.add("bi", "bi-pen-fill");
-    //         svg.setAttribute('width', '16');
-    //         svg.setAttribute('height', '16');
-    //         svg.setAttribute('viewBox', '0 0 16 16');
-    //         svg.setAttribute('fill', 'currentColor');
-    //         svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-
-    //         let path1 = document.createElementNS("http://www.w3.org/2000/svg", 'path');
-    //         path1.setAttribute('d', 'm13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z');
-
-    //         svg.appendChild(path1);
-    //         button.appendChild(svg);
-    //         td_edit.appendChild(button);
-
-    //         tr.appendChild(td_edit);
-    //     }
-
-
-    //     if (needToChoose) {
-    //         // $('#th-choose').removeClass("d-none");
-
-    //         let td_choose = document.createElement("td");
-    //         td_choose.classList.add("middleInTable");
-
-    //         let button = document.createElement("button");
-    //         button.classList.add("btn", "btn-outline-primary");
-    //         button.innerText = "ВЫБРАТЬ"
-    //         button.addEventListener("click", function() {
-    //             cleanSearchResult();
-    //             $('#input-article').val(article.article_name);
-    //             setSearchType("strict");
-    //             searchAnalogs(article.article_name);
-    //         });
-
-    //         td_choose.appendChild(button);
-
-    //         tr.appendChild(td_choose);
-
-    //         $('#th-choose').removeClass("d-none");
-    //     } else {
-    //         $('#th-choose').addClass("d-none");
-    //     }
-
-    //     return tr;
-    // }
-
-
-    // function goToArticleDetails(article_id) {
-    //     updateSessionParams();
-    //     document.location.href = 'article_details.php?article_id=' + article_id;
-    // }
-
     function updateSessionParams() {
         sessionStorage.setItem('search_request', $('#input-article').val());
         sessionStorage.setItem('search_type', last_search_type);
@@ -1175,81 +738,6 @@ else
         else
             return article.producer_name_dsts;
     }
-
-    // function setSearchType(new_search_type) {
-    //     search_type = new_search_type;
-    // }
-
-
-    // function validateSearchField() {
-    //     if (checkSearchField() == false) {
-    //         flagValidation = false;
-    //         // $('#btn-search').addClass("disabled");
-    //         $('#p-errorSearchField').removeClass("d-none");
-    //         $('#input-article').addClass("is-invalid");
-    //     } else {
-    //         flagValidation = true;
-    //         // $('#btn-search').removeClass("disabled");
-    //         $('#p-errorSearchField').addClass("d-none");
-    //         $('#input-article').removeClass("is-invalid");
-    //     }
-    // }
-
-    // function checkSearchField() {
-    //     let fieldText = $('#input-article').val();
-    //     if (fieldText == "")
-    //         return false;
-
-    //     let regex = /^[a-zA-Zа-яА-Я0-9. -+]+$/;
-    //     let array_search_request = fieldText.split(" ");
-    //     if (!regex.test(fieldText) || array_search_request.length > 2 ||
-    //         (array_search_request.length == 1 && SEARCH_REQUEST_PRODUCER_NAME != "") ||
-    //         (array_search_request.length == 2 && array_search_request[1] == "")) {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-
-    // function cleanSearchResult() {
-    //     $('#div-analogResults').addClass("d-none");
-    //     cleanTables();
-    //     $('#h6-error-search').addClass("d-none");
-
-    //     $('#div-miidle-row').addClass("d-none");
-    //     $('#div-select-producers').addClass("d-none");
-
-    //     $('#btn-parse-result').addClass("disabled");
-    //     $('#div-parse-result').addClass("d-none");
-    //     $('#textarea-parseResult').empty();
-    //     $('#svg-copy').removeClass('d-none');
-    //     $('#svg-copied').addClass('d-none');
-
-    //     hideAnalogTables();
-
-    //     $('#div-analogs-showMore').addClass("d-none");
-    // }
-
-    // function showDivsWhenSearchSuccess() {
-    //     $('#div-select-producers').removeClass("d-none");
-    //     $('#table-analogs').removeClass("d-none");
-    //     $('#table-main-analogs').removeClass("d-none");
-    //     $('#div-analogs-showMore').removeClass("d-none");
-    // }
-
-    // function showChooseArticle() {
-
-    // }
-
-    // function cleanTables() {
-    //     $('#tbody-article').empty();
-    //     $('#tbody-main-analogs').empty();
-    //     $('#tbody-analogs').empty();
-    // }
-
-    // function hideAnalogTables() {
-    //     $('#table-analogs').addClass("d-none");
-    //     $('#table-main-analogs').addClass("d-none");
-    // }
 </script>
 
 

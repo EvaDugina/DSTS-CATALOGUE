@@ -80,7 +80,7 @@ function show_header($title)
       <!-- Container wrapper -->
       <div class="container-fluid ms-3">
         <div class="navbar-brand">
-          <img src="src/img/dsts_icon.jpg" class="img-fluid" style="height: 2rem;">
+          <img src="src/img/icon_dsts.jpg" class="img-fluid" style="height: 2rem;">
           <p class="text text-color mb-0 pb-0">
             <b>ДСТС – <?= $title ?></b>
           </p>

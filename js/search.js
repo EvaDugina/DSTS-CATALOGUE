@@ -14,7 +14,7 @@ var flagValidation = false;
 var COUNT_LOADING_ELEMENTS = 20;
 
 
-$(document).ready(function() {
+$(document).ready(function () {
     ajaxGetProducerNames();
 
     console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
@@ -59,7 +59,7 @@ function searchSimmilarProducers() {
 }
 
 
-$('#input-article').on("keydown", function(e) {
+$('#input-article').on("keydown", function (e) {
     if (e.key == "Enter" || e.keyCode == 13) {
         if (!$('#div-autocomplete').hasClass("d-none")) {
             $('#div-autocomplete').children().each((index, button) => {
@@ -77,52 +77,30 @@ $('#input-article').on("keydown", function(e) {
     } else {
         if (checkPressKeyUpDownLeftRight(e.key)) {
             if (e.key == "ArrowUp")
-                    navigateByArrows(1);
-                else if (e.key == "ArrowDown")
-                    navigateByArrows(-1);
+                navigateByArrows(1);
+            else if (e.key == "ArrowDown")
+                navigateByArrows(-1);
         } else {
-            if(e.key.length > 1)
+            if (e.key.length > 1) {
+                if (e.key == "Backspace") {
+                    let array = changeInputSelectedBySymbol(e, "");
+                    $('#input-article').val(array[0]);
+                    e.target.selectionStart = array[1];
+                    e.target.selectionEnd = array[1];
+                }
                 return true;
-            else if (checkPressCharInSearchField(e.key) == false){
+            } else if (checkPressCharInSearchField(e.key) == false) {
                 e.preventDefault();
             } else {
                 e.preventDefault();
-                $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
+                // console.log(e.target.selectionStart + " : " + e.target.selectionEnd);
+                let array = changeInputSelectedBySymbol(e, e.key.toUpperCase());
+                $('#input-article').val(array[0]);
+                e.target.selectionStart = array[1];
+                e.target.selectionEnd = array[1];
                 searchSimmilarProducers();
             }
         }
-        // if (checkPressCharInSearchField(e.key) == false) {
-        //     if (checkPressKeyUpOrDown(e.key) == false) {
-        //         e.preventDefault();
-        //     } else {
-        //         if (e.key == "ArrowUp")
-        //             navigateByArrows(1);
-        //         else if (e.key == "ArrowDown")
-        //             navigateByArrows(-1);
-        //     }
-        // } else {
-        //     flagValidation = true;
-        //     e.preventDefault();
-        //     // SEARCH_REQUEST += e.key;
-        //     if (e.key == "Backspace") {
-        //         $('#input-article').val($('#input-article').val().slice(0, -1));
-        //         if ($('#input-article').val().split(" ").length < 2)
-        //             SEARCH_REQUEST_PRODUCER_NAME = "";
-        //     } else
-        //         $('#input-article').val($('#input-article').val() + e.key.toUpperCase());
-
-        //     SEARCH_REQUEST = $('#input-article').val();
-        //     // let search_request_splitted = SEARCH_REQUEST.split(" ");
-        //     if (!hasNumber(SEARCH_REQUEST) && SEARCH_REQUEST_PRODUCER_NAME == "") {
-        //         offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
-        //         refreshAutocomplete(offeringProducerNames);
-        //     } else {
-        //         var div = document.getElementById('div-autocomplete');
-        //         div.classList.add("d-none");
-        //         div.innerHTML = '';
-        //     }
-        //     $('#input-article').focus();
-        // }
     }
 });
 
@@ -139,10 +117,6 @@ function navigateByArrows(step) {
 
     let new_index_selected = now_index_selected - step;
     if ((step == 1 && now_index_selected > 0) || (step == -1 && now_index_selected < $('#div-autocomplete').children().length - 1)) {
-        // $('#div-autocomplete').children()[now_index_selected].classList.remove("bg-primary", "text-white");
-        // $('#div-autocomplete').children()[now_index_selected].classList.add("bg-white", "text-primary");
-        // $('#div-autocomplete').children()[new_index_selected].classList.remove("bg-white", "text-primary");
-        // $('#div-autocomplete').children()[new_index_selected].classList.add("bg-primary", "text-white");
         $('#div-autocomplete').children()[new_index_selected].classList.remove("btn-autocomplete-unhover");
         $('#div-autocomplete').children()[new_index_selected].classList.add("btn-autocomplete-hover");
     }
@@ -164,7 +138,7 @@ function refreshAutocomplete(offeringProducerNames) {
         else
             button.classList.add("btn-autocomplete-unhover");
 
-        button.addEventListener("mouseover", function() {
+        button.addEventListener("mouseover", function () {
             $('#div-autocomplete').children().each((index, button) => {
                 if (button.classList.contains("btn-autocomplete-hover")) {
                     button.classList.remove("btn-autocomplete-hover");
@@ -187,19 +161,6 @@ function refreshAutocomplete(offeringProducerNames) {
 
     div.classList.remove("d-none");
 }
-
-// function handler(e) {
-//     console.log(e.which);
-//     active.classList.remove("hover");
-//     if (e.which == 40) {
-//         active = active.nextElementSibling || active;
-//     } else if (e.which == 38) {
-//         active = active.previousElementSibling || active;
-//     } else {
-//         active = e.target;
-//     }
-//     active.classList.add("hover");
-// }
 
 function chooseArticleProducer(producer_name) {
     let producer_name_splitted = producer_name.split(" ");
@@ -260,19 +221,65 @@ function hasNumber(myString) {
     return /\d/.test(myString);
 }
 
+function changeInputSelectedBySymbol(event, symbol) {
+    let startCursorPosition = event.target.selectionStart;
+    let endCursorPosition = event.target.selectionEnd;
+    let now_str = $('#input-article').val();
+    let newInputArticle = "";
+    // console.log(startCursorPosition + " : " + endCursorPosition);
+    let position = startCursorPosition;
+    let newCursorPosition = position;
+    if (symbol != "")
+        newCursorPosition += 1;
+
+    if (startCursorPosition == endCursorPosition) {
+        newInputArticle = [now_str.slice(0, position), symbol, now_str.slice(position)].join('');
+    } else {
+        newInputArticle = [now_str.slice(0, startCursorPosition), symbol, now_str.slice(endCursorPosition)].join('');
+    }
+    return [newInputArticle, newCursorPosition];
+}
 
 
 function search() {
     validateSearchField();
     cleanSearchResult();
     if (flagValidation) {
-        let search_request = $('#input-article').val();
-        let search_request_array = search_request.split(" ");
-        if (search_request_array.length > 1)
-            searchAnalogs(search_request_array[1], search_request_array[0]);
-        if (search_request_array.length == 1)
-            searchAnalogs(search_request_array[0]);
+        if (checkSearchFieldSymbols()) {
+            let search_request = $('#input-article').val();
+            let search_request_array = search_request.split(" ");
+            if (search_request_array.length > 1) {
+                if (isProducer(search_request_array[0])) {
+                    hideInputError();
+                    SEARCH_REQUEST_PRODUCER_NAME = search_request_array[0];
+                    SEARCH_REQUEST_ARTICLE_NAME = search_request_array[1];
+                    searchAnalogs(search_request_array[1], search_request_array[0]);
+                } else {
+                    showInputError("Некорректное имя производителя!");
+                }
+            }
+            else if (search_request_array.length == 1) {
+                hideInputError();
+                searchAnalogs(search_request_array[0]);
+            }
+        }
+        else {
+            showInputError("Некорректный поисковой запрос. См. пример!");
+        }
     }
+}
+
+function isProducer(text) {
+    if (text.includes("+"))
+        text = text.replace("+", " ");
+    let flag = false;
+    producers_names.forEach((producer_name) => {
+        if (producer_name == text) {
+            flag = true;
+            return;
+        }
+    });
+    return flag;
 }
 
 function searchAnalogs(article_name = "", producer_name = "") {
@@ -308,7 +315,7 @@ function searchAnalogs(article_name = "", producer_name = "") {
         processData: false,
         data: formData,
         dataType: 'html',
-        success: function(response) {
+        success: function (response) {
             // console.log(response);
             response = JSON.parse(response);
 
@@ -351,6 +358,7 @@ function searchAnalogs(article_name = "", producer_name = "") {
                 response.forEach((article, index) => {
 
                     if (article.status == 0) {
+                        all_analogs.push(article);
                         count_0 += 1;
                         let tr = createArticleElement(article);
                         $('#tbody-article').append(tr);
@@ -387,11 +395,13 @@ function searchAnalogs(article_name = "", producer_name = "") {
                 showDivsWhenSearchSuccess();
             }
 
+            $('#div-goto-producers').removeClass("d-none");
+
             $('#div-analogResults').removeClass("d-none");
 
             $('#spinner-waiting-search').addClass("d-none");
         },
-        complete: function() {}
+        complete: function () { }
     });
 
     last_search_type = search_type;
@@ -411,11 +421,11 @@ function ajaxGetProducerNames() {
         processData: false,
         data: formData,
         dataType: 'html',
-        success: function(response) {
+        success: function (response) {
             producers_names = JSON.parse(response);
             // console.log(producers_names);
         },
-        complete: function() {}
+        complete: function () { }
     });
 }
 
@@ -433,9 +443,10 @@ function createArticleElement(article, needToChoose = false) {
     // console.log(article);
 
     let tr = document.createElement("tr");
+    tr.classList.add("border");
 
     let td_artcle_name = document.createElement("td");
-    td_artcle_name.classList.add("middleInTable");
+    td_artcle_name.classList.add("middleInTable", "col-2");
     let button = document.createElement("button");
     if (article.hasInfo) {
         button.style.color = "green";
@@ -447,7 +458,7 @@ function createArticleElement(article, needToChoose = false) {
     td_artcle_name.appendChild(button);
 
     let td_producer_dsts_name = document.createElement("td");
-    td_producer_dsts_name.classList.add("middleInTable");
+    td_producer_dsts_name.classList.add("middleInTable", "col-2");
     if (article.producer_name_dsts == "") {
         td_producer_dsts_name.innerText = article.producer_name;
         td_producer_dsts_name.classList.add("text-danger");
@@ -456,11 +467,11 @@ function createArticleElement(article, needToChoose = false) {
 
 
     let td_catalogue_name = document.createElement("td");
-    td_catalogue_name.classList.add("middleInTable");
+    td_catalogue_name.classList.add("middleInTable", "col-3");
     td_catalogue_name.innerText = article.catalogue_name;
 
     let td_producer_name = document.createElement("td");
-    td_producer_name.classList.add("middleInTable");
+    td_producer_name.classList.add("middleInTable", "col-4");
     td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
         " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
 
@@ -471,11 +482,11 @@ function createArticleElement(article, needToChoose = false) {
 
     if (is_admin) {
         let td_edit = document.createElement("td");
-        td_edit.classList.add("middleInTable");
+        td_edit.classList.add("middleInTable", "col-1");
 
         let button = document.createElement("button");
         button.classList.add("badge", "badge-primary", "badge-pill");
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             article_for_edit = article;
             setValuesToDialogModalEditFields(article);
             showPopoverEdit();
@@ -510,7 +521,7 @@ function createArticleElement(article, needToChoose = false) {
         let button = document.createElement("button");
         button.classList.add("btn", "btn-outline-primary");
         button.innerText = "ВЫБРАТЬ"
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             cleanSearchResult();
             $('#input-article').val(article.article_name);
             setSearchType("strict");
@@ -541,29 +552,41 @@ function setSearchType(new_search_type) {
 
 
 function validateSearchField() {
-    if (checkSearchField() == false) {
+    if (checkSearchFieldSymbols() == false) {
         flagValidation = false;
         // $('#btn-search').addClass("disabled");
-        $('#p-errorSearchField').removeClass("d-none");
-        $('#input-article').addClass("is-invalid");
+        showInputError("В поисковом запросе присутствуют недопустимые символы!");
     } else {
         flagValidation = true;
         // $('#btn-search').removeClass("disabled");
-        $('#p-errorSearchField').addClass("d-none");
-        $('#input-article').removeClass("is-invalid");
+        hideInputError();
     }
 }
 
+function showInputError(error_text) {
+    $('#p-errorSearchField').text(error_text);
+    $('#p-errorSearchField').removeClass("d-none");
+    $('#input-article').addClass("is-invalid");
+}
+function hideInputError() {
+    $('#p-errorSearchField').addClass("d-none");
+    $('#input-article').removeClass("is-invalid");
+}
+
 function checkSearchField() {
+    let array_search_request = fieldText.split(" ");
+    if (array_search_request.length > 2 || (array_search_request.length == 2 && array_search_request[1] == ""))
+        return false;
+    return true;
+}
+
+function checkSearchFieldSymbols() {
     let fieldText = $('#input-article').val();
     if (fieldText == "")
         return false;
 
     let regex = /^[a-zA-Zа-яА-Я0-9. -+]+$/;
-    let array_search_request = fieldText.split(" ");
-    if (!regex.test(fieldText) || array_search_request.length > 2 ||
-        (array_search_request.length == 1 && SEARCH_REQUEST_PRODUCER_NAME != "") ||
-        (array_search_request.length == 2 && array_search_request[1] == "")) {
+    if (!regex.test(fieldText)) {
         return false;
     }
     return true;
@@ -576,6 +599,7 @@ function cleanSearchResult() {
 
     $('#div-miidle-row').addClass("d-none");
     $('#div-select-producers').addClass("d-none");
+    $('#div-goto-producers').addClass("d-none");
 
     $('#btn-parse-result').addClass("disabled");
     $('#div-parse-result').addClass("d-none");

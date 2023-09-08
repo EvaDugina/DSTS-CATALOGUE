@@ -6,7 +6,7 @@ class auth_ssh
     function login($login, $pwd, $source)
     {
         global $dbconnect;
-        session_start();
+        // session_start();
         $lg = pg_escape_string($login);
 
         $result = pg_query($dbconnect, "SELECT * FROM users WHERE login='$lg'");

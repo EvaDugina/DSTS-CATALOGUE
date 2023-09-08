@@ -6,7 +6,8 @@ $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-if (isset($_POST['analogs']) && isset($_POST['selected_catalogues'])) {
+if (isset($_POST['article']) && isset($_POST['analogs']) && isset($_POST['selected_catalogues'])) {
+    $article = json_decode($_POST['article']);
     $analogs = json_decode($_POST['analogs']);
     $selected_catalogues = json_decode($_POST['selected_catalogues']);
 } else
@@ -16,7 +17,7 @@ if (isset($_POST['analogs']) && isset($_POST['selected_catalogues'])) {
 
 $result_parse = "";
 foreach ($selected_catalogues as $catalogue_name) {
-    $result_parse .= getCrossRefByCatalogue($analogs, $catalogue_name);
+    $result_parse .= getCrossRefByCatalogue($article, $analogs, $catalogue_name);
     $result_parse .= "\t\t\t\t\t";
 }
 
@@ -27,7 +28,7 @@ echo $result_parse;
 exit;
 
 
-function getCrossRefByCatalogue($analogs, $catalogue_name)
+function getCrossRefByCatalogue($article, $analogs, $catalogue_name)
 {
 
     $cross_ref = "";
@@ -35,12 +36,9 @@ function getCrossRefByCatalogue($analogs, $catalogue_name)
     $last_producer_name = "";
 
     $cross_ref .= "Кросс-референс " . $catalogue_name;
-    $cross_ref .= " (" . articleNameVariations($analogs[0]->article_name) . "): ";
+    $cross_ref .= " (" . articleNameVariations($article->article_name) . "): ";
 
     foreach ($analogs as $key => $analog) {
-
-        if ($key == 0)
-            continue;
 
         if ($analog->catalogue_name != $catalogue_name)
             continue;
@@ -50,7 +48,7 @@ function getCrossRefByCatalogue($analogs, $catalogue_name)
         else
             $producer_name = $analog->producer_name_by_catalogue;
 
-        if ($key == 1) {
+        if ($key == 0) {
             $last_producer_name = $producer_name;
             $cross_ref .= $producer_name;
             $cross_ref .= " (";

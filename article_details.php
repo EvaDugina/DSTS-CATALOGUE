@@ -65,22 +65,31 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                     </div>
 
                     <div clacc="col-4" style="width:inherit;">
-                        <?php
-                        if ($Article->hasInfo()) {
-                            foreach ($Article->getInfo() as $info_by_catalogue) { ?>
-                                <h6><?= $info_by_catalogue['catalogue_name'] ?></h6>
-                                <table class="table border rounded w-auto" style="font-size:small">
-                                    <tbody role="button" style="cursor:auto;">
-                                        <?php foreach ($info_by_catalogue['json'] as $key => $characteristic) { ?>
-                                            <tr>
-                                                <th scope="row" class="font-weight-bold"><?= $key ?></th>
-                                                <td><?= $characteristic ?></td>
-                                            </tr>
+                        <?php if ($Article->hasInfo()) {
+                            $characteristics = $Article->getAllCharacteristics(); ?>
+                            <table class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                                <thead class="px-0">
+                                    <tr class="bg-primary text-white border">
+                                        <th scope="col" class="middleInTable border fw-bold">ХАРАКТЕРИСТИКИ</th>
+                                        <?php foreach ($Article->getMainInfo() as $info_by_catalogue) { ?>
+                                            <th scope="col" class="middleInTable border fw-bold"><?= $info_by_catalogue['catalogue_name'] ?></th>
                                         <?php } ?>
-                                    </tbody>
-                                </table>
-                            <?php }
-                        } else { ?>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-article" role="button" class="px-0" style="cursor:auto; border: transparent;">
+                                    <?php
+                                    foreach ($characteristics as $key => $line) { ?>
+                                        <tr class="border">
+                                            <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
+                                            <?php foreach ($line as $characteristic_by_catalogue) { ?>
+                                                <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
+                                            <?php } ?>
+                                        </tr>
+                                    <?php } ?>
+                                </tbody>
+                            </table>
+
+                        <?php } else { ?>
                             <h6>Информация о характеристиках отсутствует</h6>
                         <?php } ?>
                     </div>

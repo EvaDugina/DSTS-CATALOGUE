@@ -8,7 +8,8 @@ class Article
     public $id;
     public $name;
 
-    private $info = array();
+    private $main_info = array();
+    private $secondary_info = array();
 
     private $Producer;
 
@@ -46,33 +47,72 @@ class Article
         $query = querySelectArticleInfo($this->id);
         $result = pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
 
-        $info_by_catalogues = array();
-
+        $main_info_by_catalogues = array();
+        $secondary_info_by_catalogues = array();
         while ($row = pg_fetch_assoc($result)) {
             $json_info = $this->parseArticleInfoJSONtoARRAY($row['json']);
-            array_push($info_by_catalogues, array(
+            array_push($main_info_by_catalogues, array(
                 "catalogue_name" => $row['catalogue_name'],
-                "json" => $json_info
+                "json" => $json_info[0]
+            ));
+            array_push($secondary_info_by_catalogues, array(
+                "catalogue_name" => $row['catalogue_name'],
+                "json" => $json_info[1]
             ));
         }
 
-        $this->info = $info_by_catalogues;
+        $this->main_info = $main_info_by_catalogues;
+        $this->secondary_info = $secondary_info_by_catalogues;
+    }
+
+    public function getAllCharacteristics()
+    {
+        $array_characteristics = array();
+        $count_producers = 0;
+        foreach ($this->main_info as $index => $info_by_catalogue) {
+            foreach ($info_by_catalogue['json'] as $key => $characteristic) {
+                if (!in_array($key, $array_characteristics)) {
+                    array_push($array_characteristics, $key);
+                }
+            }
+            $count_producers += 1;
+        }
+
+        $array_characteristics_by_catalogues = array_fill(0, count($array_characteristics), []);
+        foreach ($this->main_info as $index => $info_by_catalogue) {
+            foreach ($info_by_catalogue['json'] as $key => $characteristic) {
+                $line_index = array_search($key, $array_characteristics);
+                array_push($array_characteristics_by_catalogues[$line_index], $characteristic);
+            }
+            foreach ($array_characteristics_by_catalogues as $key => $line) {
+                if (count($line) < $index + 1) {
+                    array_push($array_characteristics_by_catalogues[$key], "-");
+                }
+            }
+        }
+
+        $return_array = array();
+        foreach ($array_characteristics_by_catalogues as $index => $line_characteristic) {
+            $return_array = array_merge($return_array, array($array_characteristics[$index] => $line_characteristic));
+        }
+
+        return $return_array;
     }
 
 
-    public function getInfo()
+    public function getMainInfo()
     {
-        return $this->info;
+        return $this->main_info;
     }
 
     public function getLinkToCataloguePage()
     {
-        return "https://shop.donaldson.com/store/ru-ru/product/" . $this->name . "/" . $this->info[0]['json']->productId;
+        return "https://shop.donaldson.com/store/ru-ru/product/" . $this->name . "/" . $this->secondary_info[0]['json']['productId'];
     }
 
     public function hasInfo()
     {
-        return count($this->info) > 0;
+        return count($this->main_info) > 0;
     }
 
     public function getProducer()
@@ -83,9 +123,9 @@ class Article
 
     public function getImageUrl()
     {
-        foreach ($this->info as $info) {
-            if ($info['catalogue_name'] == "DONALDSON" && $info['json']->imageUrl) {
-                return $info['json']->imageUrl;
+        foreach ($this->secondary_info as $info) {
+            if ($info['catalogue_name'] == "DONALDSON" && $info['json']['imageUrl']) {
+                return $info['json']['imageUrl'];
             }
         }
         return "";
@@ -93,8 +133,24 @@ class Article
 
     private function parseArticleInfoJSONtoARRAY($article_info_json)
     {
+        $main_info = array();
+        $secondary_info = array();
+
+        $main_info_flag = true;
         $article_info = json_decode($article_info_json);
-        return $article_info;
+        foreach ($article_info as $key => $line) {
+            if ($key == "productId") {
+                $main_info_flag = false;
+            }
+
+            if ($main_info_flag) {
+                $main_info = array_merge($main_info, array($key => $line));
+            } else {
+                $secondary_info = array_merge($secondary_info, array($key => $line));
+            }
+        }
+
+        return array($main_info, $secondary_info);
     }
 }
 
