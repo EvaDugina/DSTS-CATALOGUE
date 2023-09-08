@@ -13,9 +13,12 @@ var flagValidation = false;
 
 var COUNT_LOADING_ELEMENTS = 20;
 
+// $.material.init();
 
 $(document).ready(function () {
     ajaxGetProducerNames();
+
+    $('#input-article').change();
 
     console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
     if (sessionStorage.getItem('search_request') && sessionStorage.getItem('search_type')) {
@@ -102,6 +105,11 @@ $('#input-article').on("keydown", function (e) {
             }
         }
     }
+});
+
+$('#input-article').on("blur", function (e) {
+    if ($('#input-article').val() != "")
+        $('#input-article').addClass("active");
 });
 
 function navigateByArrows(step) {
@@ -470,17 +478,16 @@ function createArticleElement(article, needToChoose = false) {
     td_catalogue_name.classList.add("middleInTable", "col-3");
     td_catalogue_name.innerText = article.catalogue_name;
 
-    let td_producer_name = document.createElement("td");
-    td_producer_name.classList.add("middleInTable", "col-4");
-    td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
-        " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
-
     tr.appendChild(td_artcle_name);
     tr.appendChild(td_producer_dsts_name);
-    tr.appendChild(td_catalogue_name);
-    tr.appendChild(td_producer_name);
 
     if (is_admin) {
+
+        let td_producer_name = document.createElement("td");
+        td_producer_name.classList.add("middleInTable", "col-4");
+        td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
+            " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
+
         let td_edit = document.createElement("td");
         td_edit.classList.add("middleInTable", "col-1");
 
@@ -508,6 +515,8 @@ function createArticleElement(article, needToChoose = false) {
         button.appendChild(svg);
         td_edit.appendChild(button);
 
+        tr.appendChild(td_catalogue_name);
+        tr.appendChild(td_producer_name);
         tr.appendChild(td_edit);
     }
 

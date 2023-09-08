@@ -5,7 +5,7 @@ require_once("common.php");
 $au = new auth_ssh();
 
 checkAuLoggedIN($au);
-checkAuIsAdmin($au);
+// checkAuIsAdmin($au);
 
 if (isset($_GET['article_id']))
     $article_id = $_GET['article_id'];

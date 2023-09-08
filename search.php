@@ -26,9 +26,9 @@ else
                 <div class="col-8 px-0">
                     <div class="d-flex w-100">
                         <div class="flex-grow-1 form-outline me-2">
-                            <i class="fas fa-search trailing" aria-hidden="true"></i>
-                            <input id="input-article" type="text" class="form-control form-icon-trailing mb-0" style="text-transform:uppercase;">
-                            <label class="form-label" for="form1">Поиск аналогов по артикулу</label>
+                            <!-- <i class="fas fa-search trailing" aria-hidden="true"></i> -->
+                            <input id="input-article" name="input-article" type="text" class="form-control floating-label form-icon-trailing mb-0 active" style="text-transform:uppercase;" placeholder="Поиск аналогов по артикулу">
+                            <label id="label-search" for="input-article" class="form-label">Поиск аналогов по артикулу</label>
 
                             <div class="form-notch">
                                 <div class="form-notch-leading" style="width: 9px;"></div>
@@ -72,9 +72,11 @@ else
                                 <tr class="bg-primary text-white">
                                     <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                     <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                    <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                    <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                    <th class="middleInTable col-1"></th>
+                                    <?php if ($au->isAdmin()) { ?>
+                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                        <th class="middleInTable col-1"></th>
+                                    <?php } ?>
                                     <th id="th-choose" class="middleInTable d-none"></th>
                                 </tr>
                             </thead>
@@ -90,11 +92,6 @@ else
                             <div class="w-100">
                                 <h5 class="my-0"><strong>СПИСОК АНАЛОГОВ</strong></h5>
                             </div>
-                            <?php if ($au->isAdmin()) { ?>
-                                <button class="btn btn-primary w-25" onclick="openCatologueSites()">
-                                    ОТКРЫТЬ ВСЕ КАТАЛОГИ
-                                </button>
-                            <?php } ?>
                         </div>
                         <h6 id="h6-error-search" class="text-danger d-none"></h6>
 
@@ -104,9 +101,11 @@ else
                                     <tr class="bg-info text-white">
                                         <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                         <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                        <th class="middleInTable col-1"></th>
+                                        <?php if ($au->isAdmin()) { ?>
+                                            <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                            <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                            <th class="middleInTable col-1"></th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-main-analogs" role="button" class="px-0" style="border: transparent;">
@@ -123,9 +122,11 @@ else
                                     <tr class="table-active">
                                         <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                         <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                        <th class="middleInTable col-1"></th>
+                                        <?php if ($au->isAdmin()) { ?>
+                                            <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                            <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                            <th class="middleInTable col-1"></th>
+                                        <?php } ?>
                                     </tr>
                                 </thead>
                                 <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
@@ -145,7 +146,7 @@ else
 
                 <div class="col-2">
                     <?php if ($au->isAdmin()) { ?>
-                        <div id="div-select-producers" class="d-none">
+                        <div id="div-select-producers" class="d-none mb-4">
                             <div class="row">
                                 <div class="col-12">
                                     <select id="select-catalogue" class="form-select" aria-label="Default select example">
@@ -184,30 +185,35 @@ else
                                 </div>
                             </div>
                         </div>
-                    <?php } else { ?>
-                        <div id="div-goto-producers" class="d-none">
-                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('DONALDSON')">
-                                <img src="src/img/icon_donaldson.ico" class="img-fluid">
-                                <!-- <strong>DONALDSON</strong> -->
-                            </button>
-                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FIL-FILTER')">
-                                <img src="src/img/icon_filfilter.png" class="img-fluid">
-                                <!-- <strong>FIL-FILTER</strong> -->
-                            </button>
-                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FLEETGUARD')">
-                                <img src="src/img/icon_fleetguard.png" class="img-fluid">
-                                <!-- <strong>FLEETGUARD</strong> -->
-                            </button>
-                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('HIFI-FILTER')">
-                                <img src="src/img/icon_hifi.png" class="img-fluid">
-                                <!-- <strong>HIFI-FILTER</strong> -->
-                            </button>
-                            <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('MANN')">
-                                <img src="src/img/icon_mann.jpg" class="img-fluid">
-                                <!-- <strong>MANN</strong> -->
-                            </button>
-                        </div>
                     <?php } ?>
+
+                    <div id="div-goto-producers" class="d-none">
+                        <?php if ($au->isAdmin()) { ?>
+                            <button class="btn btn-primary w-100 mb-2" onclick="openCatologueSites()" style="font-size:x-small;">
+                                ОТКРЫТЬ ВСЕ КАТАЛОГИ
+                            </button>
+                        <?php } ?>
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('DONALDSON')">
+                            <img src="src/img/image_donaldson2.jpg" class="img-fluid">
+                            <!-- <strong>DONALDSON</strong> -->
+                        </button>
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FIL-FILTER')">
+                            <img src="src/img/icon_filfilter.png" class="img-fluid">
+                            <!-- <strong>FIL-FILTER</strong> -->
+                        </button>
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FLEETGUARD')">
+                            <img src="src/img/icon_fleetguard.png" class="img-fluid">
+                            <!-- <strong>FLEETGUARD</strong> -->
+                        </button>
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('HIFI-FILTER')">
+                            <img src="src/img/image_hifi.png" class="img-fluid">
+                            <!-- <strong>HIFI-FILTER</strong> -->
+                        </button>
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('MANN')">
+                            <img src="src/img/icon_mann.jpg" class="img-fluid">
+                            <!-- <strong>MANN</strong> -->
+                        </button>
+                    </div>
                 </div>
             </div>
 
