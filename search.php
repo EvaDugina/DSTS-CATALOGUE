@@ -234,7 +234,7 @@ else
                 <div>
                     <h6>Добавление артикула по каталогу:</h6>
                     <div class="d-inline-flex align-items-center w-75">
-                        <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100" placeholder="Введите название артикула">
+                        <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100 my-0" placeholder="Введите название артикула">
                         <div class="mx-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                                 <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
@@ -251,6 +251,9 @@ else
                             } ?>
                         </select>
                     </div>
+                    <p id="modalAddArticle-p-inputError" class="text-danger d-none">
+                        <small><strong>ВНИМАНИЕ! В строке не должно присутсвовать ничего, кроме слитно написанного названия артикула</strong></small>
+                    </p>
                     <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
                 </div>
                 <br />
@@ -410,8 +413,17 @@ else
     })
 
     $('#modalAddArticle-button-apply').on("click", function(event) {
-        addingArticle = true;
         let article_name = $('#modalAddArticle-input-articleName').val();
+        if (article_name.split(" ").length > 1) {
+            $('#modalAddArticle-p-inputError').removeClass("d-none");
+            $('#modalAddArticle-input-articleName').addClass("is-invalid");
+            return;
+        } else {
+            $('#modalAddArticle-p-inputError').addClass("d-none");
+            $('#modalAddArticle-input-articleName').removeClass("is-invalid");
+        }
+
+        addingArticle = true;
         let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
         ajaxAddArticle(article_name, catalogue_name);
     });
