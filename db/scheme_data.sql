@@ -26,6 +26,7 @@ CREATE TABLE articles_details ( -- таблица информации о тов
 	article_id integer, -- --> идентификатор артикула
 	catalogue_name text, -- --> навзание каталога, из которого взята информация
 	url text,
+	type text,
 	json text, -- --> строка информации в формате json
 	CONSTRAINT articles_details_pkey PRIMARY KEY (id)
 );
@@ -61,11 +62,17 @@ CREATE TABLE producers_comparison	(
 );
 
 
+-- CREATE TABLE characteristics (
+-- 	id serial,
+-- 	charachteristic_eng text UNIQUE, -- --> идентификатор группы производителей
+-- 	charachteristic_rus text, -- --> идентификатор артукула
+-- 	CONSTRAINT characteristics_pkey PRIMARY KEY (id)
+-- );
 
 CREATE TABLE characteristics_comparison	(
 	id serial,
-	charachteristic_eng text UNIQUE, -- --> идентификатор группы производителей
-	charachteristic_rus text, -- --> идентификатор артукула
+	charachteristic_en text UNIQUE, -- --> идентификатор группы производителей
+	charachteristic_ru text, -- --> идентификатор артукула
 	CONSTRAINT characteristics_comparison_pkey PRIMARY KEY (id)
 );
 

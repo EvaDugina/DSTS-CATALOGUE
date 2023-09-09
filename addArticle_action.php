@@ -1,13 +1,14 @@
 <?php
 require_once("settings.php");
 require_once("utilities.php");
+// require_once("C:/xampp/htdocs/dsts/python_module");
 
 $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-$path_scrapper = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONSScrapper.py';
-$path_parser = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONParser.py';
+$path_scrapper = 'C:/xampp/htdocs/dsts/python_module/JSONScrapper.exe';
+$path_parser = 'C:/xampp/htdocs/dsts/python_module/JSONParser.exe';
 
 if (isset($_POST['code_stop'])) {
     $result = shell_exec("kill $(ps aux | grep '[p]ython $path_scrapper' | awk '{print $2}')");
@@ -33,8 +34,8 @@ set_time_limit(7200);
 // $WshShell = new COM('WScript.Shell');
 // $oExec = $WshShell->Run("py $path_scrapper");
 
-$command = shell_exec("py $path_scrapper --id 1000001");
-$command = shell_exec("py $path_parser --id 1000001");
+$command = shell_exec("$path_scrapper");
+$command = shell_exec("$path_parser");
 
 set_time_limit(120);
 

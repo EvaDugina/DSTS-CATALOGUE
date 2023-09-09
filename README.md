@@ -24,6 +24,14 @@ pip install playwright
 
 pip install webdriver_manager
 
+try:
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
+
+py -m pip install playwright
+py -m playwright install
+
 
 3. ВЫПОЛНИТЬ BAT-СКРИПТЫ ИЗ ПАПКИ db/
 
