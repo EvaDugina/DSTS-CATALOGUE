@@ -67,21 +67,23 @@ class Article
 
     public function getAllCharacteristics()
     {
-        $array_characteristics = array();
+        $array_characteristics_original = array();
+        $array_characteristics_alt = array();
         $count_producers = 0;
         foreach ($this->main_info as $index => $info_by_catalogue) {
             foreach ($info_by_catalogue['json'] as $key => $characteristic) {
-                if (!in_array($key, $array_characteristics)) {
-                    array_push($array_characteristics, $key);
+                if (!in_array($key, $array_characteristics_original)) {
+                    array_push($array_characteristics_original, $key);
+                    array_push($array_characteristics_alt, getCharacteristicNameAlternative($key));
                 }
             }
             $count_producers += 1;
         }
 
-        $array_characteristics_by_catalogues = array_fill(0, count($array_characteristics), []);
+        $array_characteristics_by_catalogues = array_fill(0, count($array_characteristics_original), []);
         foreach ($this->main_info as $index => $info_by_catalogue) {
             foreach ($info_by_catalogue['json'] as $key => $characteristic) {
-                $line_index = array_search($key, $array_characteristics);
+                $line_index = array_search($key, $array_characteristics_original);
                 array_push($array_characteristics_by_catalogues[$line_index], $characteristic);
             }
             foreach ($array_characteristics_by_catalogues as $key => $line) {
@@ -93,12 +95,11 @@ class Article
 
         $return_array = array();
         foreach ($array_characteristics_by_catalogues as $index => $line_characteristic) {
-            $return_array = array_merge($return_array, array($array_characteristics[$index] => $line_characteristic));
+            $return_array = array_merge($return_array, array($array_characteristics_alt[$index] => $line_characteristic));
         }
 
         return $return_array;
     }
-
 
     public function getMainInfo()
     {
@@ -152,6 +153,16 @@ class Article
 
         return array($main_info, $secondary_info);
     }
+}
+
+
+function getCharacteristicNameAlternative($characteristicName)
+{
+    global $dbconnect;
+    $query = querySelectCharacteristicNameAlternative($characteristicName);
+    $result = pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
+    $characteristic = pg_fetch_assoc($result);
+    return $characteristic['characteristic_alt'];
 }
 
 
@@ -293,6 +304,10 @@ function querySelectMaxGroupNumber()
     return "SELECT MAX(group_id) AS max_group_id FROM articles_comparison;";
 }
 
+function querySelectCharacteristicNameAlternative($characteristic_original)
+{
+    return "SELECT characteristic_alt FROM characteristics_comparison WHERE characteristic_original = '$characteristic_original';";
+}
 
 
 
