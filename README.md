@@ -1,8 +1,10 @@
 ПЕРЕД ЗАПУСКОМ:
 
-1. СКАЧАТЬ PYTHON:
-https://www.python.org/downloads/
-
+1. СКАЧАТЬ:
+Xampp
+Git 
+Python - https://www.python.org/downloads/
+PostgreSQL -
 
 2. СКАЧАТЬ БИБЛИОТЕКИ ДЛЯ РАБОТЫ PYTHON-БОТА:
 pip install requests

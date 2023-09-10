@@ -62,12 +62,6 @@ CREATE TABLE producers_comparison	(
 );
 
 
--- CREATE TABLE characteristics (
--- 	id serial,
--- 	charachteristic_eng text UNIQUE, -- --> идентификатор группы производителей
--- 	charachteristic_rus text, -- --> идентификатор артукула
--- 	CONSTRAINT characteristics_pkey PRIMARY KEY (id)
--- );
 
 CREATE TABLE characteristics_comparison	(
 	id serial,
