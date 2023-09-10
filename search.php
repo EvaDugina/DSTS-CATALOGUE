@@ -156,10 +156,8 @@ else
                             <div class="row">
                                 <div class="col-12">
                                     <select id="select-catalogue" class="form-select" aria-label="Default select example">
-                                        <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
-                                            <option selected>ВСЕ</option>
-                                            <?php }
-                                        foreach ($ARRAY_CATALOGUES as $catalogue) {
+                                        <option selected>ВСЕ</option>
+                                        <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
                                             if ($catalogue[1]) { ?>
                                                 <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
                                         <?php }
@@ -247,10 +245,8 @@ else
                             </svg>
                         </div>
                         <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
-                            <?php if (count($ARRAY_CATALOGUES) > 1) { ?>
-                                <option selected>ВСЕ</option>
-                                <?php }
-                            foreach ($ARRAY_CATALOGUES as $catalogue) {
+                            <option selected>ВСЕ</option>
+                            <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
                                 if ($catalogue[1]) { ?>
                                     <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
                             <?php }
