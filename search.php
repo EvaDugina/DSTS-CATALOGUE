@@ -76,6 +76,8 @@ else
                                         <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
                                         <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
                                         <th class="middleInTable col-1"></th>
+                                    <?php } else { ?>
+                                        <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
                                     <?php } ?>
                                     <th id="th-choose" class="middleInTable d-none"></th>
                                 </tr>
@@ -105,6 +107,8 @@ else
                                             <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
                                             <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
                                             <th class="middleInTable col-1"></th>
+                                        <?php } else { ?>
+                                            <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
                                         <?php } ?>
                                     </tr>
                                 </thead>
@@ -126,6 +130,8 @@ else
                                             <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
                                             <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
                                             <th class="middleInTable col-1"></th>
+                                        <?php } else { ?>
+                                            <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
                                         <?php } ?>
                                     </tr>
                                 </thead>

@@ -56,7 +56,7 @@ if (count($found_articles) == 0) {
     foreach ($found_articles as $article) {
         $Article = new Article($article['article_id']);
 
-        $article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+        $article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type);
         $article_array[0]["status"] = 0;
 
         $arrays_articles = array_merge($arrays_articles, $article_array);
@@ -81,7 +81,7 @@ if ($group) {
         "error" => "group_id"
     );
     $return_values = array_merge($return_values, $return_value);
-    $main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+    $main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type);
     $main_article_array[0]["status"] = 0;
     if (count($main_article_array) > 0)
         $return_values = array_merge($return_values, $main_article_array);
@@ -95,7 +95,7 @@ $result = pg_query($dbconnect, $query);
 
 while ($row = pg_fetch_assoc($result)) {
     $analogArticle = new Article($row['article_id']);
-    $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo());
+    $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $analogArticle->type);
     if (in_array($analogArticle->getProducer()->getMainProducerName(), $ARRAY_NAME_CATALOGUES)) {
         $article_array[0]["status"] = 1;
         if (count($article_array) > 0)
@@ -112,7 +112,7 @@ while ($row = pg_fetch_assoc($result)) {
 }
 
 
-$main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo());
+$main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type);
 $main_article_array[0]["status"] = 0;
 if (count($main_article_array) > 0)
     $return_values = array_merge($main_article_array, $return_values);
@@ -125,7 +125,7 @@ exit;
 
 
 
-function getArticleArray($article_name, $producer_id, $article_id, $hasInfo)
+function getArticleArray($article_name, $producer_id, $article_id, $hasInfo, $type)
 {
     global $ARRAY_CATALOGUES;
 
@@ -164,6 +164,7 @@ function getArticleArray($article_name, $producer_id, $article_id, $hasInfo)
             "producer_name_dsts" => $producer_dsts_name,
             "producer_name" => $main_producer_name,
             "producer_name_by_catalogue" => $producer_name_by_catalogue,
+            "type" => $type,
             "hasInfo" => $hasInfo
         );
 

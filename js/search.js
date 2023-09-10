@@ -518,6 +518,14 @@ function createArticleElement(article, needToChoose = false) {
         tr.appendChild(td_catalogue_name);
         tr.appendChild(td_producer_name);
         tr.appendChild(td_edit);
+    } else {
+        let td_type = document.createElement("td");
+        td_type.classList.add("middleInTable", "col-6");
+        if (article.type != "")
+            td_type.innerHTML = article.type;
+        else
+            td_type.innerHTML = "(тип неопределён)";
+        tr.appendChild(td_type);
     }
 
 
