@@ -85,4 +85,4 @@ CREATE TABLE users (
 --ALTER TABLE users OWNER TO postgres;
 
 INSERT INTO users(id, first_name, middle_name, last_name, login, role, password) VALUES 
-(1, 'Иван', 'Дугин', 'Андреевич', 'ivan', 1, 123), (2, 'Андрей', 'Дугин', 'Юрьевич', 'andrey', 2, 123);
+(1, 'Андрей', 'Дугин', 'Юрьевич', 'user', 2, 123), (2, 'Андрей', 'Дугин', 'Юрьевич', 'admin', 1, 123);
