@@ -2,6 +2,7 @@
 	id serial,
 	article_name text, -- --> название артукула с пробелами
 	producer_id integer, -- --> идентификатор производителя
+	type integer, -- --> тип товара 0 - действующий, 1 - устаревший
 	CONSTRAINT articles_pkey PRIMARY KEY (id)
 );
 
@@ -85,4 +86,4 @@ CREATE TABLE users (
 --ALTER TABLE users OWNER TO postgres;
 
 INSERT INTO users(id, first_name, middle_name, last_name, login, role, password) VALUES 
-(1, 'Андрей', 'Дугин', 'Юрьевич', 'user', 2, 123), (2, 'Андрей', 'Дугин', 'Юрьевич', 'admin', 1, 123);
+(1, 'Андрей', 'Дугин', 'Юрьевич', 'admin', 1, 123), (2, 'Андрей', 'Дугин', 'Юрьевич', 'user', 2, 123);

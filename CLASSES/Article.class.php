@@ -8,6 +8,7 @@ class Article
     public $id;
     public $name;
     public $type;
+    public $description;
 
     private $main_info = array();
     private $secondary_info = array();
@@ -33,10 +34,11 @@ class Article
             $article = pg_fetch_assoc($result);
 
             $this->name = $article['article_name'];
-            if (isset($article['type']))
-                $this->type = $article['type'];
+            $this->type = $article['type'];
+            if (isset($article['description']))
+                $this->description = $article['description'];
             else
-                $this->type = "";
+                $this->description = "";
 
             $this->setInfo();
 
@@ -111,9 +113,9 @@ class Article
         return $this->main_info;
     }
 
-    public function getType()
+    public function getDescription()
     {
-        return $this->type;
+        return $this->description;
     }
 
     public function getLinkToCataloguePage()
@@ -282,7 +284,7 @@ function queryGetGroupComparison($article_id)
 
 function queryGetArticleById($article_id)
 {
-    return "SELECT articles.*, articles_details.type FROM articles 
+    return "SELECT articles.*, articles_details.type as description FROM articles 
             LEFT JOIN articles_details ON articles_details.article_id = articles.id 
             WHERE articles.id = $article_id;";
 }

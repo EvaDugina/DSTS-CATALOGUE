@@ -521,8 +521,8 @@ function createArticleElement(article, needToChoose = false) {
     } else {
         let td_type = document.createElement("td");
         td_type.classList.add("middleInTable", "col-6");
-        if (article.type != "")
-            td_type.innerHTML = article.type;
+        if (article.description != "")
+            td_type.innerHTML = article.description;
         else
             td_type.innerHTML = "(тип неопределён)";
         tr.appendChild(td_type);
