@@ -98,7 +98,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                             <?php } ?>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbody-article" role="button" class="px-0" style="cursor:auto; border: transparent;">
+                                    <tbody id="" role="button" class="px-0" style="cursor:auto; border: transparent;">
                                         <?php
                                         foreach ($characteristics as $key => $line) { ?>
                                             <tr class="border">
@@ -141,22 +141,22 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                             foreach ($articleAnalogs as $analog) {
                                 if ($index < $COUNT_LOADING_ELEMENTS) { ?>
                                     <tr class="border">
-                                        <td class="middleInTable col-2">
+                                        <td class="middleInTable col-2 cursor-auto">
                                             <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
                                         </td>
-                                        <td class="middleInTable col-2 <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
+                                        <td class="middleInTable col-2 cursor-auto <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
                                             <?= ($analog['producer_name_dsts'] == "") ? $analog['producer_name'] : $analog['producer_name_dsts'] ?>
                                         </td>
-                                        <td class="middleInTable col-3">
+                                        <td class="middleInTable col-3 cursor-auto">
                                             <?= $analog['catalogue_name'] ?>
                                         </td>
                                         <?php if ($au->isAdmin()) { ?>
-                                            <td class="middleInTable col-4">
+                                            <td class="middleInTable col-4 cursor-auto">
                                                 <span>
                                                     <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
                                                 </span>
-                                            </td class="middleInTable col-1">
-                                            <td>
+                                            </td>
+                                            <td class="middleInTable col-1 cursor-auto">
                                                 <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
                                                         <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
@@ -164,7 +164,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                                 </button>
                                             </td>
                                         <?php } else { ?>
-                                            <td class="middleInTable col-6">
+                                            <td class="middleInTable col-6 cursor-auto">
                                                 <?= ($analog['description'] != "") ? $analog['description'] : '(тип неопределён)' ?>
                                             </td>
                                         <?php } ?>

@@ -208,7 +208,12 @@ function showSearchPopovers()
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Закрыть</button>
-          <button id="modalEdit-button-apply" type="button" class="btn btn-primary">ПРИМЕНИТЬ</button>
+          <button id="modalEdit-button-apply" type="button" class="btn btn-primary align-items-center">
+            ПРИМЕНИТЬ
+            <div id="modalEdit-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </button>
         </div>
       </div>
     </div>

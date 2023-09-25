@@ -387,6 +387,7 @@ else
         let input = $('#input-article').val();
         if (input.split(" ").length > 1)
             input = input.split(" ")[1];
+
         if (site_name == "") {
             window.open("https://shop.donaldson.com/store/ru-ru/search?Ntt=" + input, '_blank');
             window.open("https://catalog.filfilter.com.tr/ru/search/" + input, '_blank');

@@ -65,3 +65,7 @@
     color: #212121;
     transform: translateY(2rem) scale(0.8);
 } */
+
+.cursor-auto {
+    cursor: auto;
+}

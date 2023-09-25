@@ -69,6 +69,8 @@ function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name, real_p
     formData.append('new_producer_name_dsts', new_producer_name_dsts);
     formData.append('new_producer_name', new_producer_name);
 
+    $('#modalEdit-spinner-waiting').removeClass("d-none");
+
     $.ajax({
         type: "POST",
         url: 'edit_action.php#content',
@@ -86,6 +88,7 @@ function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name, real_p
                     updateTablesAfterEditProducerNameDSTS(real_producer_name_dsts, new_producer_name_dsts);
                 if (response.setSimmilarProducer)
                     updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
+                $('#modalEdit-spinner-waiting').addClass("d-none");
                 $('#dialogModalEdit').modal('hide');
             }
         },

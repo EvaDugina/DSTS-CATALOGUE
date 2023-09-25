@@ -181,7 +181,7 @@ function createArticleElement(article, needToChoose = false) {
     tr.classList.add("border");
 
     let td_artcle_name = document.createElement("td");
-    td_artcle_name.classList.add("middleInTable", "col-2");
+    td_artcle_name.classList.add("middleInTable", "col-2", "cursor-auto");
     let button = document.createElement("button");
     if (article.hasInfo) {
         button.style.color = "green";
@@ -193,7 +193,7 @@ function createArticleElement(article, needToChoose = false) {
     td_artcle_name.appendChild(button);
 
     let td_producer_dsts_name = document.createElement("td");
-    td_producer_dsts_name.classList.add("middleInTable", "col-2");
+    td_producer_dsts_name.classList.add("middleInTable", "col-2", "cursor-auto");
     if (article.producer_name_dsts == "") {
         td_producer_dsts_name.innerText = article.producer_name;
         td_producer_dsts_name.classList.add("text-danger");
@@ -202,7 +202,7 @@ function createArticleElement(article, needToChoose = false) {
 
 
     let td_catalogue_name = document.createElement("td");
-    td_catalogue_name.classList.add("middleInTable", "col-3");
+    td_catalogue_name.classList.add("middleInTable", "col-3", "cursor-auto");
     td_catalogue_name.innerText = article.catalogue_name;
 
     tr.appendChild(td_artcle_name);
@@ -211,17 +211,17 @@ function createArticleElement(article, needToChoose = false) {
     if (is_admin) {
 
         let td_producer_name = document.createElement("td");
-        td_producer_name.classList.add("middleInTable", "col-4");
+        td_producer_name.classList.add("middleInTable", "col-4", "cursor-auto");
         td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
             " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
 
         let td_edit = document.createElement("td");
-        td_edit.classList.add("middleInTable", "col-1");
+        td_edit.classList.add("middleInTable", "col-1", "cursor-auto");
 
         let button = document.createElement("button");
         button.classList.add("badge", "badge-primary", "badge-pill");
         button.addEventListener("click", function () {
-            clickToButtonEditLine();
+            clickToButtonEditLine(article);
         });
         button.style.border = "unset";
 
@@ -245,7 +245,7 @@ function createArticleElement(article, needToChoose = false) {
         tr.appendChild(td_edit);
     } else {
         let td_type = document.createElement("td");
-        td_type.classList.add("middleInTable", "col-6");
+        td_type.classList.add("middleInTable", "col-6", "cursor-auto");
         if (article.description != "")
             td_type.innerHTML = article.description;
         else
@@ -258,7 +258,7 @@ function createArticleElement(article, needToChoose = false) {
         // $('#th-choose').removeClass("d-none");
 
         let td_choose = document.createElement("td");
-        td_choose.classList.add("middleInTable");
+        td_choose.classList.add("middleInTable", "cursor-auto");
 
         let button = document.createElement("button");
         button.classList.add("btn", "btn-outline-primary");
