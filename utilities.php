@@ -42,6 +42,12 @@ $ARRAY_NAME_CATALOGUES = ["DONALDSON"];
 
 $ARRAY_SPLIT_CHARS = ['.', '-', ' '];
 
+$COUNT_LOADING_ELEMENTS = 20;
+
+
+
+
+
 function getSplitArticleName($article_name, $arrayChars)
 {
   foreach ($arrayChars as $char) {

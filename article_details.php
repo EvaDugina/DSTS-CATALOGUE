@@ -13,8 +13,16 @@ else
     exit;
 
 
+if ($au->isAdmin())
+    echo "<script>var is_admin=1;</script>";
+else
+    echo "<script>var is_admin=0;</script>";
+
+
 $Article = new Article($article_id);
 $imageUrl = $Article->getImageUrl();
+
+$articleAnalogs = getArticleAnalogs($Article, $Article->getGroup());
 
 show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 ?>
@@ -65,48 +73,119 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                     </div>
 
                     <div clacc="col-4" style="width:inherit;">
-                        <?php if ($Article->hasInfo()) {
-                            $characteristics = $Article->getAllCharacteristics(); ?>
-                            <table class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
-                                <thead class="px-0">
-                                    <tr class="bg-primary text-white border">
-                                        <th scope="col" class="middleInTable border fw-bold">
-                                            <div class="d-inline-flex justify-content-between align-items-center">
-                                                <span>ХАРАКТЕРИСТИКИ</span>
-                                                <?php if ($au->isAdmin()) { ?>
-                                                    <button class="badge badge-primary badge-pill border-0 ms-3" onclick="editCharacteristicList()">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                                        </svg>
-                                                    </button>
-                                                <?php } ?>
-                                            </div>
-                                        </th>
-                                        <?php foreach ($Article->getMainInfo() as $info_by_catalogue) { ?>
-                                            <th scope="col" class="middleInTable border fw-bold"><?= $info_by_catalogue['catalogue_name'] ?></th>
-                                        <?php } ?>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbody-article" role="button" class="px-0" style="cursor:auto; border: transparent;">
-                                    <?php
-                                    foreach ($characteristics as $key => $line) { ?>
-                                        <tr class="border">
-                                            <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
-                                            <?php foreach ($line as $characteristic_by_catalogue) { ?>
-                                                <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
+
+                        <div>
+                            <?php if ($Article->hasInfo()) {
+                                $characteristics = $Article->getAllCharacteristics(); ?>
+                                <table class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                                    <thead class="px-0">
+                                        <tr class="bg-primary text-white border">
+                                            <th scope="col" class="middleInTable border fw-bold">
+                                                <div class="d-inline-flex justify-content-between align-items-center">
+                                                    <span>ХАРАКТЕРИСТИКИ</span>
+                                                    <?php if ($au->isAdmin()) { ?>
+                                                        <button class="badge badge-primary badge-pill border-0 ms-3" onclick="editCharacteristicList()">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                            </svg>
+                                                        </button>
+                                                    <?php } ?>
+                                                </div>
+                                            </th>
+                                            <?php foreach ($Article->getMainInfo() as $info_by_catalogue) { ?>
+                                                <th scope="col" class="middleInTable border fw-bold"><?= $info_by_catalogue['catalogue_name'] ?></th>
                                             <?php } ?>
                                         </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody id="tbody-article" role="button" class="px-0" style="cursor:auto; border: transparent;">
+                                        <?php
+                                        foreach ($characteristics as $key => $line) { ?>
+                                            <tr class="border">
+                                                <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
+                                                <?php foreach ($line as $characteristic_by_catalogue) { ?>
+                                                    <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
+                                                <?php } ?>
+                                            </tr>
+                                        <?php } ?>
+                                    </tbody>
+                                </table>
 
-                        <?php } else { ?>
-                            <h6>Информация о характеристиках отсутствует</h6>
-                        <?php } ?>
+                            <?php } else { ?>
+                                <h6>Информация о характеристиках отсутствует</h6>
+                            <?php } ?>
+                        </div>
+
                     </div>
 
                 </div>
+
+                <div id="div-all-analogs" class="mt-3 mb-5">
+                    <table id="table-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                        <thead class="px-0">
+                            <tr class="table-active">
+                                <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                                <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                                <?php if ($au->isAdmin()) { ?>
+                                    <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                    <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                    <th class="middleInTable col-1"></th>
+                                <?php } else { ?>
+                                    <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
+                                <?php } ?>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
+                            <?php
+                            $index = 0;
+                            foreach ($articleAnalogs as $analog) {
+                                if ($index < $COUNT_LOADING_ELEMENTS) { ?>
+                                    <tr class="border">
+                                        <td class="middleInTable col-2">
+                                            <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
+                                        </td>
+                                        <td class="middleInTable col-2 <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
+                                            <?= ($analog['producer_name_dsts'] == "") ? $analog['producer_name'] : $analog['producer_name_dsts'] ?>
+                                        </td>
+                                        <td class="middleInTable col-3">
+                                            <?= $analog['catalogue_name'] ?>
+                                        </td>
+                                        <?php if ($au->isAdmin()) { ?>
+                                            <td class="middleInTable col-4">
+                                                <span>
+                                                    <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
+                                                </span>
+                                            </td class="middleInTable col-1">
+                                            <td>
+                                                <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                                                    </svg>
+                                                </button>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td class="middleInTable col-6">
+                                                <?= ($analog['description'] != "") ? $analog['description'] : '(тип неопределён)' ?>
+                                            </td>
+                                        <?php } ?>
+                                    </tr>
+                            <?php
+                                    $index++;
+                                }
+                            } ?>
+                        </tbody>
+                    </table>
+
+                    <?php if ($index >= $COUNT_LOADING_ELEMENTS) { ?>
+                        <div id="div-analogs-showMore" class="d-flex justify-content-center">
+                            <button class="btn btn-outline-primary mt-1 mb-5" onclick='showMoreArticles(JSON.parse("<?= addslashes(json_encode($articleAnalogs)) ?>"))'>
+                                ПОКАЗАТЬ БОЛЬШЕ
+                            </button>
+                        </div>
+                    <?php } ?>
+
+                </div>
+
             </div>
         </div>
     </main>
@@ -153,6 +232,8 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
         </div>
     </div>
 </div>
+
+<?php showSearchPopovers(); ?>
 
 
 
@@ -209,3 +290,5 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
         });
     }
 </script>
+
+<script type="text/javascript" src="js/TableHandler.js"></script>

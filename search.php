@@ -120,7 +120,7 @@ else
                         </div>
 
 
-                        <div id="div-all-analogs" class="">
+                        <!-- <div id="div-all-analogs" class="">
                             <table id="table-analogs" class="table border rounded d-none mx-0" style="border-spacing: 0; border-collapse: separate;">
                                 <thead class="px-0">
                                     <tr class="table-active">
@@ -146,7 +146,8 @@ else
                                 </button>
                             </div>
 
-                        </div>
+                        </div> -->
+
                     </div>
                 </div>
 
@@ -227,104 +228,7 @@ else
 </body>
 
 
-<div class="modal fade" id="dialogModalAddArticle" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 id="modalAddArticle-h5-title" class="modal-title">ДОБАВЛЕНИЕ АРТИКУЛА</h5>
-                <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <h6>Добавление артикула по каталогу:</h6>
-                    <div class="d-inline-flex align-items-center w-75">
-                        <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100 my-0" placeholder="Введите название артикула">
-                        <div class="mx-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-                            </svg>
-                        </div>
-                        <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
-                            <option selected>ВСЕ</option>
-                            <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
-                                if ($catalogue[1]) { ?>
-                                    <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
-                            <?php }
-                            } ?>
-                        </select>
-                    </div>
-                    <p id="modalAddArticle-p-inputError" class="text-danger d-none">
-                        <small><strong>ВНИМАНИЕ! В строке не должно присутсвовать ничего, кроме слитно написанного названия артикула</strong></small>
-                    </p>
-                    <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
-                </div>
-                <br />
-                <div id="modalAddArticle-div-result" class="w-100 d-none">
-                    <h6>Результат добавления:</h6>
-                    <textarea id="modalAddArticle-textarea-result" class="form-control w-100" rows="10" readonly></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">ОТМЕНА</button>
-                <button id="modalAddArticle-button-apply" type="button" class="btn btn-primary align-items-center">
-                    ДОБАВИТЬ АРТИКУЛ
-                    <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="dialogModalEdit" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 id="modalEdit-h5-title" class="modal-title">РЕДАКТИРОВАНИЕ АРТИКУЛА</h5>
-                <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <h6>Изменение название производителя в каталоге ДСТС:</h6>
-                    <div class="d-inline-flex align-items-center w-75">
-                        <input id="modalEdit-input-realProducerNameInDSTSCatalogue" type="text" value="" class="form-control w-50" readonly>
-                        <div class="mx-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-                            </svg>
-                        </div>
-                        <input id="modalEdit-input-newProducerNameInDSTSCatalogue" type="text" class="form-control w-50" name="new_producer_name_in_DSTS_catalogue" />
-                    </div>
-                </div>
-                <br />
-                <div>
-                    <h6>Присвоение подобия производителей:</h6>
-                    <div class="d-inline-flex align-items-center w-75">
-                        <input id="modalEdit-input-realProducerName" type="text" value="" class="form-control w-50" readonly>
-                        <div class="mx-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
-                            </svg>
-                        </div>
-                        <select id="modalEdit-select-newProducerName" class="form-select w-50">
-                            <option value="">(выберите производителя)</option>
-                            <?php foreach (getProducersNames() as $producer_name) { ?>
-                                <option value="<?= $producer_name ?>"><?= $producer_name ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-                </div>
-                <br />
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Закрыть</button>
-                <button id="modalEdit-button-apply" type="button" class="btn btn-primary">ПРИМЕНИТЬ</button>
-            </div>
-        </div>
-    </div>
-</div>
+<?php showSearchPopovers(); ?>
 
 
 
@@ -332,8 +236,8 @@ else
 <script type="text/javascript">
     var selected_catalogues = [];
 
-    var article_for_edit = null;
-    var addingArticle = false;
+    // var article_for_edit = null;
+    // var addingArticle = false;
 
     $('#input-article').focus();
 
@@ -350,10 +254,10 @@ else
     //-------------------------------------------------------------------------------------------------------------
 
 
-    $('#btn-add-article').on("click", function() {
-        setValuesToDialogModalAddArticleFields();
-        showPopoverAddArticle();
-    });
+    // $('#btn-add-article').on("click", function() {
+    //     setValuesToDialogModalAddArticleFields();
+    //     showPopoverAddArticle();
+    // });
 
 
     $('#btn-copy-parse-result').hover(
@@ -398,52 +302,52 @@ else
     });
 
 
-    $('#modalEdit-button-apply').on("click", function(event) {
-        real_producer_name_dsts = $('#modalEdit-input-realProducerNameInDSTSCatalogue').val();
-        new_producer_name_dsts = $('#modalEdit-input-newProducerNameInDSTSCatalogue').val();
-        real_producer_name = $('#modalEdit-input-realProducerName').val();
-        new_producer_name = $('#modalEdit-select-newProducerName').val();
-        ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name);
-        // updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
-        // updateSessionParams();
-        // location.reload();
-    });
+    // $('#modalEdit-button-apply').on("click", function(event) {
+    //     real_producer_name_dsts = $('#modalEdit-input-realProducerNameInDSTSCatalogue').val();
+    //     new_producer_name_dsts = $('#modalEdit-input-newProducerNameInDSTSCatalogue').val();
+    //     real_producer_name = $('#modalEdit-input-realProducerName').val();
+    //     new_producer_name = $('#modalEdit-select-newProducerName').val();
+    //     ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name);
+    //     // updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
+    //     // updateSessionParams();
+    //     // location.reload();
+    // });
 
-    $('#dialogModalEdit').on('hidden.bs.modal', function(e) {
-        $('#modalEdit-input-newProducerNameInDSTSCatalogue').val("");
-        $('#modalEdit-select-newProducerName').val("");
-    })
+    // $('#dialogModalEdit').on('hidden.bs.modal', function(e) {
+    //     $('#modalEdit-input-newProducerNameInDSTSCatalogue').val("");
+    //     $('#modalEdit-select-newProducerName').val("");
+    // })
 
-    $('#modalAddArticle-button-apply').on("click", function(event) {
-        let article_name = $('#modalAddArticle-input-articleName').val();
-        if (article_name.split(" ").length > 1) {
-            $('#modalAddArticle-p-inputError').removeClass("d-none");
-            $('#modalAddArticle-input-articleName').addClass("is-invalid");
-            return;
-        } else {
-            $('#modalAddArticle-p-inputError').addClass("d-none");
-            $('#modalAddArticle-input-articleName').removeClass("is-invalid");
-        }
+    // $('#modalAddArticle-button-apply').on("click", function(event) {
+    //     let article_name = $('#modalAddArticle-input-articleName').val();
+    //     if (article_name.split(" ").length > 1) {
+    //         $('#modalAddArticle-p-inputError').removeClass("d-none");
+    //         $('#modalAddArticle-input-articleName').addClass("is-invalid");
+    //         return;
+    //     } else {
+    //         $('#modalAddArticle-p-inputError').addClass("d-none");
+    //         $('#modalAddArticle-input-articleName').removeClass("is-invalid");
+    //     }
 
-        addingArticle = true;
-        let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
-        ajaxAddArticle(article_name, catalogue_name);
-    });
+    //     addingArticle = true;
+    //     let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
+    //     ajaxAddArticle(article_name, catalogue_name);
+    // });
 
-    $('#dialogModalAddArticle').on('hidden.bs.modal', function(event) {
-        if (addingArticle) {
-            event.preventDefault();
-            var confirm = window.confirm("Идёт добавление артикула, вы уверены, что хотите закрыть окно?");
-            if (confirm)
-                ajaxStopAddArticle();
-            else
-                return;
-        }
-        $('#modalAddArticle-textarea-result').text("");
-        $('#modalAddArticle-div-result').addClass("d-none");
-        $('#dialogModalAddArticle').modal('hide');
+    // $('#dialogModalAddArticle').on('hidden.bs.modal', function(event) {
+    //     if (addingArticle) {
+    //         event.preventDefault();
+    //         var confirm = window.confirm("Идёт добавление артикула, вы уверены, что хотите закрыть окно?");
+    //         if (confirm)
+    //             ajaxStopAddArticle();
+    //         else
+    //             return;
+    //     }
+    //     $('#modalAddArticle-textarea-result').text("");
+    //     $('#modalAddArticle-div-result').addClass("d-none");
+    //     $('#dialogModalAddArticle').modal('hide');
 
-    })
+    // })
 
 
     //-------------------------------------------------------------------------------------------------------------
@@ -500,98 +404,98 @@ else
         }
     }
 
-    function showPopoverEdit(student_id) {
-        $('#dialogModalEdit').modal('show');
-    }
+    // function showPopoverEdit(student_id) {
+    //     $('#dialogModalEdit').modal('show');
+    // }
 
-    function showPopoverAddArticle() {
-        $('#dialogModalAddArticle').modal('show');
-    }
+    // function showPopoverAddArticle() {
+    //     $('#dialogModalAddArticle').modal('show');
+    // }
 
 
-    function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name) {
-        var formData = new FormData();
+    // function ajaxEdit(producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name) {
+    //     var formData = new FormData();
 
-        formData.append('producer_id', producer_id);
-        formData.append('new_producer_name_dsts', new_producer_name_dsts);
-        formData.append('new_producer_name', new_producer_name);
+    //     formData.append('producer_id', producer_id);
+    //     formData.append('new_producer_name_dsts', new_producer_name_dsts);
+    //     formData.append('new_producer_name', new_producer_name);
 
-        $.ajax({
-            type: "POST",
-            url: 'edit_action.php#content',
-            cache: false,
-            contentType: false,
-            processData: false,
-            data: formData,
-            dataType: 'html',
-            success: function(response) {
-                response = JSON.parse(response);
-                console.log(response);
-                if (response.setProducerDSTSName || response.setSimmilarProducer) {
-                    // searchAnalogs($('#input-article').val());
-                    if (response.setProducerDSTSName)
-                        updateTablesAfterEditProducerNameDSTS(real_producer_name_dsts, new_producer_name_dsts);
-                    if (response.setSimmilarProducer)
-                        updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
-                    $('#dialogModalEdit').modal('hide');
-                }
-            },
-            complete: function() {}
-        });
-    }
+    //     $.ajax({
+    //         type: "POST",
+    //         url: 'edit_action.php#content',
+    //         cache: false,
+    //         contentType: false,
+    //         processData: false,
+    //         data: formData,
+    //         dataType: 'html',
+    //         success: function(response) {
+    //             response = JSON.parse(response);
+    //             console.log(response);
+    //             if (response.setProducerDSTSName || response.setSimmilarProducer) {
+    //                 // searchAnalogs($('#input-article').val());
+    //                 if (response.setProducerDSTSName)
+    //                     updateTablesAfterEditProducerNameDSTS(real_producer_name_dsts, new_producer_name_dsts);
+    //                 if (response.setSimmilarProducer)
+    //                     updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
+    //                 $('#dialogModalEdit').modal('hide');
+    //             }
+    //         },
+    //         complete: function() {}
+    //     });
+    // }
 
-    function ajaxAddArticle(article_name, catalogue_name) {
-        var formData = new FormData();
+    // function ajaxAddArticle(article_name, catalogue_name) {
+    //     var formData = new FormData();
 
-        formData.append('article_name', article_name);
-        formData.append('catalogue_name', catalogue_name);
+    //     formData.append('article_name', article_name);
+    //     formData.append('catalogue_name', catalogue_name);
 
-        $('#modalAddArticle-spinner-waiting').removeClass("d-none");
+    //     $('#modalAddArticle-spinner-waiting').removeClass("d-none");
 
-        $.ajax({
-            type: "POST",
-            url: 'addArticle_action.php#content',
-            cache: false,
-            contentType: false,
-            processData: false,
-            data: formData,
-            dataType: 'html',
-            success: function(response) {
-                // response = JSON.parse(response);
-                $('#modalAddArticle-spinner-waiting').addClass("d-none");
-                $('#modalAddArticle-textarea-result').text(response);
-                $('#modalAddArticle-div-result').removeClass("d-none");
-                addingArticle = false;
-                search();
-            },
-            complete: function() {}
-        });
-    }
+    //     $.ajax({
+    //         type: "POST",
+    //         url: 'addArticle_action.php#content',
+    //         cache: false,
+    //         contentType: false,
+    //         processData: false,
+    //         data: formData,
+    //         dataType: 'html',
+    //         success: function(response) {
+    //             // response = JSON.parse(response);
+    //             $('#modalAddArticle-spinner-waiting').addClass("d-none");
+    //             $('#modalAddArticle-textarea-result').text(response);
+    //             $('#modalAddArticle-div-result').removeClass("d-none");
+    //             addingArticle = false;
+    //             search();
+    //         },
+    //         complete: function() {}
+    //     });
+    // }
 
-    function ajaxStopAddArticle() {
+    // function ajaxStopAddArticle() {
 
-        window.close();
+    //     window.close();
 
-        // var formData = new FormData();
+    //     // var formData = new FormData();
 
-        // formData.append('code_stop', 1);
+    //     // formData.append('code_stop', 1);
 
-        // $.ajax({
-        //     type: "POST",
-        //     url: 'addArticle_action.php#content',
-        //     cache: false,
-        //     contentType: false,
-        //     processData: false,
-        //     data: formData,
-        //     dataType: 'html',
-        //     success: function(response) {
-        //         // response = JSON.parse(response);
-        //         $('#modalAddArticle-spinner-waiting').removeClass("d-none");
-        //         addingArticle = false;
-        //     },
-        //     complete: function() {}
-        // });
-    }
+    //     // $.ajax({
+    //     //     type: "POST",
+    //     //     url: 'addArticle_action.php#content',
+    //     //     cache: false,
+    //     //     contentType: false,
+    //     //     processData: false,
+    //     //     data: formData,
+    //     //     dataType: 'html',
+    //     //     success: function(response) {
+    //     //         // response = JSON.parse(response);
+    //     //         $('#modalAddArticle-spinner-waiting').removeClass("d-none");
+    //     //         addingArticle = false;
+    //     //     },
+    //     //     complete: function() {}
+    //     // });
+    // }
 
 
     //-------------------------------------------------------------------------------------------------------------
@@ -599,53 +503,53 @@ else
     //-------------------------------------------------------------------------------------------------------------
 
 
-    function updateTablesAfterEditProducerNameDSTS(last_producer_name_dsts, new_producer_name_dsts) {
-        analogs.forEach((article) => {
-            if (article.producer_name_dsts == last_producer_name_dsts)
-                article.producer_name_dsts = new_producer_name_dsts;
-        });
+    // function updateTablesAfterEditProducerNameDSTS(last_producer_name_dsts, new_producer_name_dsts) {
+    //     analogs.forEach((article) => {
+    //         if (article.producer_name_dsts == last_producer_name_dsts)
+    //             article.producer_name_dsts = new_producer_name_dsts;
+    //     });
 
-        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-article", last_producer_name_dsts, new_producer_name_dsts);
-        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-main-analogs", last_producer_name_dsts, new_producer_name_dsts);
-        dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-analogs", last_producer_name_dsts, new_producer_name_dsts);
-    }
+    //     dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-article", last_producer_name_dsts, new_producer_name_dsts);
+    //     dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-main-analogs", last_producer_name_dsts, new_producer_name_dsts);
+    //     dynamicUpdateTablesAfterChangeProducerNameDSTS("tbody-analogs", last_producer_name_dsts, new_producer_name_dsts);
+    // }
 
-    function updateTablesAfterEditProducerName(last_producer_name, new_producer_name) {
-        analogs.forEach((article) => {
-            if (article.producer_name == last_producer_name)
-                article.producer_name = new_producer_name;
-        });
+    // function updateTablesAfterEditProducerName(last_producer_name, new_producer_name) {
+    //     analogs.forEach((article) => {
+    //         if (article.producer_name == last_producer_name)
+    //             article.producer_name = new_producer_name;
+    //     });
 
-        dynamicUpdateTablesAfterChangeProducerName("tbody-article", last_producer_name, new_producer_name);
-        dynamicUpdateTablesAfterChangeProducerName("tbody-main-analogs", last_producer_name, new_producer_name);
-        dynamicUpdateTablesAfterChangeProducerName("tbody-analogs", last_producer_name, new_producer_name);
+    //     dynamicUpdateTablesAfterChangeProducerName("tbody-article", last_producer_name, new_producer_name);
+    //     dynamicUpdateTablesAfterChangeProducerName("tbody-main-analogs", last_producer_name, new_producer_name);
+    //     dynamicUpdateTablesAfterChangeProducerName("tbody-analogs", last_producer_name, new_producer_name);
 
 
-    }
+    // }
 
-    function dynamicUpdateTablesAfterChangeProducerNameDSTS(id, last_producer_name_dsts, new_producer_name_dsts) {
-        $("#" + id).children().each((index, tr) => {
-            // console.log(tr);
-            let td_producer_name_dsts = tr.children[1];
-            if (td_producer_name_dsts.innerText == last_producer_name_dsts) {
-                tr.children[1].innerText = new_producer_name_dsts;
-                tr.children[1].classList.remove("text-danger");
-            }
-        });
-    }
+    // function dynamicUpdateTablesAfterChangeProducerNameDSTS(id, last_producer_name_dsts, new_producer_name_dsts) {
+    //     $("#" + id).children().each((index, tr) => {
+    //         // console.log(tr);
+    //         let td_producer_name_dsts = tr.children[1];
+    //         if (td_producer_name_dsts.innerText == last_producer_name_dsts) {
+    //             tr.children[1].innerText = new_producer_name_dsts;
+    //             tr.children[1].classList.remove("text-danger");
+    //         }
+    //     });
+    // }
 
-    function dynamicUpdateTablesAfterChangeProducerName(id, last_producer_name, new_producer_name) {
-        $("#" + id).children().each((index, tr) => {
-            // console.log(tr);
-            let strong = tr.children[3].getElementsByTagName("strong")[0];
-            let producer_name = strong.innerText;
-            if (producer_name == last_producer_name) {
-                let new_value = tr.children[3].innerText.split("(")[0] +
-                    "(<strong style='font-weight: bold;'>" + new_producer_name + "</strong>)";
-                tr.children[3].innerHTML = new_value;
-            }
-        });
-    }
+    // function dynamicUpdateTablesAfterChangeProducerName(id, last_producer_name, new_producer_name) {
+    //     $("#" + id).children().each((index, tr) => {
+    //         // console.log(tr);
+    //         let strong = tr.children[3].getElementsByTagName("strong")[0];
+    //         let producer_name = strong.innerText;
+    //         if (producer_name == last_producer_name) {
+    //             let new_value = tr.children[3].innerText.split("(")[0] +
+    //                 "(<strong style='font-weight: bold;'>" + new_producer_name + "</strong>)";
+    //             tr.children[3].innerHTML = new_value;
+    //         }
+    //     });
+    // }
 
 
 
@@ -682,10 +586,10 @@ else
 
     }
 
-    function updateSessionParams() {
-        sessionStorage.setItem('search_request', $('#input-article').val());
-        sessionStorage.setItem('search_type', last_search_type);
-    }
+    // function updateSessionParams() {
+    //     sessionStorage.setItem('search_request', $('#input-article').val());
+    //     sessionStorage.setItem('search_type', last_search_type);
+    // }
 
 
     function addSelectedProducer(producer_name) {
@@ -741,23 +645,23 @@ else
     }
 
 
-    function setValuesToDialogModalEditFields(article) {
-        $('#modalEdit-h5-title').text($('#modalEdit-h5-title').text() + article.article_name);
-        $('#modalEdit-input-realProducerNameInDSTSCatalogue').val(getProducerNameDSTS(article));
-        $('#modalEdit-input-realProducerName').val(article.producer_name);
-    }
+    // function setValuesToDialogModalEditFields(article) {
+    //     $('#modalEdit-h5-title').text($('#modalEdit-h5-title').text() + article.article_name);
+    //     $('#modalEdit-input-realProducerNameInDSTSCatalogue').val(getProducerNameDSTS(article));
+    //     $('#modalEdit-input-realProducerName').val(article.producer_name);
+    // }
 
-    function setValuesToDialogModalAddArticleFields(article) {
-        $('#modalAddArticle-input-articleName').val($('#input-article').val());
-    }
+    // function setValuesToDialogModalAddArticleFields(article) {
+    //     $('#modalAddArticle-input-articleName').val($('#input-article').val());
+    // }
 
 
-    function getProducerNameDSTS(article) {
-        if (article.producer_name_dsts == "")
-            return article.producer_name;
-        else
-            return article.producer_name_dsts;
-    }
+    // function getProducerNameDSTS(article) {
+    //     if (article.producer_name_dsts == "")
+    //         return article.producer_name;
+    //     else
+    //         return article.producer_name_dsts;
+    // }
 </script>
 
 

@@ -1,5 +1,6 @@
 <?php
 require_once("settings.php");
+require_once("utilities.php");
 
 
 function show_breadcrumbs(&$breadcrumbs)
@@ -107,4 +108,113 @@ function show_footer()
   </html>
 <?php
 }
+
+
+function showSearchPopovers()
+{
+  global $ARRAY_CATALOGUES;
+?>
+
+  <div class="modal fade" id="dialogModalAddArticle" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="modalAddArticle-h5-title" class="modal-title">ДОБАВЛЕНИЕ АРТИКУЛА</h5>
+          <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <h6>Добавление артикула по каталогу:</h6>
+            <div class="d-inline-flex align-items-center w-75">
+              <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100 my-0" placeholder="Введите название артикула">
+              <div class="mx-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                </svg>
+              </div>
+              <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
+                <!-- <option selected>ВСЕ</option> -->
+                <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
+                  if ($catalogue[1]) { ?>
+                    <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
+                <?php }
+                } ?>
+              </select>
+            </div>
+            <p id="modalAddArticle-p-inputError" class="text-danger d-none">
+              <small><strong>ВНИМАНИЕ! В строке не должно присутсвовать ничего, кроме слитно написанного названия артикула</strong></small>
+            </p>
+            <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
+          </div>
+          <br />
+          <div id="modalAddArticle-div-result" class="w-100 d-none">
+            <h6>Результат добавления:</h6>
+            <textarea id="modalAddArticle-textarea-result" class="form-control w-100" rows="10" readonly></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">ОТМЕНА</button>
+          <button id="modalAddArticle-button-apply" type="button" class="btn btn-primary align-items-center">
+            ДОБАВИТЬ АРТИКУЛ
+            <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="dialogModalEdit" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 id="modalEdit-h5-title" class="modal-title">РЕДАКТИРОВАНИЕ АРТИКУЛА</h5>
+          <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>
+            <h6>Изменение название производителя в каталоге ДСТС:</h6>
+            <div class="d-inline-flex align-items-center w-75">
+              <input id="modalEdit-input-realProducerNameInDSTSCatalogue" type="text" value="" class="form-control w-50" readonly>
+              <div class="mx-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                </svg>
+              </div>
+              <input id="modalEdit-input-newProducerNameInDSTSCatalogue" type="text" class="form-control w-50" name="new_producer_name_in_DSTS_catalogue" />
+            </div>
+          </div>
+          <br />
+          <div>
+            <h6>Присвоение подобия производителей:</h6>
+            <div class="d-inline-flex align-items-center w-75">
+              <input id="modalEdit-input-realProducerName" type="text" value="" class="form-control w-50" readonly>
+              <div class="mx-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                </svg>
+              </div>
+              <select id="modalEdit-select-newProducerName" class="form-select w-50">
+                <option value="">(выберите производителя)</option>
+                <?php foreach (getProducersNames() as $producer_name) { ?>
+                  <option value="<?= $producer_name ?>"><?= $producer_name ?></option>
+                <?php } ?>
+              </select>
+            </div>
+          </div>
+          <br />
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">Закрыть</button>
+          <button id="modalEdit-button-apply" type="button" class="btn btn-primary">ПРИМЕНИТЬ</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" src="js/PopoverHandler.js"></script>
+
+<?php }
 ?>

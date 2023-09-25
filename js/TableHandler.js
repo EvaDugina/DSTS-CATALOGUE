@@ -16,284 +16,6 @@ var flagValidation = false;
 
 var COUNT_LOADING_ELEMENTS = 20;
 
-// $.material.init();
-
-$(document).ready(function () {
-    ajaxGetProducerNames();
-
-});
-
-function loadLastSearchRequest() {
-    $('#input-article').change();
-    console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
-    if (sessionStorage.getItem('search_request') && sessionStorage.getItem('search_type')) {
-        flagValidation = true;
-        $('#input-article').val(sessionStorage.getItem('search_request'));
-        search_type = sessionStorage.getItem('search_type');
-        search();
-    }
-}
-
-// $('#input-article').on("change", function(e) {
-//         flagValidation = true;
-
-//         SEARCH_REQUEST = $('#input-article').val();
-//         // let search_request_splitted = SEARCH_REQUEST.split(" ");
-//         if (!hasNumber(SEARCH_REQUEST) && SEARCH_REQUEST.split(" ").length < 2) {
-//             offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
-//             refreshAutocomplete(offeringProducerNames);
-//         } else {
-//             var div = document.getElementById('div-autocomplete');
-//             div.classList.add("d-none");
-//             div.innerHTML = '';
-//         }
-//         $('#input-article').focus();
-//     // }
-// });
-
-function searchSimmilarProducers() {
-    flagValidation = true;
-
-    SEARCH_REQUEST = $('#input-article').val().toUpperCase();
-    if (!hasNumber(SEARCH_REQUEST) && SEARCH_REQUEST.split(" ").length < 2) {
-        offeringProducerNames = findProducerByFragment(SEARCH_REQUEST);
-        refreshAutocomplete(offeringProducerNames);
-    } else {
-        var div = document.getElementById('div-autocomplete');
-        div.classList.add("d-none");
-        div.innerHTML = '';
-    }
-    $('#input-article').focus();
-}
-
-
-$('#input-article').on("keydown", function (e) {
-    if (e.key == "Enter" || e.keyCode == 13) {
-        if (!$('#div-autocomplete').hasClass("d-none")) {
-            $('#div-autocomplete').children().each((index, button) => {
-                if (button.classList.contains("btn-autocomplete-hover")) {
-                    chooseArticleProducer(button.innerText);
-                    return true;
-                }
-            });
-        } else
-            search();
-    } else if (e.ctrlKey) {
-        // if (e.key == "Backspace")
-        //     SEARCH_REQUEST_PRODUCER_NAME = "";
-        return;
-    } else {
-        if (checkPressKeyUpDownLeftRight(e.key)) {
-            if (e.key == "ArrowUp")
-                navigateByArrows(1);
-            else if (e.key == "ArrowDown")
-                navigateByArrows(-1);
-        } else {
-            if (e.key.length > 1) {
-                if (e.key == "Backspace") {
-                    let array = changeInputSelectedBySymbol(e, "");
-                    $('#input-article').val(array[0]);
-                    e.target.selectionStart = array[1];
-                    e.target.selectionEnd = array[1];
-                }
-                return true;
-            } else if (checkPressCharInSearchField(e.key) == false) {
-                e.preventDefault();
-            } else {
-                e.preventDefault();
-                // console.log(e.target.selectionStart + " : " + e.target.selectionEnd);
-                let array = changeInputSelectedBySymbol(e, e.key.toUpperCase());
-                $('#input-article').val(array[0]);
-                e.target.selectionStart = array[1];
-                e.target.selectionEnd = array[1];
-                searchSimmilarProducers();
-            }
-        }
-    }
-});
-
-$('#input-article').on("blur", function (e) {
-    if ($('#input-article').val() != "")
-        $('#input-article').addClass("active");
-});
-
-function navigateByArrows(step) {
-    let now_index_selected = -1;
-    $('#div-autocomplete').children().each((index, button) => {
-        if (button.classList.contains("btn-autocomplete-hover")) {
-            now_index_selected = index;
-            button.classList.remove("btn-autocomplete-hover");
-            button.classList.add("btn-autocomplete-unhover");
-            return true;
-        }
-    });
-
-    let new_index_selected = now_index_selected - step;
-    if ((step == 1 && now_index_selected > 0) || (step == -1 && now_index_selected < $('#div-autocomplete').children().length - 1)) {
-        $('#div-autocomplete').children()[new_index_selected].classList.remove("btn-autocomplete-unhover");
-        $('#div-autocomplete').children()[new_index_selected].classList.add("btn-autocomplete-hover");
-    }
-}
-
-
-
-function refreshAutocomplete(offeringProducerNames) {
-    var div = document.getElementById('div-autocomplete');
-    div.classList.add("d-none");
-    div.innerHTML = '';
-
-    offeringProducerNames.forEach((producer_name, index) => {
-        let button = document.createElement("button");
-        button.id = "btn-autocomplete-" + index;
-        button.classList.add("list-group-item", "list-group-item-action", "border", "border-primary");
-        if (index == 0)
-            button.classList.add("btn-autocomplete-hover");
-        else
-            button.classList.add("btn-autocomplete-unhover");
-
-        button.addEventListener("mouseover", function () {
-            $('#div-autocomplete').children().each((index, button) => {
-                if (button.classList.contains("btn-autocomplete-hover")) {
-                    button.classList.remove("btn-autocomplete-hover");
-                    button.classList.add("btn-autocomplete-unhover");
-                    return true;
-                }
-            });
-            button.classList.remove("btn-autocomplete-unhover");
-            button.classList.add("btn-autocomplete-hover");
-        });
-        // button.hover();
-        //     button.classList.add("bg-primary", "text-white");
-        // else
-        // button.classList.add("bg-white", "text-primary");
-
-        button.innerText = producer_name;
-        button.setAttribute("onclick", "chooseArticleProducer('" + producer_name + "')");
-        div.appendChild(button);
-    });
-
-    div.classList.remove("d-none");
-}
-
-function chooseArticleProducer(producer_name) {
-    let producer_name_splitted = producer_name.split(" ");
-    if (producer_name_splitted.length > 1) {
-        producer_name = "";
-        producer_name_splitted.forEach((name_part, index) => {
-            if (index != 0)
-                producer_name += "+";
-            producer_name += name_part;
-        });
-    }
-
-    SEARCH_REQUEST_PRODUCER_NAME = producer_name;
-    $('#input-article').val(SEARCH_REQUEST_PRODUCER_NAME + " ");
-    var div = document.getElementById('div-autocomplete');
-    div.classList.add("d-none");
-    div.innerHTML = '';
-    $('#input-article').focus();
-}
-
-function findProducerByFragment(fragment_str) {
-    let LIMIT_COUNT_OFFERING_PRODUCERS = 5;
-    simmilar_producer_names = [];
-    if (fragment_str != "") {
-        let count = 0;
-        if (fragment_str.includes("+"))
-            fragment_str = fragment_str.replace("+", " ");
-        producers_names.forEach((producer_name) => {
-            if (count >= LIMIT_COUNT_OFFERING_PRODUCERS)
-                return true;
-            if (producer_name.includes(fragment_str)) {
-                simmilar_producer_names.push(producer_name);
-                count += 1;
-            }
-        });
-    }
-    return simmilar_producer_names;
-}
-
-function checkPressCharInSearchField(symbol) {
-    let regex = RegExp('[0-9a-zA-Zа-яА-Я+]');
-    if (symbol == "Backspace")
-        return true;
-    if (!regex.test(symbol) || symbol.length > 1) {
-        return false;
-    }
-    return true;
-}
-
-function checkPressKeyUpDownLeftRight(key) {
-    if (key != "ArrowUp" && key != "ArrowDown" && key != "ArrowLeft" && key != "ArrowRight")
-        return false;
-    else
-        return true;
-}
-
-function hasNumber(myString) {
-    return /\d/.test(myString);
-}
-
-function changeInputSelectedBySymbol(event, symbol) {
-    let startCursorPosition = event.target.selectionStart;
-    let endCursorPosition = event.target.selectionEnd;
-    let now_str = $('#input-article').val();
-    let newInputArticle = "";
-    // console.log(startCursorPosition + " : " + endCursorPosition);
-    let position = startCursorPosition;
-    let newCursorPosition = position;
-    if (symbol != "")
-        newCursorPosition += 1;
-
-    if (startCursorPosition == endCursorPosition) {
-        newInputArticle = [now_str.slice(0, position), symbol, now_str.slice(position)].join('');
-    } else {
-        newInputArticle = [now_str.slice(0, startCursorPosition), symbol, now_str.slice(endCursorPosition)].join('');
-    }
-    return [newInputArticle, newCursorPosition];
-}
-
-
-function search() {
-    validateSearchField();
-    cleanSearchResult();
-    if (flagValidation) {
-        if (checkSearchFieldSymbols()) {
-            let search_request = $('#input-article').val();
-            let search_request_array = search_request.split(" ");
-            if (search_request_array.length > 1) {
-                if (isProducer(search_request_array[0])) {
-                    hideInputError();
-                    SEARCH_REQUEST_PRODUCER_NAME = search_request_array[0];
-                    SEARCH_REQUEST_ARTICLE_NAME = search_request_array[1];
-                    searchAnalogs(search_request_array[1], search_request_array[0]);
-                } else {
-                    showInputError("Некорректное имя производителя!");
-                }
-            }
-            else if (search_request_array.length == 1) {
-                hideInputError();
-                searchAnalogs(search_request_array[0]);
-            }
-        }
-        else {
-            showInputError("Некорректный поисковой запрос. См. пример!");
-        }
-    }
-}
-
-function isProducer(text) {
-    if (text.includes("+"))
-        text = text.replace("+", " ");
-    let flag = false;
-    producers_names.forEach((producer_name) => {
-        if (producer_name == text) {
-            flag = true;
-            return;
-        }
-    });
-    return flag;
-}
 
 function searchAnalogs(article_name = "", producer_name = "") {
     console.log("searchAnalogs()");
@@ -436,7 +158,6 @@ function ajaxGetProducerNames() {
         dataType: 'html',
         success: function (response) {
             producers_names = JSON.parse(response);
-            loadLastSearchRequest();
             // console.log(producers_names);
         },
         complete: function () { }
@@ -444,7 +165,7 @@ function ajaxGetProducerNames() {
 }
 
 
-function showMoreArticles() {
+function showMoreArticles(analogs) {
     for (let i = COUNT_LOADING_ELEMENTS; i < analogs.length; i++) {
         let tr = createArticleElement(analogs[i]);
         $('#tbody-analogs').append(tr);
@@ -500,7 +221,7 @@ function createArticleElement(article, needToChoose = false) {
         let button = document.createElement("button");
         button.classList.add("badge", "badge-primary", "badge-pill");
         button.addEventListener("click", function () {
-            clickToButtonEditLine(article);
+            clickToButtonEditLine();
         });
         button.style.border = "unset";
 
@@ -569,12 +290,7 @@ function createArticleElement(article, needToChoose = false) {
 
 
 function goToArticleDetails(article_id) {
-    updateSessionParams();
     document.location.href = 'article_details.php?article_id=' + article_id;
-}
-function updateSessionParams() {
-    sessionStorage.setItem('search_request', $('#input-article').val());
-    sessionStorage.setItem('search_type', last_search_type);
 }
 
 function setSearchType(new_search_type) {

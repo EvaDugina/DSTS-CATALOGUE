@@ -118,6 +118,16 @@ class Article
         return $this->description;
     }
 
+    public function getGroup()
+    {
+        global $dbconnect;
+
+        $query = queryGetGroupComparison($this->id);
+        $result = pg_query($dbconnect, $query);
+        $group_id = pg_fetch_assoc($result)['group_id'];
+        return (int)$group_id;
+    }
+
     public function getLinkToCataloguePage()
     {
         return "https://shop.donaldson.com/store/ru-ru/product/" . $this->name . "/" . $this->secondary_info[0]['json']['productId'];
@@ -165,6 +175,38 @@ class Article
 
         return array($main_info, $secondary_info);
     }
+}
+
+
+function getArticleAnalogs($Article, $group_id)
+{
+    global $dbconnect;
+    global $ARRAY_NAME_CATALOGUES;
+
+    $return_values = array();
+
+    $query = queryGetAnalogArticlesId($group_id);
+    $result = pg_query($dbconnect, $query);
+
+    while ($row = pg_fetch_assoc($result)) {
+        $analogArticle = new Article($row['article_id']);
+        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $Article->type, $analogArticle->getDescription());
+        // if (in_array($analogArticle->getProducer()->getMainProducerName(), $ARRAY_NAME_CATALOGUES)) {
+        //     $article_array[0]["status"] = 1;
+        //     if (count($article_array) > 0)
+        //         $return_values = array_merge($article_array, $return_values);
+        // }
+        if ($analogArticle->id != $Article->id) {
+            $article_array[0]["status"] = 2;
+            if (count($article_array) > 0)
+                $return_values = array_merge($return_values, $article_array);
+
+            // $arrays_articles = array_merge($article_array, $arrays_articles);
+
+        }
+    }
+
+    return $return_values;
 }
 
 
@@ -234,6 +276,59 @@ function getArticleWithProducerId($article_name, $search_type, $producer_id = nu
         array_push($found_articles, $row);
 
     return $found_articles;
+}
+
+
+function getArticleArray($article_name, $producer_id, $article_id, $hasInfo, $type, $description)
+{
+    global $ARRAY_CATALOGUES;
+
+    $article_array = array();
+
+    foreach ($ARRAY_CATALOGUES as $catalogue) {
+
+        if ($catalogue[1] == FALSE)
+            continue;
+
+        $catalogue_name = $catalogue[0];
+
+        $main_producer = getMainProducerName($producer_id);
+        $main_producer_name = $main_producer['producer_name'];
+        $main_producer_id = $main_producer['id'];
+
+        $producer_name_by_catalogue = getProducerNameByCatalogue($producer_id, $catalogue_name);
+        if ($producer_name_by_catalogue == false) {
+            continue;
+        }
+
+        if ($main_producer_id == false) {
+            $producer_dsts_name = getProducerNameByDSTSCatalogue($producer_id);
+            if ($producer_dsts_name == false) {
+                $producer_dsts_name = "";
+            }
+        } else {
+            $producer_dsts_name = getProducerNameByDSTSCatalogue($main_producer_id);
+        }
+
+        if ($type == 1)
+            $description = "(УСТАРЕВШИЙ)";
+
+        $article_array_by_catalogue = array(
+            "article_id" => $article_id,
+            "article_name" => $article_name,
+            "catalogue_name" => $catalogue_name,
+            "producer_id" => $producer_id,
+            "producer_name_dsts" => $producer_dsts_name,
+            "producer_name" => $main_producer_name,
+            "producer_name_by_catalogue" => $producer_name_by_catalogue,
+            "description" => $description,
+            "hasInfo" => $hasInfo
+        );
+
+        array_push($article_array, $article_array_by_catalogue);
+    }
+
+    return $article_array;
 }
 
 
