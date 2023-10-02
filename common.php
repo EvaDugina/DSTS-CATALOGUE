@@ -134,11 +134,9 @@ function showSearchPopovers()
               </div>
               <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
                 <!-- <option selected>ВСЕ</option> -->
-                <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
-                  if ($catalogue[1]) { ?>
-                    <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
-                <?php }
-                } ?>
+                <?php foreach ($ARRAY_CATALOGUES as $catalogue) { ?>
+                  <option value="<?= $catalogue['name'] ?>"><?= $catalogue['name'] ?></option>
+                <?php } ?>
               </select>
             </div>
             <p id="modalAddArticle-p-inputError" class="text-danger d-none">

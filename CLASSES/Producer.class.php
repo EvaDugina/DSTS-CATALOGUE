@@ -261,7 +261,7 @@ function queryGetProducerNameByDSTSCatalogue($producer_id)
 
 function queryGetAllProducersNames()
 {
-    return "SELECT producer_name FROM producers
+    return "SELECT DISTINCT producer_name FROM producers
             ORDER BY producer_name;";
 }
 

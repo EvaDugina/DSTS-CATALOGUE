@@ -56,8 +56,18 @@ if (count($found_articles) == 0) {
     foreach ($found_articles as $article) {
         $Article = new Article($article['article_id']);
 
-        $article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type, $Article->getDescription());
-        $article_array[0]["status"] = 0;
+        $articles = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type, $Article->getDescription());
+        $article_array = [];
+        if (in_array($Article->getProducer()->name, getCataloguesName())) {
+            foreach ($articles as $article) {
+                if ($article['catalogue_name'] == $Article->getProducer()->name)
+                    $article_array = [0 => $article];
+            }
+        } else {
+            $article_array = [0 => $articles[0]];
+        }
+
+        $article_array[0]['status'] = 0;
 
         $arrays_articles = array_merge($arrays_articles, $article_array);
     }
@@ -105,7 +115,6 @@ exit;
 function getMainArticleAnalogs($Article, $group_id)
 {
     global $dbconnect;
-    global $ARRAY_NAME_CATALOGUES;
 
     $return_values = array();
 
@@ -115,7 +124,7 @@ function getMainArticleAnalogs($Article, $group_id)
     while ($row = pg_fetch_assoc($result)) {
         $analogArticle = new Article($row['article_id']);
         $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $Article->type, $analogArticle->getDescription());
-        if (in_array($analogArticle->getProducer()->getMainProducerName(), $ARRAY_NAME_CATALOGUES)) {
+        if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
             $article_array[0]["status"] = 1;
             if (count($article_array) > 0)
                 $return_values = array_merge($article_array, $return_values);

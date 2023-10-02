@@ -20,7 +20,7 @@ else
 
 
 $Article = new Article($article_id);
-$imageUrl = $Article->getImageUrl();
+$imageUrls = $Article->getImageUrls();
 
 $articleAnalogs = getArticleAnalogs($Article, $Article->getGroup());
 
@@ -35,20 +35,23 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
             <div class="row">
                 <div class="px-5 d-flex">
                     <div class="col-md-3 me-4">
-                        <?php if ($imageUrl != "") { ?>
+                        <?php if (count($imageUrls) > 0) { ?>
                             <div class="row mb-3">
                                 <div class="col-12">
                                     <div class="embed-responsive embed-responsive-1by1 text-center">
                                         <div class="embed-responsive-item">
-                                            <img class="w-100 h-100 p-0 m-0 rounded-circle" src="<?= $imageUrl ?>" />
+                                            <img class="w-100 h-100 p-0 m-0 border rounded" src="<?= $imageUrls[0] ?>" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         <?php } else { ?>
-                            <svg class="w-100 h-100" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                            <!-- <svg class="w-100 h-auto mb-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
                                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                            </svg> -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="w-100 h-auto mb-4 bi bi-x border rounded" viewBox="0 0 16 16">
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                             </svg>
                         <?php } ?>
 
@@ -57,15 +60,15 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                 <input type="hidden" name="set-image" value="true"></input>
                                 <label class="btn btn-outline-primary py-2 px-4">
                                     <input id="input-image" type="file" name="image-file" style="display: none;">
-                                    &nbsp; <?= ($Article->getImageUrl() != null) ? 'Изменить фотографию' : 'Добавить фотографию' ?>
+                                    &nbsp; <?= ($Article->getImageUrls() != null) ? 'Изменить фотографию' : 'Добавить фотографию' ?>
                                 </label>
                             </form>
                         <?php } ?>
 
-                        <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
-                            if ($catalogue[1] && $Article->hasInfo()) { ?>
-                                <button class="btn btn-primary mb-2 w-100" onclick="goToCataloguePage('<?= $Article->getLinkToCataloguePage() ?>', '<?= $catalogue[0] ?>')">
-                                    ПЕРЕЙТИ НА САЙТ <?= $catalogue[0] ?>
+                        <?php foreach ($ARRAY_CATALOGUES as $key => $catalogue) {
+                            if ($Article->hasInfo($catalogue["name"])) { ?>
+                                <button class="btn btn-primary mb-2 w-100 bg-<?= $catalogue["backgroundColor"] ?> text-<?= $catalogue["frontColor"] ?>" onclick="goToCataloguePage('<?= $Article->getLinkToCataloguePage($catalogue['name']) ?>', '<?= $catalogue['name'] ?>')">
+                                    ПЕРЕЙТИ НА САЙТ <strong><?= $catalogue["name"] ?></strong>
                                 </button>
                         <?php }
                         } ?>
@@ -79,12 +82,12 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                 $characteristics = $Article->getAllCharacteristics(); ?>
                                 <table class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
                                     <thead class="px-0">
-                                        <tr class="bg-primary text-white border">
+                                        <tr class="border bg-primary text-white">
                                             <th scope="col" class="middleInTable border fw-bold">
                                                 <div class="d-inline-flex justify-content-between align-items-center">
                                                     <span>ХАРАКТЕРИСТИКИ</span>
-                                                    <?php if ($au->isAdmin()) { ?>
-                                                        <button class="badge badge-primary badge-pill border-0 ms-3" onclick="editCharacteristicList()">
+                                                    <?php if ($au->isAdmin() && count($characteristics) > 0) { ?>
+                                                        <button class="badge badge-light badge-pill border-0 ms-3" onclick="editCharacteristicList()">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                                                                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                                                                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
@@ -99,13 +102,18 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                         </tr>
                                     </thead>
                                     <tbody id="" role="button" class="px-0" style="cursor:auto; border: transparent;">
-                                        <?php
-                                        foreach ($characteristics as $key => $line) { ?>
+                                        <?php if (count($characteristics) > 0) {
+                                            foreach ($characteristics as $key => $line) { ?>
+                                                <tr class="border">
+                                                    <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
+                                                    <?php foreach ($line as $characteristic_by_catalogue) { ?>
+                                                        <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
+                                                    <?php } ?>
+                                                </tr>
+                                            <?php }
+                                        } else { ?>
                                             <tr class="border">
-                                                <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
-                                                <?php foreach ($line as $characteristic_by_catalogue) { ?>
-                                                    <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
-                                                <?php } ?>
+                                                <td scope="row" class="middleInTable border fw-bold">ИНФОРМАЦИЯ ОТСУТСТВУЕТ</td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -119,74 +127,75 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                     </div>
 
                 </div>
+            </div>
 
-                <div id="div-all-analogs" class="mt-3 mb-5">
-                    <table id="table-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
-                        <thead class="px-0">
-                            <tr class="table-active">
-                                <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
-                                <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
-                                <?php if ($au->isAdmin()) { ?>
-                                    <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                    <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
-                                    <th class="middleInTable col-1"></th>
-                                <?php } else { ?>
-                                    <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
-                                <?php } ?>
-                            </tr>
-                        </thead>
-                        <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
-                            <?php
-                            $index = 0;
-                            foreach ($articleAnalogs as $analog) {
-                                if ($index < $COUNT_LOADING_ELEMENTS) { ?>
-                                    <tr class="border">
-                                        <td class="middleInTable col-2 cursor-auto">
-                                            <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
+            <div id="div-all-analogs" class="mt-3 mb-5">
+                <table id="table-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                    <thead class="px-0">
+                        <tr class="table-active">
+                            <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                            <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                            <?php if ($au->isAdmin()) { ?>
+                                <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                <th class="middleInTable col-1"></th>
+                            <?php } else { ?>
+                                <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
+                        <?php
+                        $index = 0;
+                        foreach ($articleAnalogs as $analog) {
+                            if ($index < $COUNT_LOADING_ELEMENTS) { ?>
+                                <tr class="border">
+                                    <td class="middleInTable col-2 cursor-auto">
+                                        <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
+                                    </td>
+                                    <td class="middleInTable col-2 cursor-auto <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
+                                        <?= ($analog['producer_name_dsts'] == "") ? $analog['producer_name'] : $analog['producer_name_dsts'] ?>
+                                    </td>
+                                    <td class="middleInTable col-3 cursor-auto">
+                                        <?= $analog['catalogue_name'] ?>
+                                    </td>
+                                    <?php if ($au->isAdmin()) { ?>
+                                        <td class="middleInTable col-4 cursor-auto">
+                                            <span>
+                                                <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
+                                            </span>
                                         </td>
-                                        <td class="middleInTable col-2 cursor-auto <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
-                                            <?= ($analog['producer_name_dsts'] == "") ? $analog['producer_name'] : $analog['producer_name_dsts'] ?>
+                                        <td class="middleInTable col-1 cursor-auto">
+                                            <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                                                </svg>
+                                            </button>
                                         </td>
-                                        <td class="middleInTable col-3 cursor-auto">
-                                            <?= $analog['catalogue_name'] ?>
+                                    <?php } else { ?>
+                                        <td class="middleInTable col-6 cursor-auto">
+                                            <?= ($analog['description'] != "") ? $analog['description'] : '(тип неопределён)' ?>
                                         </td>
-                                        <?php if ($au->isAdmin()) { ?>
-                                            <td class="middleInTable col-4 cursor-auto">
-                                                <span>
-                                                    <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
-                                                </span>
-                                            </td>
-                                            <td class="middleInTable col-1 cursor-auto">
-                                                <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
-                                                        <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
-                                                    </svg>
-                                                </button>
-                                            </td>
-                                        <?php } else { ?>
-                                            <td class="middleInTable col-6 cursor-auto">
-                                                <?= ($analog['description'] != "") ? $analog['description'] : '(тип неопределён)' ?>
-                                            </td>
-                                        <?php } ?>
-                                    </tr>
-                            <?php
-                                    $index++;
-                                }
-                            } ?>
-                        </tbody>
-                    </table>
+                                    <?php } ?>
+                                </tr>
+                        <?php
+                                $index++;
+                            }
+                        } ?>
+                    </tbody>
+                </table>
 
-                    <?php if ($index >= $COUNT_LOADING_ELEMENTS) { ?>
-                        <div id="div-analogs-showMore" class="d-flex justify-content-center">
-                            <button class="btn btn-outline-primary mt-1 mb-5" onclick='showMoreArticles(JSON.parse("<?= addslashes(json_encode($articleAnalogs)) ?>"))'>
-                                ПОКАЗАТЬ БОЛЬШЕ
-                            </button>
-                        </div>
-                    <?php } ?>
-
-                </div>
+                <?php if ($index >= $COUNT_LOADING_ELEMENTS) { ?>
+                    <div id="div-analogs-showMore" class="d-flex justify-content-center">
+                        <button class="btn btn-outline-primary mt-1 mb-5" onclick='showMoreArticles(JSON.parse("<?= addslashes(json_encode($articleAnalogs)) ?>"))'>
+                            ПОКАЗАТЬ БОЛЬШЕ
+                        </button>
+                    </div>
+                <?php } ?>
 
             </div>
+
+        </div>
         </div>
     </main>
 </body>

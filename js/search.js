@@ -470,6 +470,7 @@ function createArticleElement(article, needToChoose = false) {
     button.textContent = article.article_name;
     button.style.fontSize = "inherit";
     td_artcle_name.appendChild(button);
+    tr.appendChild(td_artcle_name);
 
     let td_producer_dsts_name = document.createElement("td");
     td_producer_dsts_name.classList.add("middleInTable", "col-2");
@@ -478,21 +479,32 @@ function createArticleElement(article, needToChoose = false) {
         td_producer_dsts_name.classList.add("text-danger");
     } else
         td_producer_dsts_name.innerText = article.producer_name_dsts;
-
-
-    let td_catalogue_name = document.createElement("td");
-    td_catalogue_name.classList.add("middleInTable", "col-3");
-    td_catalogue_name.innerText = article.catalogue_name;
-
-    tr.appendChild(td_artcle_name);
     tr.appendChild(td_producer_dsts_name);
+
+    if (article.status != 0 && article.status != 1) {
+        let td_catalogue_name = document.createElement("td");
+        td_catalogue_name.classList.add("middleInTable", "col-3");
+        td_catalogue_name.innerText = article.catalogue_name;
+        tr.appendChild(td_catalogue_name);
+    }
 
     if (is_admin) {
 
-        let td_producer_name = document.createElement("td");
-        td_producer_name.classList.add("middleInTable", "col-4");
-        td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
-            " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
+        if (article.status != 0 && article.status != 1) {
+            let td_producer_name = document.createElement("td");
+            td_producer_name.classList.add("middleInTable", "col-4");
+            td_producer_name.innerHTML = "<span>" + article.producer_name_by_catalogue +
+                " (<strong style='font-weight: bold;'>" + article.producer_name + "</strong>)</span>";
+            tr.appendChild(td_producer_name);
+        } else {
+            let td_type = document.createElement("td");
+            td_type.classList.add("middleInTable", "col-6");
+            if (article.description != "")
+                td_type.innerHTML = article.description.toUpperCase();
+            else
+                td_type.innerHTML = "(тип неопределён)";
+            tr.appendChild(td_type);
+        }
 
         let td_edit = document.createElement("td");
         td_edit.classList.add("middleInTable", "col-1");
@@ -519,8 +531,6 @@ function createArticleElement(article, needToChoose = false) {
         button.appendChild(svg);
         td_edit.appendChild(button);
 
-        tr.appendChild(td_catalogue_name);
-        tr.appendChild(td_producer_name);
         tr.appendChild(td_edit);
     } else {
         let td_type = document.createElement("td");

@@ -37,7 +37,7 @@ else
                             </div>
                         </div>
                         <button id="btn-search" class="btn btn-primary me-2 align-items-center" onclick="search()">
-                            ПОИСК
+                            <strong>ПОИСК</strong>
                             <div id="spinner-waiting-search" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
@@ -55,9 +55,10 @@ else
                             ОБРАБОТАТЬ РЕЗУЛЬТАТ</button>
                     </div>
                 <?php } else { ?>
-                    <button class="btn btn-primary col-2" onclick="openCatologueSites()">
-                        ОТКРЫТЬ ВСЕ КАТАЛОГИ
+                    <button class="btn btn-warning col-3" onclick="sendRequestToAddArticle()">
+                        ЗАПРОСИТЬ ДОБАВЛЕНИЕ ТОВАРА
                     </button>
+
                 <?php } ?>
             </div>
             <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>Некорректный поисковой запрос. См. пример!</small></p>
@@ -73,8 +74,9 @@ else
                                     <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                     <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
                                     <?php if ($au->isAdmin()) { ?>
-                                        <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                        <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                        <!-- <th class="middleInTable col-3 d-none" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                        <th class="middleInTable col-4 d-none"><strong>ПРОИЗВОДИТЕЛЬ</strong></th> -->
+                                        <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
                                         <th class="middleInTable col-1"></th>
                                     <?php } else { ?>
                                         <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
@@ -104,8 +106,9 @@ else
                                         <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
                                         <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
                                         <?php if ($au->isAdmin()) { ?>
-                                            <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
-                                            <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                            <!-- <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                            <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th> -->
+                                            <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
                                             <th class="middleInTable col-1"></th>
                                         <?php } else { ?>
                                             <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
@@ -158,10 +161,9 @@ else
                                 <div class="col-12">
                                     <select id="select-catalogue" class="form-select" aria-label="Default select example">
                                         <option selected>ВСЕ</option>
-                                        <?php foreach ($ARRAY_CATALOGUES as $catalogue) {
-                                            if ($catalogue[1]) { ?>
-                                                <option value="<?= $catalogue[0] ?>"><?= $catalogue[0] ?></option>
-                                        <?php }
+                                        <?php foreach ($ARRAY_CATALOGUES as $catalogue) { ?>
+                                            <option value="<?= $catalogue['name'] ?>"><?= $catalogue['name'] ?></option>
+                                        <?php
                                         } ?>
                                     </select>
                                 </div>
@@ -193,11 +195,9 @@ else
                     <?php } ?>
 
                     <div id="div-goto-producers" class="d-none">
-                        <?php if ($au->isAdmin()) { ?>
-                            <button class="btn btn-primary w-100 mb-2" onclick="openCatologueSites()" style="font-size:x-small;">
-                                ОТКРЫТЬ ВСЕ КАТАЛОГИ
-                            </button>
-                        <?php } ?>
+                        <button class="btn btn-primary w-100 mb-2" onclick="openCatologueSites()" style="font-size:x-small;">
+                            ОТКРЫТЬ ВСЕ КАТАЛОГИ
+                        </button>
                         <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('DONALDSON')">
                             <img src="src/img/image_donaldson2.jpg" class="img-fluid">
                             <!-- <strong>DONALDSON</strong> -->
@@ -553,6 +553,10 @@ else
     //         }
     //     });
     // }
+
+    function sendRequestToAddArticle() {
+
+    }
 
 
 

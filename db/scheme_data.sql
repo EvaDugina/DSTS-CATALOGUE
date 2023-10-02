@@ -9,7 +9,7 @@
 CREATE TABLE articles_comparison ( -- таблица кросс-референса артикулов
 	id serial,
 	group_id integer, -- --> идентификатор группы аналогов
-	article_id integer UNIQUE, -- --> идентификатор артукула
+	article_id integer, -- --> идентификатор артукула
 	catalogue_name text, -- --> название каталога, установившего аналог
 	CONSTRAINT articles_comparison_pkey PRIMARY KEY (id)
 );
@@ -66,9 +66,23 @@ CREATE TABLE producers_comparison	(
 
 CREATE TABLE characteristics_comparison	(
 	id serial,
-	characteristic_original text UNIQUE, -- --> идентификатор группы производителей
-	characteristic_alt text, -- --> идентификатор артукула
+	characteristic_original text UNIQUE, -- --> название оригинальной характеристики
+	characteristic_alt text, 
 	CONSTRAINT characteristics_comparison_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE types (
+	id serial, -- --> идентификатор типа
+	type_name text, -- --> название типа 
+	CONSTRAINT types_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE types_to_article (
+	id serial,
+	type_id integer, -- --> идентификатор типа
+	article_id integer, -- --> идентификатор артикула
+	catalogue_name text, -- --> название каталога 
+	CONSTRAINT types_to_article_pkey PRIMARY KEY (id)
 );
 
 

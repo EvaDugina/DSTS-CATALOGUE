@@ -25,20 +25,31 @@ function checkAuIsAdmin($au)
 
 // $ARRAY_CATALOGUES = [
 //   array(0 => "DONALDSON", 1 => TRUE),
-//   array(0 => "HIFI-FILTER", 1 => FALSE),
+//   array(0 => "HIFI", 1 => FALSE),
 //   array(0 => "MANN&HUMMEL", 1 => FALSE),
 //   array(0 => "FLEETGUARD", 1 => FALSE),
-//   array(0 => "SF-FILTER", 1 => FALSE),
+//   array(0 => "SFFILTER", 1 => FALSE),
 //   array(0 => "BALDWIN", 1 => FALSE),
-//   array(0 => "FIL-FILTER", 1 => FALSE),
+//   array(0 => "FILFILTER", 1 => FALSE),
 //   array(0 => "LEFONG", 1 => FALSE)
 // ];
 
 $ARRAY_CATALOGUES = [
-  array(0 => "DONALDSON", 1 => TRUE)
+  array(
+    "name" => "DONALDSON",
+    "articleUrl" => "https://shop.donaldson.com/store/ru-ru/product/",
+    "backgroundColor" => "primary",
+    "frontColor" => "white",
+    "iconPath" => "src/img/image_donaldson.jpg"
+  ),
+  array(
+    "name" => "FILFILTER",
+    "articleUrl" => "https://catalog.filfilter.com.tr/ru/product/",
+    "backgroundColor" => "warning",
+    "frontColor" => "black",
+    "iconPath" => "src/img/icon_filfilter.png"
+  )
 ];
-
-$ARRAY_NAME_CATALOGUES = ["DONALDSON"];
 
 $ARRAY_SPLIT_CHARS = ['.', '-', ' '];
 
@@ -66,4 +77,27 @@ function concatArrayByChar($arrayString, $char)
       $str .= $char;
   }
   return $str;
+}
+
+function getArticleUrlByCatalogue($catalogue_name)
+{
+  global $ARRAY_CATALOGUES;
+
+  foreach ($ARRAY_CATALOGUES as $catalogue) {
+    if ($catalogue["name"] == $catalogue_name)
+      return $catalogue["articleUrl"];
+  }
+  return "";
+}
+
+function getCataloguesName()
+{
+  global $ARRAY_CATALOGUES;
+
+  $catalogue_names = [];
+  foreach ($ARRAY_CATALOGUES as $catalogue) {
+    array_push($catalogue_names, $catalogue["name"]);
+  }
+
+  return $catalogue_names;
 }

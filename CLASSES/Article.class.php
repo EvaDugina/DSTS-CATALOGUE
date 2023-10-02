@@ -56,15 +56,16 @@ class Article
 
         $main_info_by_catalogues = array();
         $secondary_info_by_catalogues = array();
+
         while ($row = pg_fetch_assoc($result)) {
-            $json_info = $this->parseArticleInfoJSONtoARRAY($row['json']);
+            $json_info = json_decode($row['json']);
             array_push($main_info_by_catalogues, array(
                 "catalogue_name" => $row['catalogue_name'],
-                "json" => $json_info[0]
+                "json" => $json_info->articleMainInfo
             ));
             array_push($secondary_info_by_catalogues, array(
                 "catalogue_name" => $row['catalogue_name'],
-                "json" => $json_info[1]
+                "json" => $json_info->articleSecondaryInfo
             ));
         }
 
@@ -128,13 +129,20 @@ class Article
         return (int)$group_id;
     }
 
-    public function getLinkToCataloguePage()
+    public function getLinkToCataloguePage($catalogue_name)
     {
-        return "https://shop.donaldson.com/store/ru-ru/product/" . $this->name . "/" . $this->secondary_info[0]['json']['productId'];
+        return getArticleUrlByCatalogue($catalogue_name) . $this->name . "/" . $this->secondary_info[0]['json']->articleId;
     }
 
-    public function hasInfo()
+    public function hasInfo($catalogue = null)
     {
+        if ($catalogue != null) {
+            foreach ($this->main_info as $info) {
+                if ($info["catalogue_name"] == $catalogue)
+                    return True;
+            }
+            return False;
+        }
         return count($this->main_info) > 0;
     }
 
@@ -144,44 +152,38 @@ class Article
     }
 
 
-    public function getImageUrl()
+    public function getImageUrls()
     {
         foreach ($this->secondary_info as $info) {
-            if ($info['catalogue_name'] == "DONALDSON" && $info['json']['imageUrl']) {
-                return $info['json']['imageUrl'];
+            if (count($info['json']->imageUrls) > 0) {
+                return $info['json']->imageUrls;
             }
         }
-        return "";
+        return [];
     }
 
-    private function parseArticleInfoJSONtoARRAY($article_info_json)
-    {
-        $main_info = array();
-        $secondary_info = array();
+    // private function parseArticleInfoJSONtoARRAY($article_info_json)
+    // {
+    //     $main_info = array();
+    //     $secondary_info = array();
 
-        $main_info_flag = true;
-        $article_info = json_decode($article_info_json);
-        foreach ($article_info as $key => $line) {
-            if ($key == "productId") {
-                $main_info_flag = false;
-            }
+    //     $article_info = json_decode($article_info_json);
+    //     foreach ($article_info as $key => $info) {
+    //         if ($key == "articleMainInfo") {
+    //             $main_info = $info;
+    //         } else if ($key == "articleSecondaryInfo") {
+    //             $secondary_info = $info;
+    //         }
+    //     }
 
-            if ($main_info_flag) {
-                $main_info = array_merge($main_info, array($key => $line));
-            } else {
-                $secondary_info = array_merge($secondary_info, array($key => $line));
-            }
-        }
-
-        return array($main_info, $secondary_info);
-    }
+    //     return array($main_info, $secondary_info);
+    // }
 }
 
 
 function getArticleAnalogs($Article, $group_id)
 {
     global $dbconnect;
-    global $ARRAY_NAME_CATALOGUES;
 
     $return_values = array();
 
@@ -191,7 +193,7 @@ function getArticleAnalogs($Article, $group_id)
     while ($row = pg_fetch_assoc($result)) {
         $analogArticle = new Article($row['article_id']);
         $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $Article->type, $analogArticle->getDescription());
-        // if (in_array($analogArticle->getProducer()->getMainProducerName(), $ARRAY_NAME_CATALOGUES)) {
+        // if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
         //     $article_array[0]["status"] = 1;
         //     if (count($article_array) > 0)
         //         $return_values = array_merge($article_array, $return_values);
@@ -287,10 +289,7 @@ function getArticleArray($article_name, $producer_id, $article_id, $hasInfo, $ty
 
     foreach ($ARRAY_CATALOGUES as $catalogue) {
 
-        if ($catalogue[1] == FALSE)
-            continue;
-
-        $catalogue_name = $catalogue[0];
+        $catalogue_name = $catalogue['name'];
 
         $main_producer = getMainProducerName($producer_id);
         $main_producer_name = $main_producer['producer_name'];
@@ -311,7 +310,7 @@ function getArticleArray($article_name, $producer_id, $article_id, $hasInfo, $ty
         }
 
         if ($type == 1)
-            $description = "(УСТАРЕВШИЙ)";
+            $description = "(устаревший)";
 
         $article_array_by_catalogue = array(
             "article_id" => $article_id,
