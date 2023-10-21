@@ -119,14 +119,19 @@ class Article
         return $this->description;
     }
 
-    public function getGroup()
+    public function getGroups()
     {
         global $dbconnect;
 
         $query = queryGetGroupComparison($this->id);
         $result = pg_query($dbconnect, $query);
-        $group_id = pg_fetch_assoc($result)['group_id'];
-        return (int)$group_id;
+        $groups = pg_fetch_all($result);
+
+        $group_ids = array();
+        foreach ($groups as $group) {
+            array_push($group_ids, $group['group_id']);
+        }
+        return $group_ids;
     }
 
     public function getLinkToCataloguePage($catalogue_name)
@@ -181,18 +186,18 @@ class Article
 }
 
 
-function getArticleAnalogs($Article, $group_id)
+function getArticleAnalogs($Article, $group_ids)
 {
     global $dbconnect;
 
     $return_values = array();
 
-    $query = queryGetAnalogArticlesId($group_id);
+    $query = queryGetAnalogArticlesId($group_ids);
     $result = pg_query($dbconnect, $query);
 
     while ($row = pg_fetch_assoc($result)) {
         $analogArticle = new Article($row['article_id']);
-        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $Article->type, $analogArticle->getDescription());
+        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $analogArticle->type, $analogArticle->getDescription());
         // if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
         //     $article_array[0]["status"] = 1;
         //     if (count($article_array) > 0)
@@ -358,12 +363,18 @@ function queryGetArticleWithProducerIdSoft($article_name, $producer_id)
 
 
 
-function queryGetAnalogArticlesId($group_id)
+function queryGetAnalogArticlesId($group_ids)
 {
-    return "SELECT ac.article_id, articles.article_name, articles.producer_id, producers.producer_name FROM articles_comparison as ac
+    $group_condition = "";
+    foreach ($group_ids as $key => $group_id) {
+        if ($key > 0)
+            $group_condition .= " OR ";
+        $group_condition .= "group_id = $group_id";
+    }
+    return "SELECT DISTINCT ac.article_id, articles.article_name, articles.producer_id, producers.producer_name FROM articles_comparison as ac
             INNER JOIN articles ON articles.id = ac.article_id
             LEFT JOIN producers ON producers.id = articles.producer_id
-            WHERE group_id = $group_id
+            WHERE $group_condition
             ORDER BY producers.producer_name";
 }
 

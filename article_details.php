@@ -22,7 +22,7 @@ else
 $Article = new Article($article_id);
 $imageUrls = $Article->getImageUrls();
 
-$articleAnalogs = getArticleAnalogs($Article, $Article->getGroup());
+$articleAnalogs = getArticleAnalogs($Article, $Article->getGroups());
 
 show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 ?>

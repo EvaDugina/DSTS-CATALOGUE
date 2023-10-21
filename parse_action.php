@@ -12,26 +12,26 @@ if (isset($_POST['article']) && /*isset($_POST['analogs']) &&*/ isset($_POST['se
     // $analogs = json_decode($_POST['analogs']);
     $selected_catalogues = json_decode($_POST['selected_catalogues']);
 } else
-    exit;
+    exit();
 
 // print_r($analogs);
 
 $Article = new Article($article->article_id);
-$group_id = $Article->getGroup();
 
-$analogs = getArticleAnalogs($Article, $group_id);
+$analogs = getArticleAnalogs($Article, $Article->getGroups());
 
 $result_parse = "";
-foreach ($selected_catalogues as $catalogue_name) {
+foreach ($selected_catalogues as $key => $catalogue_name) {
     $result_parse .= getCrossRefByCatalogue($article, $analogs, $catalogue_name);
-    $result_parse .= "\t\t\t\t\t";
+    if ($key != count($selected_catalogues) - 1)
+        $result_parse .= "\n\n";
 }
 
 
 
 
 echo $result_parse;
-exit;
+exit();
 
 
 function getCrossRefByCatalogue($Article, $analogs, $catalogue_name)
@@ -44,6 +44,7 @@ function getCrossRefByCatalogue($Article, $analogs, $catalogue_name)
     $cross_ref .= "Кросс-референс " . $catalogue_name;
     $cross_ref .= " (" . articleNameVariations($Article->article_name) . "): ";
 
+    $count = 0;
     foreach ($analogs as $key => $analog) {
 
         if ($analog['catalogue_name'] != $catalogue_name)
@@ -54,7 +55,7 @@ function getCrossRefByCatalogue($Article, $analogs, $catalogue_name)
         else
             $producer_name = $analog['producer_name_by_catalogue'];
 
-        if ($key == 0) {
+        if ($count == 0) {
             $last_producer_name = $producer_name;
             $cross_ref .= $producer_name;
             $cross_ref .= " (";
@@ -65,11 +66,10 @@ function getCrossRefByCatalogue($Article, $analogs, $catalogue_name)
             $cross_ref .= "), " . $producer_name . " (";
         }
         $cross_ref .= articleNameVariations($analog['article_name']);
-
-        if ($key == count($analogs) - 1) {
-            $cross_ref .= ")";
-        }
+        $count += 1;
     }
+
+    $cross_ref .= ")";
 
     return $cross_ref;
 }

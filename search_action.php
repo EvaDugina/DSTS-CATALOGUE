@@ -81,12 +81,8 @@ $Article = new Article($found_article['article_id']);
 
 
 // ПОИСК АНАЛОГОВ В БД:
-$query = queryGetGroupComparison($Article->id);
-$result = pg_query($dbconnect, $query);
-$group = pg_fetch_assoc($result);
-if ($group) {
-    $group_id = $group['group_id'];
-} else {
+$group_ids = $Article->getGroups();
+if (!$group_ids) {
     $return_value = array(
         "error" => "group_id"
     );
@@ -99,7 +95,7 @@ if ($group) {
     exit;
 }
 
-$return_values = getMainArticleAnalogs($Article, $group_id);
+$return_values = getMainArticleAnalogs($Article, $group_ids);
 
 // Добавление себя в начало
 $main_article_array = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type, $Article->getDescription());
@@ -112,18 +108,18 @@ echo json_encode($return_values);
 exit;
 
 
-function getMainArticleAnalogs($Article, $group_id)
+function getMainArticleAnalogs($Article, $group_ids)
 {
     global $dbconnect;
 
     $return_values = array();
 
-    $query = queryGetAnalogArticlesId($group_id);
+    $query = queryGetAnalogArticlesId($group_ids);
     $result = pg_query($dbconnect, $query);
 
     while ($row = pg_fetch_assoc($result)) {
         $analogArticle = new Article($row['article_id']);
-        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $Article->type, $analogArticle->getDescription());
+        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $analogArticle->type, $analogArticle->getDescription());
         if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
             $article_array[0]["status"] = 1;
             if (count($article_array) > 0)
