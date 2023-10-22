@@ -18,7 +18,7 @@ if (isset($_POST['article']) && /*isset($_POST['analogs']) &&*/ isset($_POST['se
 
 $Article = new Article($article->article_id);
 
-$analogs = getArticleAnalogs($Article, $Article->getGroups());
+$analogs = getAllArticleAnalogs($Article, $Article->getGroups());
 
 $result_parse = "";
 foreach ($selected_catalogues as $key => $catalogue_name) {

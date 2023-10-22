@@ -22,7 +22,10 @@ else
 $Article = new Article($article_id);
 $imageUrls = $Article->getImageUrls();
 
-$articleAnalogs = getArticleAnalogs($Article, $Article->getGroups());
+$group_ids = $Article->getGroups();
+
+$mainAnalogs = getMainArticleAnalogs($Article, $group_ids);
+$allAnalogs = getAllArticleAnalogs($Article, $group_ids);
 
 show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 ?>
@@ -129,6 +132,64 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                 </div>
             </div>
 
+            <div id="div-main-analogs" class="mb-2">
+                <table id="table-main-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
+                    <thead class="px-0">
+                        <tr class="bg-info text-white">
+                            <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                            <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
+                            <?php if ($au->isAdmin()) { ?>
+                                <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
+                                <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                <th class="middleInTable col-1"></th>
+                            <?php } else { ?>
+                                <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
+                            <?php } ?>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-main-analogs" role="button" class="px-0" style="border: transparent;">
+                        <?php
+                        $index = 0;
+                        foreach ($mainAnalogs as $analog) {
+                            if ($index < $COUNT_LOADING_ELEMENTS) { ?>
+                                <tr class="border">
+                                    <td class="middleInTable col-2 cursor-auto">
+                                        <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
+                                    </td>
+                                    <td class="middleInTable col-2 cursor-auto <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
+                                        <?= ($analog['producer_name_dsts'] == "") ? $analog['producer_name'] : $analog['producer_name_dsts'] ?>
+                                    </td>
+                                    <td class="middleInTable col-3 cursor-auto">
+                                        <?= $analog['catalogue_name'] ?>
+                                    </td>
+                                    <?php if ($au->isAdmin()) { ?>
+                                        <td class="middleInTable col-4 cursor-auto">
+                                            <span>
+                                                <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
+                                            </span>
+                                        </td>
+                                        <td class="middleInTable col-1 cursor-auto">
+                                            <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
+                                                    <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                    <?php } else { ?>
+                                        <td class="middleInTable col-6 cursor-auto">
+                                            <?= ($analog['description'] != "") ? $analog['description'] : '(тип неопределён)' ?>
+                                        </td>
+                                    <?php } ?>
+                                </tr>
+                        <?php
+                                $index++;
+                            }
+                        } ?>
+                    </tbody>
+                </table>
+                </br>
+            </div>
+
             <div id="div-all-analogs" class="mt-3 mb-5">
                 <table id="table-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
                     <thead class="px-0">
@@ -147,7 +208,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                     <tbody id="tbody-analogs" role="button" class="px-0" style="border: transparent;">
                         <?php
                         $index = 0;
-                        foreach ($articleAnalogs as $analog) {
+                        foreach ($allAnalogs as $analog) {
                             if ($index < $COUNT_LOADING_ELEMENTS) { ?>
                                 <tr class="border">
                                     <td class="middleInTable col-2 cursor-auto">
@@ -187,7 +248,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 
                 <?php if ($index >= $COUNT_LOADING_ELEMENTS) { ?>
                     <div id="div-analogs-showMore" class="d-flex justify-content-center">
-                        <button class="btn btn-outline-primary mt-1 mb-5" onclick='showMoreArticles(JSON.parse("<?= addslashes(json_encode($articleAnalogs)) ?>"))'>
+                        <button class="btn btn-outline-primary mt-1 mb-5" onclick='showMoreArticles(JSON.parse("<?= addslashes(json_encode($allAnalogs)) ?>"))'>
                             ПОКАЗАТЬ БОЛЬШЕ
                         </button>
                     </div>

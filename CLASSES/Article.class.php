@@ -185,8 +185,29 @@ class Article
     // }
 }
 
+function getMainArticleAnalogs($Article, $group_ids)
+{
+    global $dbconnect;
 
-function getArticleAnalogs($Article, $group_ids)
+    $return_values = array();
+
+    $query = queryGetAnalogArticlesId($group_ids);
+    $result = pg_query($dbconnect, $query);
+
+    while ($row = pg_fetch_assoc($result)) {
+        $analogArticle = new Article($row['article_id']);
+        $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $analogArticle->type, $analogArticle->getDescription());
+        if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
+            $article_array[0]["status"] = 1;
+            if (count($article_array) > 0)
+                $return_values = array_merge($article_array, $return_values);
+        }
+    }
+
+    return $return_values;
+}
+
+function getAllArticleAnalogs($Article, $group_ids)
 {
     global $dbconnect;
 
