@@ -7,10 +7,10 @@ $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-// $path_scrapper = 'C:/xampp/htdocs/dsts/python_module/JSONScrapper.exe';
-// $path_parser = 'C:/xampp/htdocs/dsts/python_module/JSONParser.exe';
-$path_scrapper = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONSScrapper.py';
-$path_parser = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONParser.py';
+$path_scrapper = 'C:/xampp/htdocs/dsts/python_module/JSONScrapper.py';
+$path_parser = 'C:/xampp/htdocs/dsts/python_module/JSONParser.py';
+// $path_scrapper = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONScrapper.py';
+// $path_parser = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONParser.py';
 
 if (isset($_POST['code_stop'])) {
     $result = shell_exec("kill $(ps aux | grep '[p]ython $path_scrapper' | awk '{print $2}')");
@@ -26,6 +26,7 @@ if (isset($_POST['article_name']) && isset($_POST['catalogue_name'])) {
 }
 
 $line = escapeshellcmd($catalogue_name) . " " . escapeshellcmd($article_name);
+// Смотрит в той директории, откуда запустили
 $path = "SEARCH_REQUESTS.txt";
 file_put_contents($path, $line);
 

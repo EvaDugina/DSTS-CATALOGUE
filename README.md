@@ -25,6 +25,7 @@ https://pypi.org/project/selenium/
 pip install selenium
 pip install playwright
 pip install webdriver_manager
+pip install BeautifulSoup
 pip install bs4
 
 
