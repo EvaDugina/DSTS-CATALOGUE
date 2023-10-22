@@ -7,8 +7,10 @@ $au = new auth_ssh();
 checkAuLoggedIN($au);
 checkAuIsAdmin($au);
 
-$path_scrapper = 'C:/xampp/htdocs/dsts/python_module/JSONScrapper.exe';
-$path_parser = 'C:/xampp/htdocs/dsts/python_module/JSONParser.exe';
+// $path_scrapper = 'C:/xampp/htdocs/dsts/python_module/JSONScrapper.exe';
+// $path_parser = 'C:/xampp/htdocs/dsts/python_module/JSONParser.exe';
+$path_scrapper = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONSScrapper.py';
+$path_parser = 'C:/Users/vania/Documents/PyCharmProjects/DSTSWebScrapper/JSONParser.py';
 
 if (isset($_POST['code_stop'])) {
     $result = shell_exec("kill $(ps aux | grep '[p]ython $path_scrapper' | awk '{print $2}')");
@@ -34,8 +36,8 @@ set_time_limit(7200);
 // $WshShell = new COM('WScript.Shell');
 // $oExec = $WshShell->Run("py $path_scrapper");
 
-$command = shell_exec("$path_scrapper");
-$command = shell_exec("$path_parser");
+$command = shell_exec("py $path_scrapper");
+$command = shell_exec("py $path_parser");
 
 set_time_limit(120);
 
