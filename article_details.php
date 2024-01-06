@@ -109,7 +109,10 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                             foreach ($characteristics as $key => $line) { ?>
                                                 <tr class="border">
                                                     <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
-                                                    <?php foreach ($line as $characteristic_by_catalogue) { ?>
+                                                    <?php foreach ($line as $characteristic_by_catalogue) {
+                                                        if (str_contains($characteristic_by_catalogue, "inch)") || str_contains($characteristic_by_catalogue, "psi)"))
+                                                            $characteristic_by_catalogue = explode("(", $characteristic_by_catalogue)[0];
+                                                    ?>
                                                         <td class="middleInTable border"><?= $characteristic_by_catalogue ?></td>
                                                     <?php } ?>
                                                 </tr>

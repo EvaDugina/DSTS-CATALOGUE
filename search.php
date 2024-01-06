@@ -51,14 +51,15 @@ else
                             ДОБАВИТЬ АРТИКУЛ</button>
                     </div>
                     <div class="col-2">
-                        <button id="btn-parse-result" class="btn btn-warning text-white w-100 disabled" onclick="parseResult()">
-                            ОБРАБОТАТЬ РЕЗУЛЬТАТ</button>
+                        <div class="w-100 d-flex">
+                            <button id="btn-parse-result" class="btn btn-warning text-white disabled" onclick="parseResult()">
+                                ОБРАБОТАТЬ РЕЗУЛЬТАТ</button>
+                        </div>
                     </div>
                 <?php } else { ?>
                     <button class="btn btn-warning col-3" onclick="sendRequestToAddArticle()">
                         ЗАПРОСИТЬ ДОБАВЛЕНИЕ ТОВАРА
                     </button>
-
                 <?php } ?>
             </div>
             <p id="p-errorSearchField" class="text-danger d-none mb-0 pb-0"><small>Некорректный поисковой запрос. См. пример!</small></p>
@@ -250,7 +251,6 @@ else
     </main>
 </body>
 
-
 <?php showSearchPopovers(); ?>
 
 
@@ -281,6 +281,10 @@ else
     //     setValuesToDialogModalAddArticleFields();
     //     showPopoverAddArticle();
     // });
+
+    $('#btn-parse-result-different-sites').on("click", function(e) {
+
+    });
 
 
     $('#btn-copy-parse-result').hover(
