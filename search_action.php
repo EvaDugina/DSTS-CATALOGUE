@@ -12,6 +12,8 @@ if (isset($_POST['getProducersNameDsts'])) {
     exit;
 }
 
+
+
 if (isset($_POST['article_name']) && isset($_POST['search_type'])) {
     $article_name = $_POST['article_name'];
     $search_type = $_POST['search_type'];
@@ -37,11 +39,11 @@ if (isset($_POST['producer_name'])) {
 $return_values = array();
 $arrays_articles = array();
 
-// if ($producer_name == "")
-//     $found_articles = getArticle($article_name, $search_type);
-// else
 $found_articles = getArticleWithProducerId($article_name, $search_type, $producer_id);
 
+
+
+// Если пользователь ввёл недостаточно точный article_name и в БД нашлось несколько похожих вариантов
 if (count($found_articles) == 0) {
     $return_value = array(
         "error" => "article_id"
@@ -59,15 +61,20 @@ if (count($found_articles) == 0) {
         $articles = getArticleArray($Article->name, $Article->getProducer()->id, $Article->id, $Article->hasInfo(), $Article->type, $Article->getDescription());
         $article_array = [];
         if (in_array($Article->getProducer()->name, getCataloguesName())) {
-            foreach ($articles as $article) {
-                if ($article['catalogue_name'] == $Article->getProducer()->name)
-                    $article_array = [0 => $article];
+            if (count($articles) > 1) {
+                foreach ($articles as $article) {
+                    if ($article['catalogue_name'] == $Article->getProducer()->name)
+                        $article_array = [0 => $article];
+                }
+            } else {
+                $article_array = [0 => $articles[0]];
             }
         } else {
             $article_array = [0 => $articles[0]];
         }
 
-        $article_array[0]['status'] = 0;
+        if (count($article_array) > 0)
+            $article_array[0]['status'] = 0;
 
         $arrays_articles = array_merge($arrays_articles, $article_array);
     }
@@ -76,11 +83,13 @@ if (count($found_articles) == 0) {
     exit;
 }
 
-$found_article = $found_articles[0];
-$Article = new Article($found_article['article_id']);
+
 
 
 // ПОИСК АНАЛОГОВ В БД:
+$found_article = $found_articles[0];
+$Article = new Article($found_article['article_id']);
+
 $group_ids = $Article->getGroups();
 if (!$group_ids) {
     $return_value = array(

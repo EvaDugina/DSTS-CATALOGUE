@@ -119,6 +119,17 @@ class Article
         return $this->description;
     }
 
+    public function getCatalogueName()
+    {
+        global $dbconnect;
+
+        $query = queryGetCatalogueNameByArticle($this->id);
+        $result = pg_query($dbconnect, $query);
+        $catalogue_names = pg_fetch_all($result);
+
+        return $catalogue_names['catalogue_name'];
+    }
+
     public function getGroups()
     {
         global $dbconnect;
@@ -198,13 +209,38 @@ function getMainArticleAnalogs($Article, $group_ids)
         $analogArticle = new Article($row['article_id']);
         $article_array = getArticleArray($analogArticle->name, $analogArticle->getProducer()->id, $analogArticle->id, $analogArticle->hasInfo(), $analogArticle->type, $analogArticle->getDescription());
         if (in_array($analogArticle->getProducer()->getMainProducerName(), getCataloguesName())) {
-            $article_array[0]["status"] = 1;
-            if (count($article_array) > 0)
+            if (count($article_array) > 0) {
+                $article_array[0]["status"] = 1;
                 $return_values = array_merge($article_array, $return_values);
+            }
         }
     }
 
+    $return_values = sortMainAnalogsByCataloguePriority($return_values);
+
     return $return_values;
+}
+
+function sortMainAnalogsByCataloguePriority($mainAnalogs)
+{
+    global $ARRAY_CATALOGUES;
+
+    $sorted = array();
+    foreach ($ARRAY_CATALOGUES as $catalogue) {
+        $catalogue_name = $catalogue['name'];
+
+        $catalogue_articles = array();
+        foreach ($mainAnalogs as $analog) {
+            if ($analog['producer_name'] == $catalogue_name)
+                array_push($catalogue_articles, $analog);
+        }
+
+        foreach ($catalogue_articles as $analog) {
+            array_push($sorted, $analog);
+        }
+    }
+
+    return $sorted;
 }
 
 function getAllArticleAnalogs($Article, $group_ids)
@@ -401,7 +437,12 @@ function queryGetAnalogArticlesId($group_ids)
 
 function queryGetGroupComparison($article_id)
 {
-    return "SELECT group_id FROM articles_comparison WHERE article_id = $article_id";
+    return "SELECT group_id FROM articles_comparison WHERE article_id = $article_id;";
+}
+
+function queryGetCatalogueNameByArticle($article_id)
+{
+    return "SELECT catalogue_name FROM articles_name_variations WHERE article_id = $article_id;";
 }
 
 
