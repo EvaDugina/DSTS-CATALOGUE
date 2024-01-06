@@ -200,26 +200,47 @@ else
                         <button class="btn btn-primary w-100 mb-2" onclick="openCatologueSites()" style="font-size:x-small;">
                             ОТКРЫТЬ ВСЕ КАТАЛОГИ
                         </button>
+
                         <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('DONALDSON')">
                             <img src="src/img/image_donaldson2.jpg" class="img-fluid">
-                            <!-- <strong>DONALDSON</strong> -->
                         </button>
-                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FIL-FILTER')">
-                            <img src="src/img/icon_filfilter.png" class="img-fluid">
-                            <!-- <strong>FIL-FILTER</strong> -->
-                        </button>
-                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FLEETGUARD')">
-                            <img src="src/img/icon_fleetguard.png" class="img-fluid">
-                            <!-- <strong>FLEETGUARD</strong> -->
-                        </button>
+
                         <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('HIFI-FILTER')">
                             <img src="src/img/image_hifi.png" class="img-fluid">
-                            <!-- <strong>HIFI-FILTER</strong> -->
                         </button>
+
                         <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('MANN')">
                             <img src="src/img/icon_mann.jpg" class="img-fluid">
-                            <!-- <strong>MANN</strong> -->
                         </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FLEETGUARD')">
+                            <img src="src/img/icon_fleetguard.png" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('SF-FILTER')">
+                            <img src="src/img/icon_sf.png" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('BALDWIN')">
+                            <img src="src/img/icon_baldwin.jpeg" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('FIL-FILTER')">
+                            <img src="src/img/icon_filfilter.png" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('LEFONG')">
+                            <img src="src/img/icon_lefong.png" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('STAL')">
+                            <img src="src/img/icon_stal.webp" class="img-fluid">
+                        </button>
+
+                        <button class="btn btn-link border w-100 mb-2" onclick="openCatologueSites('EUROELEMENT')">
+                            <img src="src/img/icon_euroelement.png" class="img-fluid">
+                        </button>
+
                     </div>
                 </div>
             </div>
@@ -397,14 +418,24 @@ else
             window.open("https://catalog.mann-filter.com/EU/rus/", '_blank');
         } else if (site_name == "DONALDSON") {
             window.open("https://shop.donaldson.com/store/ru-ru/search?Ntt=" + input, '_blank');
-        } else if (site_name == "FIL-FILTER") {
-            window.open("https://catalog.filfilter.com.tr/ru/search/" + input, '_blank');
-        } else if (site_name == "FLEETGUARD") {
-            window.open("https://www.fleetguard.com/s/searchResults?language=en_US&propertyVal=" + input, '_blank');
         } else if (site_name == "HIFI-FILTER") {
             window.open("https://catalog.hifi-filter.com/en-GB/search/global/cross-reference?p=1&q=" + input, '_blank');
         } else if (site_name == "MANN") {
             window.open("https://catalog.mann-filter.com/EU/rus/", '_blank');
+        } else if (site_name == "FLEETGUARD") {
+            window.open("https://www.fleetguard.com/s/searchResults?language=en_US&propertyVal=" + input, '_blank');
+        } else if (site_name == "SF-FILTER") {
+            window.open("https://www.sf-filter.com/en/search.htm?query=" + input, '_blank');
+        } else if (site_name == "BALDWIN") {
+            window.open("https://baldwin.ru/find/", '_blank');
+        } else if (site_name == "FIL-FILTER") {
+            window.open("https://catalog.filfilter.com.tr/ru/search/" + input, '_blank');
+        } else if (site_name == "LEFONG") {
+            window.open("http://www.lefongfilter.com/?_l=en", '_blank');
+        } else if (site_name == "STAL") {
+            window.open("https://stalfiltercatalog.ru/", '_blank');
+        } else if (site_name == "EUROELEMENT") {
+            window.open("https://www.euroelement.com/catalog/search/?q=" + input, '_blank');
         }
     }
 

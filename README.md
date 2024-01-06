@@ -28,6 +28,8 @@ pip install webdriver_manager
 pip install BeautifulSoup
 pip install bs4
 
+playwright install
+
 
 3. ВЫПОЛНИТЬ BAT-СКРИПТЫ ИЗ ПАПКИ db/
 
