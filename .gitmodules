@@ -1,0 +1,3 @@
+[submodule "DSTS-SCRAPPER-MODULE"]
+	path = DSTS-SCRAPPER-MODULE
+	url = https://github.com/EvaDugina/DSTS-SCRAPPER-MODULE.git
