@@ -76,13 +76,13 @@ class Article
     public function getAllCharacteristics()
     {
         $array_characteristics_original = array();
-        $array_characteristics_alt = array();
+        $array_characteristics = array();
         $count_producers = 0;
         foreach ($this->main_info as $index => $info_by_catalogue) {
             foreach ($info_by_catalogue['json'] as $key => $characteristic) {
                 if (!in_array($key, $array_characteristics_original)) {
                     array_push($array_characteristics_original, $key);
-                    array_push($array_characteristics_alt, getCharacteristicNameAlternative($key));
+                    array_push($array_characteristics, getCharacteristic($key));
                 }
             }
             $count_producers += 1;
@@ -102,11 +102,39 @@ class Article
         }
 
         $return_array = array();
+        $max_order = -1;
         foreach ($array_characteristics_by_catalogues as $index => $line_characteristic) {
-            $return_array = array_merge($return_array, array($array_characteristics_alt[$index] => $line_characteristic));
+
+            if ($array_characteristics[$index]['order_number'] == null)
+                $array_characteristics[$index]['order_number'] = -1;
+
+            if ($array_characteristics[$index]['order_number'] > $max_order)
+                $max_order = $array_characteristics[$index]['order_number'];
+
+            array_push($return_array, array(
+                'alt_name' => $array_characteristics[$index]['characteristic_alt'],
+                'characteristic' => $line_characteristic,
+                'order' => $array_characteristics[$index]['order_number']
+            ));
         }
 
-        return $return_array;
+        $sorted_by_order_array = array();
+        $undefined_order_array = array();
+
+        for ($i = 0; $i < $max_order + 1; $i++) {
+            foreach ($return_array as $characteristic) {
+                if ($characteristic['order'] == $i)
+                    array_push($sorted_by_order_array, $characteristic);
+            }
+        }
+        foreach ($return_array as $characteristic) {
+            if ($characteristic['order'] == -1)
+                array_push($undefined_order_array, $characteristic);
+        }
+
+        $sorted_by_order_array = array_merge($sorted_by_order_array, $undefined_order_array);
+
+        return $sorted_by_order_array;
     }
 
     public function getMainInfo()
@@ -274,13 +302,13 @@ function getAllArticleAnalogs($Article, $group_ids)
 }
 
 
-function getCharacteristicNameAlternative($characteristicName)
+function getCharacteristic($characteristicName)
 {
     global $dbconnect;
-    $query = querySelectCharacteristicNameAlternative($characteristicName);
+    $query = querySelectCharacteristic($characteristicName);
     $result = pg_query($dbconnect, $query) or die('Ошибка запроса: ' . pg_last_error());
     $characteristic = pg_fetch_assoc($result);
-    return $characteristic['characteristic_alt'];
+    return $characteristic;
 }
 
 
@@ -485,9 +513,9 @@ function querySelectMaxGroupNumber()
     return "SELECT MAX(group_id) AS max_group_id FROM articles_comparison;";
 }
 
-function querySelectCharacteristicNameAlternative($characteristic_original)
+function querySelectCharacteristic($characteristic_original)
 {
-    return "SELECT characteristic_alt FROM characteristics_comparison WHERE characteristic_original = '$characteristic_original';";
+    return "SELECT characteristic_alt, order_number FROM characteristics_comparison WHERE characteristic_original = '$characteristic_original';";
 }
 
 

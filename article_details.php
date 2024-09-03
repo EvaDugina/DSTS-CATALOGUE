@@ -106,10 +106,10 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                     </thead>
                                     <tbody id="" role="button" class="px-0" style="cursor:auto; border: transparent;">
                                         <?php if (count($characteristics) > 0) {
-                                            foreach ($characteristics as $key => $line) { ?>
+                                            foreach ($characteristics as $line) { ?>
                                                 <tr class="border">
-                                                    <td scope="row" class="middleInTable border fw-bold"><?= $key ?></td>
-                                                    <?php foreach ($line as $characteristic_by_catalogue) {
+                                                    <td scope="row" class="middleInTable border fw-bold"><?= $line['alt_name'] ?></td>
+                                                    <?php foreach ($line['characteristic'] as $characteristic_by_catalogue) {
                                                         if (str_contains($characteristic_by_catalogue, "inch)") || str_contains($characteristic_by_catalogue, "psi)"))
                                                             $characteristic_by_catalogue = explode("(", $characteristic_by_catalogue)[0];
                                                     ?>
@@ -139,11 +139,12 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                 <table id="table-main-analogs" class="table border rounded mx-0" style="border-spacing: 0; border-collapse: separate;">
                     <thead class="px-0">
                         <tr class="bg-info text-white">
-                            <th class="middleInTable col-2"><strong>АРТИКУЛ</strong></th>
+                            <th class="middleInTable col-1"><strong>АРТИКУЛ</strong></th>
                             <th class="middleInTable col-2" style="white-space: nowrap;"><strong>ПРОИЗВОДИТЕЛЬ ПО DSTS</strong></th>
                             <?php if ($au->isAdmin()) { ?>
                                 <th class="middleInTable col-3" style="white-space: nowrap;"><strong>НАЗВАНИЕ КАТАЛОГА</strong></th>
                                 <th class="middleInTable col-4"><strong>ПРОИЗВОДИТЕЛЬ</strong></th>
+                                <th class="middleInTable col-1"></th>
                                 <th class="middleInTable col-1"></th>
                             <?php } else { ?>
                                 <th class="middleInTable col-6"><strong>ОПИСАНИЕ</strong></th>
@@ -156,7 +157,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                         foreach ($mainAnalogs as $analog) {
                             if ($index < $COUNT_LOADING_ELEMENTS) { ?>
                                 <tr class="border">
-                                    <td class="middleInTable col-2 cursor-auto">
+                                    <td class="middleInTable col-1 cursor-auto">
                                         <button class="btn btn-link <?= ($analog['hasInfo']) ? 'text-success' : '' ?>" onclick="goToArticleDetails(<?= $analog['article_id'] ?>)" style="font-size:inherit;"><?= $analog['article_name'] ?></button>
                                     </td>
                                     <td class="middleInTable col-2 cursor-auto <?= ($analog['producer_name_dsts'] == "") ? 'text-danger' : '' ?>">
@@ -166,7 +167,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                         <?= $analog['catalogue_name'] ?>
                                     </td>
                                     <?php if ($au->isAdmin()) { ?>
-                                        <td class="middleInTable col-4 cursor-auto">
+                                        <td class="middleInTable col-3 cursor-auto">
                                             <span>
                                                 <?= $analog['producer_name_by_catalogue'] ?> (<strong style="font-weight:bold;"><?= $analog['producer_name'] ?></strong>)
                                             </span>
@@ -175,6 +176,14 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                                             <button class="badge badge-primary badge-pill" style="border: unset;" onclick='clickToButtonEditLine(JSON.parse("<?= addslashes(json_encode($analog)) ?>"))'>
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pen-fill" viewBox="0 0 16 16">
                                                     <path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001z" />
+                                                </svg>
+                                            </button>
+                                        </td>
+                                        <td class="middleInTable col-1 cursor-auto">
+                                            <button class="badge <?= ($analog['hasInfo']) ? 'badge-success' : 'd-none' ?> badge-pill" style="border: unset;" onclick='clickButtonCompare()'>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard2-data-fill" viewBox="0 0 16 16">
+                                                    <path d="M10 .5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5.5.5 0 0 1-.5.5.5.5 0 0 0-.5.5V2a.5.5 0 0 0 .5.5h5A.5.5 0 0 0 11 2v-.5a.5.5 0 0 0-.5-.5.5.5 0 0 1-.5-.5" />
+                                                    <path d="M4.085 1H3.5A1.5 1.5 0 0 0 2 2.5v12A1.5 1.5 0 0 0 3.5 16h9a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 12.5 1h-.585q.084.236.085.5V2a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 4 2v-.5q.001-.264.085-.5M10 7a1 1 0 1 1 2 0v5a1 1 0 1 1-2 0zm-6 4a1 1 0 1 1 2 0v1a1 1 0 1 1-2 0zm4-3a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0V9a1 1 0 0 1 1-1" />
                                                 </svg>
                                             </button>
                                         </td>
@@ -278,7 +287,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                     <?php $index = 0;
                     foreach ($characteristics as $key => $line) { ?>
                         <div class="d-inline-flex align-items-center w-100 mb-2">
-                            <input id="modalEditCharacteristics-input-realCharacteristicName-<?= $index ?>" type="text" value="<?= $key ?>" class="form-control w-100 my-0" readonly>
+                            <input id="modalEditCharacteristics-input-realCharacteristicName-<?= $index ?>" type="text" value="<?= $line['alt_name'] ?>" class="form-control w-100 my-0" readonly>
                             <div class="mx-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
@@ -306,6 +315,48 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     </div>
 </div>
 
+
+<div class="modal fade" id="dialogModalCompareCharacteristics" tabindex="-1" aria-labelledby="dialogMarkLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 id="modalCompareCharacteristics-h5-title" class="modal-title">РЕДАКТИРОВАНИЕ НАЗВАНИЯ ХАРАКТЕРИСТИК</h5>
+                <button type="button" class="btn-close me-2" data-mdb-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modalCompareCharacteristics-div-characteristics" class="d-flex-column">
+                    <!-- <h6>Добавление артикула по каталогу:</h6> -->
+                    <?php $index = 0;
+                    foreach ($characteristics as $key => $line) { ?>
+                        <div class="d-inline-flex align-items-center w-100 mb-2">
+                            <input id="modalCompareCharacteristics-input-realCharacteristicName-<?= $index ?>" type="text" value="<?= $line['alt_name'] ?>" class="form-control w-100 my-0" readonly>
+                            <div class="mx-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                                </svg>
+                            </div>
+                            <input id="modalCompareCharacteristics-input-newCharacteristicName-<?= $index ?>" type="text" value="" class="form-control w-100 my-0" placeholder="Введите название характеристики">
+                        </div>
+                    <?php $index += 1;
+                    } ?>
+                    <!-- <p id="modalEditCharacteristics-p-inputError" class="text-danger d-none">
+                        <small><strong>ВНИМАНИЕ! В строке не должно присутсвовать ничего, кроме слитно написанного названия артикула</strong></small>
+                    </p> -->
+                </div>
+                <br />
+            </div>
+            <div class="modal-footer">
+                <button id="modalCompareCharacteristics-button-apply" type="button" class="btn btn-primary align-items-center">
+                    ПРИМЕНИТЬ
+                    <div id="modalCompareCharacteristics-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php showSearchPopovers(); ?>
 
 
@@ -313,6 +364,10 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 <script type="text/javascript">
     function goToCataloguePage(link, catalogue_name) {
         window.open(link, '_blank');
+    }
+
+    function clickButtonCompare() {
+
     }
 
     function editCharacteristicList() {
@@ -358,6 +413,27 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                 // response = JSON.parse(response);
                 // console.log(response);
                 location.reload();
+            },
+            complete: function() {}
+        });
+    }
+
+    function ajaxGetArticleCharacteristics(article_id) {
+        var formData = new FormData();
+
+        formData.append('getCharacteristics', true);
+        formData.append('article_id', article_id);
+
+        $.ajax({
+            type: "POST",
+            url: 'edit_action.php#content',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            dataType: 'html',
+            success: function(response) {
+
             },
             complete: function() {}
         });

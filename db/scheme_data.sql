@@ -27,7 +27,7 @@ CREATE TABLE articles_details ( -- таблица информации о тов
 	article_id integer, -- --> идентификатор артикула
 	catalogue_name text, -- --> навзание каталога, из которого взята информация
 	url text,
-	type text,
+	type text, -- --> ?
 	json text, -- --> строка информации в формате json
 	CONSTRAINT articles_details_pkey PRIMARY KEY (id)
 );
@@ -68,6 +68,7 @@ CREATE TABLE characteristics_comparison	(
 	id serial,
 	characteristic_original text UNIQUE, -- --> название оригинальной характеристики
 	characteristic_alt text, 
+	order_number INTEGER,
 	CONSTRAINT characteristics_comparison_pkey PRIMARY KEY (id)
 );
 
