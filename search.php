@@ -587,7 +587,7 @@ else
 
             let div = document.createElement("div");
             div.id = "div-selected-producers-" + producer_name;
-            div.classList.add("badge", "badge-primary", "badge-pill", "px-3", "py-2", "my-1", "d-inline-flex", "align-items-center");
+            div.classList.add("badge", "badge-primary", "badge-pill", "px-3", "py-2", "my-1", "d-inline-flex", "align-items-center", "me-1");
 
             // jQuery('<div>', {
             //     id: "div-selected-producers-" + selected_catalogues.length,

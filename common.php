@@ -133,7 +133,7 @@ function showSearchPopovers()
                 </svg>
               </div>
               <select id="modalAddArticle-first-select-catalogueName" class="select-catalogue-name form-select w-75 me-3">
-                <!-- <option selected>ВСЕ</option> -->
+                <option selected>ВСЕ</option>
                 <?php foreach ($ARRAY_CATALOGUES as $catalogue) { ?>
                   <option value="<?= $catalogue['name'] ?>"><?= $catalogue['name'] ?></option>
                 <?php } ?>

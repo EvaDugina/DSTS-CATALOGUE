@@ -43,6 +43,27 @@ $ARRAY_CATALOGUES = [
     "iconPath" => "src/img/image_donaldson.jpg"
   ),
   array(
+    "name" => "HIFI",
+    "articleUrl" => "https://catalog.hifi-filter.com/en-GB/product/",
+    "backgroundColor" => "danger",
+    "frontColor" => "white",
+    "iconPath" => "src/img/image_hifi.png"
+  ),
+  array(
+    "name" => "MANN",
+    "articleUrl" => "https://www.mann-filter.com/ru-ru/catalog/search-results/product.html/",
+    "backgroundColor" => "success",
+    "frontColor" => "warning",
+    "iconPath" => "src/img/icon_mann.jpg"
+  ),
+  array(
+    "name" => "FLEETGUARD",
+    "articleUrl" => "https://www.fleetguard.com/s/productDetails?language=en_US&propertyVal=",
+    "backgroundColor" => "danger",
+    "frontColor" => "black",
+    "iconPath" => "src/img/icon_fleetguard.png"
+  ),
+  array(
     "name" => "FILFILTER",
     "articleUrl" => "https://catalog.filfilter.com.tr/ru/product/",
     "backgroundColor" => "warning",
