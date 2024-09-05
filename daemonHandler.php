@@ -1,33 +1,33 @@
 <?php
 require_once("utilities.php");
 
-// $au = new auth_ssh();
+$au = new auth_ssh();
 
-// checkAuLoggedIN($au);
+checkAuLoggedIN($au);
 
 if (isset($_POST['flag']))
     $flag = $_POST['flag'];
 else
     exit;
 
-
-
 $SERVER_HOST = "localhost";
 $SERVER_PORT = 8083;
+$PATH_TO_SCRAPPER = "DSTS-SCRAPPER-MODULE";
 
 if ($flag == "GetServerParameters") {
     echo json_encode(["host" => $SERVER_HOST, "port" => $SERVER_PORT]);
     exit;
 }
 
+
+// https://docker-php.readthedocs.io/en/latest/cookbook/container-run/
+
 if ($flag == "StartDaemon") {
-    // $command = shell_exec("uvicorn server:app --reload --host $SERVER_HOST --port $SERVER_PORT");
-    // exit;
+    exit;
 }
 
 if ($flag == "StopDaemon") {
-    // $command = shell_exec("");
-    // exit;
+    exit;
 }
 
 exit;

@@ -40,6 +40,10 @@ function ajaxStartStopDaemon(flag) {
     });
 }
 
+function sleep(s) {
+    return new Promise(resolve => setTimeout(resolve, s * 1000));
+}
+
 
 ////
 //// ServerHandler
@@ -52,9 +56,6 @@ export default class ServerHandler {
     socket = null;
     serverData = null;
 
-    output_object = null;
-    output_object_key = null;
-
     constructor() {
         this.session_id = getCookie("PHPSESSID");
         this.socket = new WebSocket($url);
@@ -65,19 +66,61 @@ export default class ServerHandler {
     //// MAIN FUNCTIONS
     ////
 
-    sendData(data, output_object = null, output_object_key = null) {
-        if (output_object != null && output_object_key != null) {
-            this.output_object = output_object;
-            this.output_object_key = output_object_key;
+    reconnect() {
+        this.socket = new WebSocket($url);
+        this.defineInitOnMessage();
+    }
+
+    getServerData() {
+        return this.serverData;
+    }
+
+    async waitForServerData() {
+        let timeout = 5;
+        let count_time = 0;
+        while (this.serverData == null && count_time < timeout) {
+            // console.log("sleepping...")
+            await sleep(0.5);
+            count_time += 0.5;
         }
+        if (this.serverData == null)
+            return { "error": "Данные с сервера не получены!" }
+        return this.serverData;
+    }
+
+    async sendData(data, flag_wait_for_answer = false) {
+
+        // console.log("sendData()");
 
         let context = this;
         this.waitForConnection(function () {
+            context.serverData = null;
             context.socket.send(JSON.stringify(Array.from(data.entries())));
             if (typeof callback !== 'undefined') {
                 callback();
             }
         }, 1000);
+
+        if (flag_wait_for_answer) {
+            return await this.waitForServerData();
+        }
+
+        return "Запрос отправлен!"
+    }
+
+    async sendSearchRequest(search_request) {
+        let searchRequestData = this.getSearchRequestData(search_request);
+        return await this.sendData(searchRequestData);
+    }
+
+    async sendGetSearchProgressRequest() {
+        let searchRequestData = this.getSearchProgressRequestData();
+        return await this.sendData(searchRequestData, true);
+    }
+
+    async sendStopSearchRequest() {
+        let searchRequestData = this.getStopSearchRequestData();
+        return await this.sendData(searchRequestData);
     }
 
 
@@ -87,7 +130,7 @@ export default class ServerHandler {
 
     getTestSearchRequestData() {
         return new Map([
-            ['flag', "searchRequests"],
+            ['flag', "SearchRequests"],
             [
                 'requests', [
                     ["DONALDSON", "P550777"],
@@ -97,9 +140,22 @@ export default class ServerHandler {
         ]);
     }
 
+    getSearchProgressRequestData() {
+        return new Map([
+            ['flag', "GetSearchProgress"]
+        ]);
+    }
+
+    getSearchRequestData(search_requests) {
+        return new Map([
+            ['flag', "SearchRequests"],
+            ['requests', search_requests]
+        ]);
+    }
+
     getStopSearchRequestData() {
         return new Map([
-            ['flag', "stopSearch"]
+            ['flag', "StopSearch"]
         ]);
     }
 
@@ -113,15 +169,11 @@ export default class ServerHandler {
     }
 
     defineInitOnMessage() {
-
+        var context = this;
         this.socket.onmessage = (event) => {
-
             try {
-                this.server_data = this.parseServerData(event.data);
-                if (this.output_pointer != null && this.output_object_key != null)
-                    this.output_object[this.output_object_key] = this.server_data;
-                console.log(this.server_data);
-
+                context.serverData = this.parseServerData(event.data);
+                // console.log("onmessage", "server_data", this.serverData);
             }
             catch (error) {
                 console.log(error);

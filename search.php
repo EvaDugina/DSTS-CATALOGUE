@@ -276,12 +276,6 @@ else
     // ОБРАБОТЧИКИ СОБЫТИЙ
     //-------------------------------------------------------------------------------------------------------------
 
-
-    // $('#btn-add-article').on("click", function() {
-    //     setValuesToDialogModalAddArticleFields();
-    //     showPopoverAddArticle();
-    // });
-
     $('#btn-parse-result-different-sites').on("click", function(e) {
 
     });
@@ -327,55 +321,6 @@ else
         });
 
     });
-
-
-    // $('#modalEdit-button-apply').on("click", function(event) {
-    //     real_producer_name_dsts = $('#modalEdit-input-realProducerNameInDSTSCatalogue').val();
-    //     new_producer_name_dsts = $('#modalEdit-input-newProducerNameInDSTSCatalogue').val();
-    //     real_producer_name = $('#modalEdit-input-realProducerName').val();
-    //     new_producer_name = $('#modalEdit-select-newProducerName').val();
-    //     ajaxEdit(article_for_edit.producer_id, new_producer_name_dsts, new_producer_name, real_producer_name_dsts, real_producer_name);
-    //     // updateTablesAfterEditProducerName(real_producer_name, new_producer_name);
-    //     // updateSessionParams();
-    //     // location.reload();
-    // });
-
-    // $('#dialogModalEdit').on('hidden.bs.modal', function(e) {
-    //     $('#modalEdit-input-newProducerNameInDSTSCatalogue').val("");
-    //     $('#modalEdit-select-newProducerName').val("");
-    // })
-
-    // $('#modalAddArticle-button-apply').on("click", function(event) {
-    //     let article_name = $('#modalAddArticle-input-articleName').val();
-    //     if (article_name.split(" ").length > 1) {
-    //         $('#modalAddArticle-p-inputError').removeClass("d-none");
-    //         $('#modalAddArticle-input-articleName').addClass("is-invalid");
-    //         return;
-    //     } else {
-    //         $('#modalAddArticle-p-inputError').addClass("d-none");
-    //         $('#modalAddArticle-input-articleName').removeClass("is-invalid");
-    //     }
-
-    //     addingArticle = true;
-    //     let catalogue_name = $('#modalAddArticle-select-catalogueName').val();
-    //     ajaxAddArticle(article_name, catalogue_name);
-    // });
-
-    // $('#dialogModalAddArticle').on('hidden.bs.modal', function(event) {
-    //     if (addingArticle) {
-    //         event.preventDefault();
-    //         var confirm = window.confirm("Идёт добавление артикула, вы уверены, что хотите закрыть окно?");
-    //         if (confirm)
-    //             ajaxStopAddArticle();
-    //         else
-    //             return;
-    //     }
-    //     $('#modalAddArticle-textarea-result').text("");
-    //     $('#modalAddArticle-div-result').addClass("d-none");
-    //     $('#dialogModalAddArticle').modal('hide');
-
-    // })
-
 
     //-------------------------------------------------------------------------------------------------------------
     // ОСНОВНЫЕ ФУНКЦИИ

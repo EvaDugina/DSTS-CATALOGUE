@@ -1,4 +1,4 @@
-// import { clickToButtonEditLine } from './PopoverHandler.js';
+
 
 
 var analogs = [];
@@ -25,7 +25,7 @@ $(document).ready(function () {
 
 function loadLastSearchRequest() {
     $('#input-article').change();
-    console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
+    // console.log("sessionStorage: " + sessionStorage.getItem('search_request') + " | " + sessionStorage.getItem('search_type'));
     if (sessionStorage.getItem('search_request') && sessionStorage.getItem('search_type')) {
         flagValidation = true;
         $('#input-article').val(sessionStorage.getItem('search_request'));

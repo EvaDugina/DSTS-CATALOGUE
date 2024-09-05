@@ -125,33 +125,48 @@ function showSearchPopovers()
         <div class="modal-body">
           <div>
             <h6>Добавление артикула по каталогу:</h6>
-            <div class="d-inline-flex align-items-center w-75">
-              <input id="modalAddArticle-input-articleName" type="text" value="" class="form-control w-100 my-0" placeholder="Введите название артикула">
+            <div id="div-first-article-input" class="div-article-input d-inline-flex align-items-center w-75">
+              <input id="modalAddArticle-first-input-articleName" type="text" value="" class="input-article-name form-control w-100 my-0" placeholder="Введите название артикула">
               <div class="mx-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
                 </svg>
               </div>
-              <select id="modalAddArticle-select-catalogueName" class="form-select w-75 me-3">
+              <select id="modalAddArticle-first-select-catalogueName" class="select-catalogue-name form-select w-75 me-3">
                 <!-- <option selected>ВСЕ</option> -->
                 <?php foreach ($ARRAY_CATALOGUES as $catalogue) { ?>
                   <option value="<?= $catalogue['name'] ?>"><?= $catalogue['name'] ?></option>
                 <?php } ?>
               </select>
+              <button id="button-delete-current-input" class="btn btn-danger d-none" onclick="deleteCurrentInputBlock(this)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                  <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+                </svg>
+              </button>
             </div>
             <p id="modalAddArticle-p-inputError" class="text-danger d-none">
-              <small><strong>ВНИМАНИЕ! В строке не должно присутсвовать ничего, кроме слитно написанного названия артикула</strong></small>
+              <small><strong>ВНИМАНИЕ! Проверьте заполнение полей по образцу!</strong></small>
             </p>
             <p class="text-muted"><small>ПРИМЕР ВВОДА: P550777 | P 550777 | P-550777 | P.550777</small></p>
+            <div id="div-more-article-inputs" class="d-flex flex-column"></div>
+          </div>
+          <div>
+            <button class="btn btn-primary" onclick="addNewArticleInputBlock()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2" />
+              </svg>
+              &nbsp;
+              ДОБАВИТЬ
+            </button>
           </div>
           <br />
           <div id="modalAddArticle-div-result" class="w-100 d-none">
             <h6>Результат добавления:</h6>
-            <textarea id="modalAddArticle-textarea-result" class="form-control w-100" rows="10" readonly></textarea>
+            <div id="modalAddArticle-div-result"></div>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-mdb-dismiss="modal">ОТМЕНА</button>
+          <button id="modalAddArticle-button-reject" type="button" class="btn btn-danger">ОТМЕНА</button>
           <button id="modalAddArticle-button-apply" type="button" class="btn btn-primary align-items-center">
             ДОБАВИТЬ АРТИКУЛ
             <div id="modalAddArticle-spinner-waiting" class="spinner-border spinner-border-sm text-white ms-2 float-end d-none" role="status">
@@ -217,7 +232,32 @@ function showSearchPopovers()
     </div>
   </div>
 
-  <script type="text/javascript" src="js/PopoverHandler.js"></script>
+  <script type="text/javascript" src="js/PopoverSearchRequestHandler.js"></script>
+  <script type="module">
+    import ServerHandler from "./js/ServerHandler.js";
+
+    var serverHandler = new ServerHandler();
+
+    export async function reconnect() {
+      serverHandler.reconnect();
+    }
+    functions.reconnect = reconnect;
+
+    export async function sendSearchRequest(search_request) {
+      return await serverHandler.sendSearchRequest(search_request);
+    }
+    functions.sendSearchRequest = sendSearchRequest;
+
+    export async function sendGetSearchProgressRequest() {
+      return await serverHandler.sendGetSearchProgressRequest();
+    }
+    functions.sendGetSearchProgressRequest = sendGetSearchProgressRequest;
+
+    export async function sendStopSearchRequest() {
+      return await serverHandler.sendStopSearchRequest();
+    }
+    functions.sendStopSearchRequest = sendStopSearchRequest;
+  </script>
 
 <?php }
 ?>
