@@ -6,30 +6,11 @@ Git - https://git-scm.com/download/win
 Python 3.11.4 - https://www.python.org/downloads/release/python-3114/
 PostgreSQL 14.9 - https://www.enterprisedb.com/downloads/postgres-postgresql-downloads
 
+2. git submodule update --init
 
-2. СКАЧАТЬ БИБЛИОТЕКИ ДЛЯ РАБОТЫ PYTHON-БОТА:
-pip install requests
-pip install datetime
-pip install time
-pip install json
-pip install threading
-pip install logging
-pip install traceback
-pip install os
-pip install psycopg2
-pip install pathlib
-pip install shutil
-
-https://pypi.org/project/selenium/
-
-pip install selenium
-pip install playwright
-pip install webdriver_manager
-pip install BeautifulSoup
-pip install bs4
-
+3. СКАЧАТЬ БИБЛИОТЕКИ ДЛЯ РАБОТЫ PYTHON-БОТА:
+pip install -r DSTS-SCRAPPER-MODULE/requirements.txt
 playwright install
-
 
 3. ВЫПОЛНИТЬ BAT-СКРИПТЫ ИЗ ПАПКИ db/
 
