@@ -22,8 +22,9 @@ playwright install
 ## 5. РАБОТА С БАЗОЙ ДАННЫХ
 Выполнить bat-скрипты из папки db/
 
-
-
+## 5. ЗАПУСК ПРИЛОЖЕНИЯ
+uvicorn server:app --reload --port 8083 --host localhost
+запуск xampp
 
 
 
