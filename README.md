@@ -1,4 +1,5 @@
 # ЗАГРУЗКА МОДУЛЕЙ
+https://github.com/EvaDugina/DSTS-CATALOGUE
 
 ## 1. СКАЧИВАНИЕ ОСНОВНЫХ ПРОГРАММ
 Xampp 8.2.4 - https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/8.2.4/
