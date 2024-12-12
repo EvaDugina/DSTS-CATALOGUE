@@ -11,7 +11,7 @@ else
     exit;
 
 $SERVER_HOST = "localhost";
-$SERVER_PORT = 8083;
+$SERVER_PORT = 5000;
 $PATH_TO_SCRAPPER = "DSTS-SCRAPPER-MODULE";
 
 if ($flag == "GetServerParameters") {

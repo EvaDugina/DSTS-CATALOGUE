@@ -1,0 +1,13 @@
+
+services:
+
+  scrapper:
+      container_name: scrapper
+      build: .
+      command: python server.py
+      dockerfile: DSTS-SCRAPPER-MODULE/Dockerfile
+      volumes:
+        - .:/app
+      ports:
+        - "5000:5000"
+      restart: always
