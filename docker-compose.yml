@@ -5,10 +5,14 @@ services:
       container_name: scrapper
       build: ./DSTS-SCRAPPER-MODULE/
       volumes:
-        - .:/app
+        - ./python_scrapper/JSONS:/app
+        - ./python_scrapper/LINKS:/app
+        - ./python_scrapper/LOGS:/app
       ports:
         - "5000:5000"
       restart: always
+      networks:
+          - postgres
 
   postgres:
       container_name: postgres
