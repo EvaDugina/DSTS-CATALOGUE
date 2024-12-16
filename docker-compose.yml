@@ -1,0 +1,105 @@
+
+services:
+
+  scrapper:
+      container_name: scrapper
+      build: ./DSTS-SCRAPPER-MODULE/
+      volumes:
+        - .:/app
+      ports:
+        - "5000:5000"
+      restart: always
+
+  postgres:
+      container_name: postgres
+      image: postgres:15-alpine
+      environment:
+          POSTGRES_DB: ${POSTGRES_DB:-dsts}
+          POSTGRES_USER: ${POSTGRES_USER:-zamay86}
+          POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-matan42}
+          PGDATA: /var/lib/postgresql/data/pgdata
+      volumes:
+          - ./initdb:/docker-entrypoint-initdb.d
+          - .:/var/lib/postgresql/data
+      ports:
+          - 4445:5432
+      healthcheck:
+          test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
+          interval: 10s
+          timeout: 5s
+          retries: 5
+          start_period: 10s
+      restart: unless-stopped
+      deploy:
+          resources:
+              limits:
+                  cpus: '1'
+                  memory: 4G
+
+      networks:
+          - postgres
+
+  pgadmin:
+      container_name: pgadmin
+      image: dpage/pgadmin4:6.19
+
+      # extra_hosts:
+      #     - "localhost:176.108.249.159"
+
+      depends_on:
+          - postgres
+
+      environment:
+          PGADMIN_DEFAULT_EMAIL: vania.dugin917@mail.ru
+          PGADMIN_DEFAULT_PASSWORD: Vania210801d
+          # PGADMIN_CONFIG_SERVER_MODE: 'False'
+
+      volumes:
+          - ./pgadmin:/var/lib/pgadmin
+
+      ports:
+          - 4446:80
+
+      networks:
+          - postgres
+
+      restart: unless-stopped
+
+networks:
+    postgres:
+        driver: bridge
+
+# ============ !!!!! ============
+# Create 'pgadmin' dir
+# mkdir pgadmin && sudo chown -R 5050:80 pgadmin
+# -------------------------------
+# Start:
+# docker-compose --compatibility up -d
+# -------------------------------
+# Access to Postgres:
+# localhost:5433
+# Username: zamay86 (as a default)
+# Password: matan42 (as a default)
+# -------------------------------
+# Access to PgAdmin:
+# URL: http://localhost:5050
+# EMAIL: vania.dugin917@example.com
+# Password: Vania210801d
+# -------------------------------
+# Connect to Postgres from PgAdmin
+# Host name/address: postgres_container
+# Port: 5434
+# Maintenance DB: zamay86
+# Password: matan42
+# -------------------------------
+# Stop lifted containers:
+# docker-compose --compatibility stop
+# -------------------------------
+# Start stopped containers
+# docker-compose --compatibility start
+# -------------------------------
+# Stop and delete containers and network:
+# docker-compose --compatibility down
+# -------------------------------
+# Clear project
+# sudo rm -r pgadmin pgdata
