@@ -5,9 +5,9 @@ services:
       container_name: scrapper
       build: ./DSTS-SCRAPPER-MODULE/
       volumes:
-        - ./python_scrapper/JSONS:/app
-        - ./python_scrapper/LINKS:/app
-        - ./python_scrapper/LOGS:/app
+        - ./cache/JSONS:/pytcachehon_scrapper/JSONS
+        - ./cache/LINKS:/pytcachehon_scrapper/LINKS
+        - ./cache/LOGS:/pytcachehon_scrapper/LOGS
       ports:
         - "5000:5000"
       restart: always
