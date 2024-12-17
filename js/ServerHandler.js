@@ -1,5 +1,5 @@
 
-import $url from './config.js';
+import { getUrl } from './config.js';
 
 export function startDaemon() {
     ajaxStartStopDaemon(true);
@@ -53,21 +53,28 @@ function sleep(s) {
 export default class ServerHandler {
 
     session_id = null;
+    url = null;
     socket = null;
     serverData = null;
+    isEnabled = false;
 
     constructor() {
         this.session_id = getCookie("PHPSESSID");
-        this.socket = new WebSocket($url);
-        this.defineInitOnMessage();
+        this.url = getUrl();
+        this.connect();
     }
 
     ////
     //// MAIN FUNCTIONS
     ////
 
-    reconnect() {
-        this.socket = new WebSocket($url);
+    connect() {
+        this.socket = new WebSocket(this.url);
+        var context = this;
+        this.socket.onerror = function (event) {
+            context.isEnabled = false;
+        }
+
         this.defineInitOnMessage();
     }
 

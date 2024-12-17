@@ -1,26 +1,22 @@
-var HOST = null;
-var PORT = null;
-
-function getServerParams() {
-    ajaxGetServerParams();
+export function getUrl() {
+    let data = ajaxGetServerParams();
+    let url = `ws://${data['host']}:${data['port']}`;
+    return url;
 }
-
-getServerParams();
-
-const $url = `ws://${HOST}:${PORT}`;
-export default $url;
 
 
 ////
 //// UTILITIES
 ////
 
-
 function ajaxGetServerParams() {
 
     var formData = new FormData();
 
     formData.append('flag', "GetServerParameters");
+
+    let host = null;
+    let port = null;
 
     $.ajax({
         type: "POST",
@@ -33,9 +29,11 @@ function ajaxGetServerParams() {
         dataType: 'html',
         success: function (response) {
             response = JSON.parse(response);
-            HOST = response.host;
-            PORT = response.port;
+            host = response.host;
+            port = response.port;
         },
         complete: function () { }
     });
+
+    return { "host": host, "port": port }
 }

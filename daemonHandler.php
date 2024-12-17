@@ -10,17 +10,14 @@ if (isset($_POST['flag']))
 else
     exit;
 
-$SERVER_HOST = "localhost";
-$SERVER_PORT = 5000;
-$PATH_TO_SCRAPPER = "DSTS-SCRAPPER-MODULE";
+$scrapper_parameters = json_decode(file_get_contents("./scrapper_config.json"));
+$SCRAPPER_HOST = $scrapper_parameters->host;
+$SCRAPPER_PORT = $scrapper_parameters->port;
 
 if ($flag == "GetServerParameters") {
-    echo json_encode(["host" => $SERVER_HOST, "port" => $SERVER_PORT]);
+    echo json_encode(["host" => $SCRAPPER_HOST, "port" => $SCRAPPER_PORT]);
     exit;
 }
-
-
-// https://docker-php.readthedocs.io/en/latest/cookbook/container-run/
 
 if ($flag == "StartDaemon") {
     exit;
