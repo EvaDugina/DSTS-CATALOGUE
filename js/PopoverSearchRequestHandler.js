@@ -2,7 +2,13 @@ var article_for_edit = null;
 var flag_addingArticle = false;
 const functions = {};
 
+// $(document).ready(function () {
 
+//     if (!functions.isEnabled()) {
+//         $('#btn-add-article').css('background-color', 'grey');
+//         реализовать механизм постоянной проверки статуса
+//     }
+// });
 
 // 
 // LISTENERS
@@ -10,6 +16,11 @@ const functions = {};
 // 
 
 $('#btn-add-article').on("click", function () {
+    let status = functions.isEnabled();
+    if (!status) {
+        alert("Бот не отвечает!")
+        return;
+    }
     setValuesToDialogModalAddArticleFields();
     showPopoverAddArticle();
 });
@@ -111,7 +122,7 @@ async function waitWhileSearchEnds() {
         server_data = await functions.sendGetSearchProgressRequest();
         if (server_data.error) {
             console.log(server_data.error);
-            functions.reconnect();
+            functions.connect();
             continue;
         }
 

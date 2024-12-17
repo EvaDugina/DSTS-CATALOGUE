@@ -238,10 +238,15 @@ function showSearchPopovers()
 
     var serverHandler = new ServerHandler();
 
-    export async function reconnect() {
-      serverHandler.reconnect();
+    export async function connect() {
+      return await serverHandler.connect();
     }
-    functions.reconnect = reconnect;
+    functions.connect = await connect;
+
+    export function isEnabled() {
+      return serverHandler.isEnabled;
+    }
+    functions.isEnabled = isEnabled;
 
     export async function sendSearchRequest(search_request) {
       return await serverHandler.sendSearchRequest(search_request);
