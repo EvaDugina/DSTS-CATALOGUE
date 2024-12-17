@@ -5,9 +5,9 @@ services:
       container_name: scrapper
       build: ./DSTS-SCRAPPER-MODULE/
       volumes:
-        - ./cache/JSONS:/pytcachehon_scrapper/JSONS
-        - ./cache/LINKS:/pytcachehon_scrapper/LINKS
-        - ./cache/LOGS:/pytcachehon_scrapper/LOGS
+        - ./cache/JSONS:/python_scrapper/JSONS
+        - ./cache/LINKS:/python_scrapper/LINKS
+        - ./cache/LOGS:/python_scrapper/LOGS
       ports:
         - "5000:5000"
       restart: always
@@ -24,7 +24,7 @@ services:
           PGDATA: /var/lib/postgresql/data/pgdata
       volumes:
           - ./initdb:/docker-entrypoint-initdb.d
-          - .:/var/lib/postgresql/data
+          - ./postgresql:/var/lib/postgresql/data
       ports:
           - 4445:5432
       healthcheck:

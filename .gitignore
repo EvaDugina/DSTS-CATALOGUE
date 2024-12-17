@@ -4,3 +4,5 @@ LINKS/
 LOGS/
 python_module/
 db/db_config.json
+pgadmin/
+postgresql/
