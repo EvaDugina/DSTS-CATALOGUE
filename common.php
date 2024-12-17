@@ -238,30 +238,30 @@ function showSearchPopovers()
 
     var serverHandler = new ServerHandler();
 
-    export async function connect() {
-      return await serverHandler.connect();
+    export async function reconnectIfNotConnected() {
+      return await serverHandler.reconnectIfNotConnected();
     }
-    functions.connect = await connect;
+    functions.reconnectIfNotConnected = await reconnectIfNotConnected;
 
     export function isEnabled() {
-      return serverHandler.isEnabled;
+      return serverHandler.isEnabled();
     }
     functions.isEnabled = isEnabled;
 
     export async function sendSearchRequest(search_request) {
       return await serverHandler.sendSearchRequest(search_request);
     }
-    functions.sendSearchRequest = sendSearchRequest;
+    functions.sendSearchRequest = await sendSearchRequest;
 
     export async function sendGetSearchProgressRequest() {
       return await serverHandler.sendGetSearchProgressRequest();
     }
-    functions.sendGetSearchProgressRequest = sendGetSearchProgressRequest;
+    functions.sendGetSearchProgressRequest = await sendGetSearchProgressRequest;
 
     export async function sendStopSearchRequest() {
       return await serverHandler.sendStopSearchRequest();
     }
-    functions.sendStopSearchRequest = sendStopSearchRequest;
+    functions.sendStopSearchRequest = await sendStopSearchRequest;
   </script>
 
 <?php }

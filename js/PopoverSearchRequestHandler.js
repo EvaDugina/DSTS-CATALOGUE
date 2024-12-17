@@ -15,7 +15,8 @@ const functions = {};
 // LISTENERS
 // 
 
-$('#btn-add-article').on("click", function () {
+$('#btn-add-article').on("click", async function () {
+    await functions.reconnectIfNotConnected();
     let status = functions.isEnabled();
     if (!status) {
         alert("Бот не отвечает!")
