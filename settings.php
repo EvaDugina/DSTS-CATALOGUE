@@ -1,5 +1,5 @@
 <?php
-$DB_CONNECTION_STRING = "host=127.0.0.1 port=5432 dbname=dsts user=dsts password=123456";
+$DB_CONNECTION_STRING = "host=localhost port=4445 dbname=dsts user=zamay86 password=matan42";
 session_start();
 
 // подключение к БД

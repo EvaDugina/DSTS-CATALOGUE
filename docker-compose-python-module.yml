@@ -3,9 +3,7 @@ services:
 
   scrapper:
       container_name: scrapper
-      build: .
-      command: python server.py
-      dockerfile: DSTS-SCRAPPER-MODULE/Dockerfile
+      build: ./DSTS-SCRAPPER-MODULE/
       volumes:
         - .:/app
       ports:
