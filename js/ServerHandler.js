@@ -1,5 +1,5 @@
 
-import $url from './config.js';
+import { getUrl } from './config.js';
 
 export function startDaemon() {
     ajaxStartStopDaemon(true);
@@ -53,22 +53,34 @@ function sleep(s) {
 export default class ServerHandler {
 
     session_id = null;
+    url = null;
     socket = null;
     serverData = null;
 
     constructor() {
         this.session_id = getCookie("PHPSESSID");
-        this.socket = new WebSocket($url);
-        this.defineInitOnMessage();
+        this.url = getUrl();
+        this.connect();
     }
 
     ////
     //// MAIN FUNCTIONS
     ////
 
-    reconnect() {
-        this.socket = new WebSocket($url);
+    async connect() {
+        this.socket = new WebSocket(this.url);
         this.defineInitOnMessage();
+    }
+
+    async reconnectIfNotConnected() {
+        if (!this.isEnabled)
+            await this.connect();
+    }
+
+    isEnabled() {
+        if (this.socket.readyState == WebSocket.OPEN)
+            return true;
+        return false;
     }
 
     getServerData() {
@@ -170,15 +182,20 @@ export default class ServerHandler {
 
     defineInitOnMessage() {
         var context = this;
-        this.socket.onmessage = (event) => {
+
+        context.socket.onmessage = (event) => {
             try {
-                context.serverData = this.parseServerData(event.data);
-                // console.log("onmessage", "server_data", this.serverData);
+                context.serverData = context.parseServerData(event.data);
             }
             catch (error) {
                 console.log(error);
             }
         };
+
+        context.socket.onerror = function (event) {
+            console.log("onerror(): " + event);
+        }
+
     }
 
     waitForConnection(callback, interval) {

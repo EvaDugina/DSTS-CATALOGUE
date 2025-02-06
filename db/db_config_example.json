@@ -1,0 +1,7 @@
+{
+    "host": "localhost", 
+    "port": "4445", 
+    "dbname": "dsts", 
+    "user": "zamay86", 
+    "password": "matan42"
+}

@@ -1,5 +1,6 @@
 <?php
-$DB_CONNECTION_STRING = "host=localhost port=4445 dbname=dsts user=zamay86 password=matan42";
+$DB_PARAMETERS = json_decode(file_get_contents("./db/db_config.json"));
+$DB_CONNECTION_STRING = "host=$DB_PARAMETERS->host port=$DB_PARAMETERS->port dbname=$DB_PARAMETERS->dbname user=$DB_PARAMETERS->user password=$DB_PARAMETERS->password";
 session_start();
 
 // подключение к БД

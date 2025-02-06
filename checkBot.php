@@ -30,44 +30,6 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 
 <script type="text/javascript">
     const functions = {};
-
-    // function startDaemon() {
-    //     ajaxStartStopDaemon(true);
-    // }
-
-    // function stopDaemon() {
-    //     ajaxStartStopDaemon(false);
-    // }
-
-
-    // function sleep(s) {
-    //     return new Promise(resolve => setTimeout(resolve, s * 1000));
-    // }
-
-    // function ajaxStartStopDaemon(flag) {
-
-    //     var formData = new FormData();
-
-    //     if (flag)
-    //         formData.append('flag', "StartDaemon");
-    //     else
-    //         formData.append('flag', "StopDaemon");
-
-    //     $.ajax({
-    //         type: "POST",
-    //         url: 'daemonHandler.php#content',
-    //         cache: false,
-    //         async: false,
-    //         contentType: false,
-    //         processData: false,
-    //         data: formData,
-    //         dataType: 'html',
-    //         success: function(response) {
-    //             console.log(response);
-    //         },
-    //         complete: function() {}
-    //     });
-    // }
 </script>
 <script type="module">
     import ServerHandler from "./js/ServerHandler.js";
