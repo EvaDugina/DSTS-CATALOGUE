@@ -27,5 +27,9 @@ playwright install
 uvicorn server:app --reload --port 8083 --host localhost
 запуск xampp
 
+Docker build .
+Docker run -p 5000:5000 -d ID
+docker-compose -f ./docker-compose-python-module.yml up -d --build
 
-
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)

@@ -4,3 +4,4 @@ LINKS/
 LOGS/
 python_module/
 pgdata/*
+db/db_config.json
