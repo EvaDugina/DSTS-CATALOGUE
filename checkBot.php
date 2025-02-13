@@ -15,7 +15,8 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
         <div class="d-flex mb-3">
             <button class="btn btn-success me-3" onclick="functions.checkConnectionToServer()">CHECK CONNECTION</button>
             <button class="btn btn-warning me-3" onclick="functions.updateLogProgressResult()">GET LOG, PROGRESS, RESULT</button>
-            <button class="btn btn-danger" onclick="functions.sendStopSearchRequest()">STOP SEARCHING</button>
+            <button class="btn btn-danger me-3" onclick="functions.sendStopSearchRequest()">STOP SEARCHING</button>
+            <button class="btn btn-danger" onclick="functions.sendCleanLogsRequest()">CLEAN LOGS</button>
         </div>
 
         <div class="d-flex mb-3">
@@ -37,8 +38,8 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
         </div>
 
         <div class="d-flex" style="height: 500px;">
-            <textarea id="textarea-progress" class="w-100 h-100 me-3" style="overflow-y: scroll;" readonly></textarea>
-            <textarea id="textarea-result" class="w-75 h-100" style="overflow-y: scroll;" readonly></textarea>
+            <textarea id="textarea-result" class="w-100 h-100 me-3" style="overflow-y: scroll;" readonly></textarea>
+            <textarea id="textarea-progress" class="w-75 h-100" style="overflow-y: scroll;" readonly></textarea>
         </div>
 
     </main>
@@ -92,6 +93,13 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     }
     functions.sendStopSearchRequest = sendStopSearchRequest;
 
+    export async function sendCleanLogsRequest() {
+        sendRequest(serverHandler.getCleanLogsRequestData());
+    }
+    functions.sendCleanLogsRequest = sendCleanLogsRequest;
+
+
+
 
     // 
     // 
@@ -99,15 +107,16 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 
     export async function updateLogProgressResult() {
         await sendRequest(serverHandler.getGetLogProgressResultRequestData(), true, function(server_data) {
-            document.getElementById('textarea-log').value = server_data['logs'].join("\n");
-            document.getElementById('textarea-log').scrollTop = textarea.scrollHeight;
+            let textarea_log = document.getElementById('textarea-log')
+            textarea_log.value = server_data['logs'].join("\n");
+            textarea_log.scrollTop = textarea_log.scrollHeight;
 
             document.getElementById('textarea-progress').value = server_data['progress'].join("\n");
 
             let text = "";
             server_data['result'].forEach((element) => {
                 for (let [key, value] of Object.entries(element)) {
-                    text += value + "\t|\t";
+                    text += value + "\t\t";
                 }
                 text += "\n"
             });
@@ -135,7 +144,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
             let text = "";
             server_data['result'].forEach((element) => {
                 for (let [key, value] of Object.entries(element)) {
-                    text += value + "\t|\t";
+                    text += value + "\t\t";
                 }
                 text += "\n"
             });
@@ -209,12 +218,10 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
             checkConnectionToServer();
         }
 
-        console.log(">> sendRequest()");
         let result = await serverHandler.sendData(sendingData, flag_wait_for_answer, callback);
         if (result !== undefined && result !== null && result.constructor == Object && "error" in result) {
             alert("Отсутствует соединение с сервером!");
             FLAG_END = true;
         }
-        console.log("<< sendRequest()");
     }
 </script>

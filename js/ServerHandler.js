@@ -314,6 +314,12 @@ export default class ServerHandler {
         ]);
     }
 
+    getCleanLogsRequestData() {
+        return new Map([
+            ['flag', "CleanLogs"]
+        ]);
+    }
+
 
     ////
     //// UTILITIES
