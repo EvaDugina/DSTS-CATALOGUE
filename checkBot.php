@@ -53,7 +53,11 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     import ServerHandler from "./js/ServerHandler.js";
 
     var serverHandler = new ServerHandler();
+    const TIMEOUT = 5;
+    const MAX_WAITING_TIME = 60;
     var FLAG_END = true;
+    var WAITING_TIME = 0;
+    var LAST_LOGS = "";
 
     // 
     // 
@@ -76,7 +80,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
         await updateLogProgressResult();
     }
     functions.checkSearchLogProgressResult = checkSearchLogProgressResult;
-    setInterval(checkSearchLogProgressResult, 5000);
+    setInterval(checkSearchLogProgressResult, TIMEOUT * 1000);
 
     export async function checkSearchFlagEndRequest() {
         await sendRequest(serverHandler.getGetSearchFlagEndRequestData(), true, function(server_data) {
@@ -107,7 +111,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 
     export async function updateLogProgressResult() {
         await sendRequest(serverHandler.getGetLogProgressResultRequestData(), true, function(server_data) {
-            let textarea_log = document.getElementById('textarea-log')
+            let textarea_log = document.getElementById('textarea-log');
             textarea_log.value = server_data['logs'].join("\n");
             textarea_log.scrollTop = textarea_log.scrollHeight;
 
@@ -121,6 +125,23 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                 text += "\n"
             });
             document.getElementById('textarea-result').value = text;
+
+            if (server_data['logs'] == LAST_LOGS) {
+                WAITING_TIME += TIMEOUT;
+            } else {
+                LAST_LOGS = server_data['logs'];
+                WAITING_TIME = 0;
+            }
+
+            if (WAITING_TIME >= MAX_WAITING_TIME) {
+                let confirm = confirm("Продолжить ожидание сервера?")
+                if (confirm) {
+                    WAITING_TIME = 0;
+                } else {
+                    FLAG_END = true;
+                    sendStopSearchRequest();
+                }
+            }
         });
     }
     functions.updateLogProgressResult = updateLogProgressResult;
@@ -158,6 +179,8 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     // 
 
     export async function sendSearchRequest(search_request) {
+        WAITING_TIME = 0;
+        LAST_LOGS = "";
         sendRequest(search_request);
         FLAG_END = false;
     }
