@@ -298,7 +298,12 @@ export default class ServerHandler {
 
     getGetLogProgressResultRequestData() {
         return new Map([
-            ['flag', "GetSearchLogProgressResult"]
+            ['flag', "GetSearchLogProgressResult"],
+            ['flag1', "GetSearchLogProgressResult"],
+            ['flag2', [
+                ['flag21', "GetSearchLogProgressResult"],
+                ['flag22', "GetSearchLogProgressResult"]
+            ]]
         ]);
     }
 

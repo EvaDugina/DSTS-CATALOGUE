@@ -59,6 +59,18 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     var WAITING_TIME = 0;
     var LAST_LOGS = "";
 
+
+    // 
+    // 
+    // 
+
+    function mapToObj(map) {
+        const obj = {}
+        for (let [k, v] of map)
+            obj[k] = v
+        return obj
+    }
+
     // 
     // 
     // 
@@ -92,13 +104,15 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     functions.checkSearchFlagEndRequest = checkSearchFlagEndRequest;
 
     export async function sendStopSearchRequest() {
-        sendRequest(serverHandler.getStopSearchRequestData());
+        await sendRequest(serverHandler.getStopSearchRequestData());
         FLAG_END = true;
+        alert("Поиск остановлен!")
     }
     functions.sendStopSearchRequest = sendStopSearchRequest;
 
     export async function sendCleanLogsRequest() {
-        sendRequest(serverHandler.getCleanLogsRequestData());
+        await sendRequest(serverHandler.getCleanLogsRequestData());
+        alert("Логи очищены!")
     }
     functions.sendCleanLogsRequest = sendCleanLogsRequest;
 
@@ -112,7 +126,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     export async function updateLogProgressResult() {
         await sendRequest(serverHandler.getGetLogProgressResultRequestData(), true, function(server_data) {
             let textarea_log = document.getElementById('textarea-log');
-            textarea_log.value = server_data['logs'].join("\n");
+            textarea_log.value = server_data['logs'].join("");
             textarea_log.scrollTop = textarea_log.scrollHeight;
 
             document.getElementById('textarea-progress').value = server_data['progress'].join("\n");
@@ -122,7 +136,6 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
                 for (let [key, value] of Object.entries(element)) {
                     text += value + "\t\t";
                 }
-                text += "\n"
             });
             document.getElementById('textarea-result').value = text;
 
@@ -181,8 +194,9 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     export async function sendSearchRequest(search_request) {
         WAITING_TIME = 0;
         LAST_LOGS = "";
-        sendRequest(search_request);
+        await sendRequest(search_request);
         FLAG_END = false;
+        alert("Поиск начат! \nЗапрос: " + JSON.stringify(mapToObj(search_request)))
     }
     functions.sendSearchRequest = sendSearchRequest;
 
@@ -243,7 +257,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
 
         let result = await serverHandler.sendData(sendingData, flag_wait_for_answer, callback);
         if (result !== undefined && result !== null && result.constructor == Object && "error" in result) {
-            alert("Отсутствует соединение с сервером!");
+            alert("Ошибка! \n" + result['error']);
             FLAG_END = true;
         }
     }
