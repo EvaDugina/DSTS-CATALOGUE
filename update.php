@@ -12,7 +12,9 @@ checkAuIsAdmin($au);
 
   $au = new auth_ssh();
   if ($au->isAdmin()) {
-    echo '<form action="update_action.php"><input type="submit" value="update"/></form>';
+    echo '<form action="update_action.php"><input name="main" type="submit" value="main"/></form>';
+    echo '<form action="update_action.php"><input name="dev" type="submit" value="dev"/></form>';
+    echo '<form action="update_action.php"><input name="update" type="submit" value="update"/></form>';
   }
   ?>
 

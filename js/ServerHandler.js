@@ -101,9 +101,7 @@ export default class ServerHandler {
         return this.serverData;
     }
 
-    async sendData(data, flag_wait_for_answer = false, callback = null) {
-
-        // console.log("sendData()");
+    async sendData(data, callback = null) {
 
         if (!this.isEnabled()) {
             return { "error": "Отсутствует соединение с сервером!" };
@@ -113,16 +111,11 @@ export default class ServerHandler {
         this.waitForConnection(function () {
             context.serverData = null;
             context.socket.send(JSON.stringify(Array.from(data.entries())));
-            // if (typeof callback !== 'undefined') {
-            //     callback();
-            // }
         }, 1000);
 
-        if (flag_wait_for_answer && callback != null) {
+        if (callback != null) {
             // this.setCollbackOnMessage(callback);
             let server_data = await this.waitForServerData();
-            if ("error" in server_data)
-                return server_data;
             callback(server_data);
         }
 
@@ -136,7 +129,7 @@ export default class ServerHandler {
 
     async sendGetSearchProgressRequest() {
         let searchRequestData = this.getSearchProgressRequestData();
-        return await this.sendData(searchRequestData, true);
+        return await this.sendData(searchRequestData);
     }
 
     async sendStopSearchRequest() {

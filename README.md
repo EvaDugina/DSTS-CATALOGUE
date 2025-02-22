@@ -33,3 +33,5 @@ docker-compose -f ./docker-compose-python-module.yml up -d --build
 
 docker stop $(docker ps -a -q)
 docker rm $(docker ps -a -q)
+
+pip uninstall websocket

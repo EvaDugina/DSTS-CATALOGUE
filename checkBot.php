@@ -58,6 +58,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     var FLAG_END = true;
     var WAITING_TIME = 0;
     var LAST_LOGS = "";
+    var PAUSED = false;
 
 
     // 
@@ -85,7 +86,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     // 
 
     export async function checkSearchLogProgressResult() {
-        if (FLAG_END == true)
+        if (FLAG_END || PAUSED)
             return;
 
         await checkSearchFlagEndRequest();
@@ -95,24 +96,23 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     setInterval(checkSearchLogProgressResult, TIMEOUT * 1000);
 
     export async function checkSearchFlagEndRequest() {
-        await sendRequest(serverHandler.getGetSearchFlagEndRequestData(), true, function(server_data) {
+
+        await sendRequest(serverHandler.getGetSearchFlagEndRequestData(), function(server_data) {
             FLAG_END = server_data['flag_end'];
+            if (FLAG_END)
+                alert("Поиск окончен!");
         });
-        if (FLAG_END == true)
-            alert("Поиск окончен!");
     }
     functions.checkSearchFlagEndRequest = checkSearchFlagEndRequest;
 
     export async function sendStopSearchRequest() {
         await sendRequest(serverHandler.getStopSearchRequestData());
         FLAG_END = true;
-        alert("Поиск остановлен!")
     }
     functions.sendStopSearchRequest = sendStopSearchRequest;
 
     export async function sendCleanLogsRequest() {
         await sendRequest(serverHandler.getCleanLogsRequestData());
-        alert("Логи очищены!")
     }
     functions.sendCleanLogsRequest = sendCleanLogsRequest;
 
@@ -124,7 +124,7 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     // 
 
     export async function updateLogProgressResult() {
-        await sendRequest(serverHandler.getGetLogProgressResultRequestData(), true, function(server_data) {
+        await sendRequest(serverHandler.getGetLogProgressResultRequestData(), function(server_data) {
             let textarea_log = document.getElementById('textarea-log');
             textarea_log.value = server_data['logs'].join("");
             textarea_log.scrollTop = textarea_log.scrollHeight;
@@ -160,21 +160,21 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     functions.updateLogProgressResult = updateLogProgressResult;
 
     export async function updateLog() {
-        await sendRequest(serverHandler.getGetLogRequestData(), true, function(server_data) {
+        await sendRequest(serverHandler.getGetLogRequestData(), function(server_data) {
             document.getElementById('textarea-log').value = server_data['logs'].join("\n")
         });
     }
     functions.updateLog = updateLog;
 
     export async function updateProgress() {
-        await sendRequest(serverHandler.getGetProgressRequestData(), true, function(server_data) {
+        await sendRequest(serverHandler.getGetProgressRequestData(), function(server_data) {
             document.getElementById('textarea-progress').value = server_data['progress'].join("\n");
         });
     }
     functions.updateProgress = updateProgress;
 
     export async function updateResult() {
-        await sendRequest(serverHandler.getGetResultRequestData(), true, function(server_data) {
+        await sendRequest(serverHandler.getGetResultRequestData(), function(server_data) {
             let text = "";
             server_data['result'].forEach((element) => {
                 for (let [key, value] of Object.entries(element)) {
@@ -194,36 +194,35 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     export async function sendSearchRequest(search_request) {
         WAITING_TIME = 0;
         LAST_LOGS = "";
-        await sendRequest(search_request);
         FLAG_END = false;
-        alert("Поиск начат! \nЗапрос: " + JSON.stringify(mapToObj(search_request)))
+        await sendRequest(search_request);
     }
     functions.sendSearchRequest = sendSearchRequest;
 
 
 
     export async function sendDonaldsonP55077SearchRequest() {
-        sendSearchRequest(serverHandler.getDonaldsonP55077SearchRequestData())
+        await sendSearchRequest(serverHandler.getDonaldsonP55077SearchRequestData())
     }
     functions.sendDonaldsonP55077SearchRequest = sendDonaldsonP55077SearchRequest;
 
     export async function sendFleetguardP55077SearchRequest() {
-        sendSearchRequest(serverHandler.getFleetguardP55077SearchRequestData())
+        await sendSearchRequest(serverHandler.getFleetguardP55077SearchRequestData())
     }
     functions.sendFleetguardP55077SearchRequest = sendFleetguardP55077SearchRequest;
 
     export async function sendMannP55077SearchRequest() {
-        sendSearchRequest(serverHandler.getMannP55077SearchRequestData())
+        await sendSearchRequest(serverHandler.getMannP55077SearchRequestData())
     }
     functions.sendMannP55077SearchRequest = sendMannP55077SearchRequest;
 
     export async function sendHifiSh60161SearchRequest() {
-        sendSearchRequest(serverHandler.getHifiSh60161SearchRequestData())
+        await sendSearchRequest(serverHandler.getHifiSh60161SearchRequestData())
     }
     functions.sendHifiSh60161SearchRequest = sendHifiSh60161SearchRequest;
 
     export async function sendFilfilterP55077SearchRequest() {
-        sendSearchRequest(serverHandler.getFilfilterP55077SearchRequestData())
+        await sendSearchRequest(serverHandler.getFilfilterP55077SearchRequestData())
     }
     functions.sendFilfilterP55077SearchRequest = sendFilfilterP55077SearchRequest;
 
@@ -232,17 +231,17 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     // 
 
     export async function sendFastSearchRequest() {
-        sendSearchRequest(serverHandler.getFastCheckSearchRequestData())
+        await sendSearchRequest(serverHandler.getFastCheckSearchRequestData())
     }
     functions.sendFastSearchRequest = sendFastSearchRequest;
 
     export async function sendStandartSearchRequest() {
-        sendSearchRequest(serverHandler.getStandartCheckSearchRequestData())
+        await sendSearchRequest(serverHandler.getStandartCheckSearchRequestData())
     }
     functions.sendStandartSearchRequest = sendStandartSearchRequest;
 
     export async function sendDeepSearchRequest() {
-        sendSearchRequest(serverHandler.getDeepCheckTestSearchRequestData())
+        await sendSearchRequest(serverHandler.getDeepCheckTestSearchRequestData())
     }
     functions.sendDeepSearchRequest = sendDeepSearchRequest;
 
@@ -250,15 +249,30 @@ show_head("СТРАНИЦА ИНФОРМАЦИИ О ТОВАРЕ");
     // 
     // 
 
-    async function sendRequest(sendingData, flag_wait_for_answer = false, callback = null) {
+    async function sendRequest(sendingData, callback = null) {
         if (!serverHandler.isEnabled()) {
             checkConnectionToServer();
         }
 
-        let result = await serverHandler.sendData(sendingData, flag_wait_for_answer, callback);
+        PAUSED = true;
+        let result = await serverHandler.sendData(sendingData, function(server_data) {
+            let isError = checkErrorCallback(server_data);
+            if (!isError) {
+                if (callback != null)
+                    callback(server_data);
+            } else {
+                FLAG_END = true;
+            }
+
+            PAUSED = false;
+        });
+    }
+
+    function checkErrorCallback(result) {
         if (result !== undefined && result !== null && result.constructor == Object && "error" in result) {
             alert("Ошибка! \n" + result['error']);
-            FLAG_END = true;
+            return true;
         }
+        return false;
     }
 </script>
