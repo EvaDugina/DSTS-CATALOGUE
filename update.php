@@ -1,3 +1,8 @@
+<?php
+$au = new auth_ssh();
+checkAuIsAdmin($au);
+?>
+
 <html>
 
 <body>
