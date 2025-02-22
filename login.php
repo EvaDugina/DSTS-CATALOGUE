@@ -1,7 +1,7 @@
 <?php
 require_once("common.php");
-
 include_once('auth_ssh.class.php');
+
 $au = new auth_ssh();
 
 if (isset($_GET['action']) && $_GET['action'] == "logout") {

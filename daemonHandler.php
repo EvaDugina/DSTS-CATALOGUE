@@ -2,7 +2,6 @@
 require_once("utilities.php");
 
 $au = new auth_ssh();
-
 checkAuLoggedIN($au);
 
 if (isset($_POST['flag']))

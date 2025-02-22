@@ -1,12 +1,12 @@
 
 import { getUrl } from './config.js';
 
-export function startDaemon() {
-    ajaxStartStopDaemon(true);
+export async function startDaemon() {
+    await ajaxStartStopDaemon(true);
 }
 
-export function stopDaemon() {
-    ajaxStartStopDaemon(false);
+export async function stopDaemon() {
+    await ajaxStartStopDaemon(false);
 
 }
 
@@ -17,7 +17,7 @@ function getCookie(name) {
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
 
-function ajaxStartStopDaemon(flag) {
+async function ajaxStartStopDaemon(flag) {
     var formData = new FormData();
 
     if (flag)
@@ -25,7 +25,7 @@ function ajaxStartStopDaemon(flag) {
     else
         formData.append('flag', "StopDaemon");
 
-    $.ajax({
+    await $.ajax({
         type: "POST",
         url: 'edit_action.php#content',
         cache: false,
@@ -53,13 +53,11 @@ function sleep(s) {
 export default class ServerHandler {
 
     session_id = null;
-    url = null;
     socket = null;
     serverData = null;
 
     constructor() {
         this.session_id = getCookie("PHPSESSID");
-        this.url = getUrl();
         this.connect();
     }
 
@@ -68,8 +66,9 @@ export default class ServerHandler {
     ////
 
     async connect() {
+        let url = await getUrl();
         console.log("Connecting to server...")
-        this.socket = new WebSocket(this.url);
+        this.socket = new WebSocket(url);
         this.initDefaultOnFunctions();
     }
 

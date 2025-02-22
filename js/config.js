@@ -1,5 +1,5 @@
-export function getUrl() {
-    let data = ajaxGetServerParams();
+export async function getUrl() {
+    let data = await ajaxGetServerParams();
     let url = `ws://${data['host']}:${data['port']}`;
     return url;
 }
@@ -9,7 +9,7 @@ export function getUrl() {
 //// UTILITIES
 ////
 
-function ajaxGetServerParams() {
+async function ajaxGetServerParams() {
 
     var formData = new FormData();
 
@@ -18,11 +18,10 @@ function ajaxGetServerParams() {
     let host = null;
     let port = null;
 
-    $.ajax({
+    await $.ajax({
         type: "POST",
         url: 'daemonHandler.php#content',
         cache: false,
-        async: false,
         contentType: false,
         processData: false,
         data: formData,

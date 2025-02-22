@@ -3,7 +3,6 @@ require_once("utilities.php");
 require_once("common.php");
 
 $au = new auth_ssh();
-
 checkAuLoggedIN($au);
 // checkAuIsAdmin($au);
 
